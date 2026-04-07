@@ -10,4 +10,4 @@ Principali funzionalità:
 * frigo/dispensa virtuale
 * scadenziario intelligente
 * community ricette
-
+* test 1
