@@ -4,18 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FridgeMatch: Login</title>
+    <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body>
-    <div class="login-container">
-        <form class="login-form" id="login-form">
-            <h2>Login</h2>
-            <div class="input-group">
-                <input type="email" name="email" placeholder="Email" required> <br>
-                <input type="password" name="password" placeholder="Password" minlength="8" required> <br>
-                <button type="submit" name="login">Login</button>
-                <p>Don't have an account? <a href="../register">Register here</a></p>
+    <div class="page"> 
+        <div class="brand"> FridgeMatch</div> <!-- nome app -->
+
+        <div class="card">
+            
+            <div class="switch-bar" id="switchBar"> <!-- barra per switchare da login a sign in -->
+                <div class="pill"></div>
+                <button class="tab active" onclick="switchForm('login')">Login</button>
+                <button class="tab" onclick="switchForm('register')">Sign Up</button>
             </div>
-        </form>
+
+            <div class="form-head">
+                <h2 id="formTitle">Welcome back!</h2>
+                <p id="formDesc">Login to start</p>
+            </div>
+
+            <form class="fields" id="mainForm" onsubmit="handleSubmit(event)">
+                <div class="input-wrap" id="usernameField" style="display:none"> <!-- servono a javascript per capire cosa nascondere e cosa mostrare -->
+                    <input type="text" placeholder="Username" id="username" name="username">
+                </div>
+                <div class="input-wrap">
+                    <input type="email" placeholder="Email" id="email" name="email" required>
+                </div>
+                <div class="input-wrap">
+                    <input type="password" placeholder="Password" id="password" name="password" minlength="8" required>
+                    <button type="button" class="eye-btn" onclick="togglePwd('password', this)">👁</button>
+                </div>
+                <div class="input-wrap hidden" id="confirmField">
+                    <input type="password" placeholder="Confirm Password" id="confirmPwd" name="confirmPwd" minlength="8">
+                    <button type="button" class="eye-btn" onclick="togglePwd('confirmPwd', this)">👁</button>
+                </div>
+                <label class="remember" id="rememberRow">
+                    <input type="checkbox" name="remember"> Remember me
+                </label>
+                <button type="submit" class="submit-btn" id="submitBtn">Login</button>
+            </form>
+
+            <div class="footer-link" id="footerLink"> <!-- link in fondo per passare dalla modalità login alla modalità register -->
+                Don't have an account? <span onclick="switchForm('register')">Sign up</span>
+            </div>
+        </div>
     </div>
+
+    <script src="../../js/auth.js"></script>
+
 </body>
 </html>
