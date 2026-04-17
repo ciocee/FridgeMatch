@@ -1,4 +1,4 @@
-const { error } = require("node:console");
+//Comandi per i messaggi di errore
 function showError(message) {
     const errorMsg = document.getElementById('errorMsg');
     errorMsg.textContent = message;
@@ -64,7 +64,7 @@ function togglePwd(fieldId, btn) {
     btn.style.opacity = isHidden ? '1' : '0.4';
 }//cambia l'opacità del tasto occhio a seconda se la password è nascosta o visibile
 
-//gestisce l'invio dei dati, cioce: ho duvoto aggiungere async
+//gestisce l'invio dei dati
 async function handleSubmit(event) {
     event.preventDefault();//impedisce al browser di ricaricare la pagina
 
@@ -75,63 +75,54 @@ async function handleSubmit(event) {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    if (isRegister) {
-        const username = document.getElementById('username').value;
-        const confirmPwd = document.getElementById('confirmPwd').value;
+    try {
+        if (isRegister) {
+            const username = document.getElementById('username').value;
+            const confirmPwd = document.getElementById('confirmPwd').value;
 
-        if (!email.includes('@')) {
-            //alert('Insert a valid email address!');
-            showError('Insert a valid email address!');
-            return;
-        }
+            if (!email.includes('@')) {
+                //alert('Insert a valid email address!');
+                showError('Insert a valid email address!');
+                return;
+            }
 
-        if (password !== confirmPwd) {
-            //alert('Passwords do not match!');
-            showError('Passwords do not match!');
-            return;
-        }
+            if (password !== confirmPwd) {
+                //alert('Passwords do not match!');
+                    showError('Passwords do not match!');
+                return;
+            }
         
-        console.log('Register:', { username, email, password });
+            //logica register
+            const res = await fetch("http://127.0.0.1:3000/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, email, password })
+            });
 
-        //logica register
-        const res = await fetch("http://127.0.0.1:3000/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, email, password })
-        });
 
-        console.log(res.status);
+            if (!res.ok) {
+                const msg = await res.text();
+                showError(msg);
+                return;
+            }
 
-        if (!res.ok) {
-            const msg = await res.text();
-            //alert(msg);
-            showError(msg);
-            return;
+        
+
+        } else {
+            const res = await fetch("http://127.0.0.1:3000/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+        
+            if (!res.ok) {
+                const msg = await res.text();
+                showError(msg);
+                return;
+            }
         }
-
         window.location.href = "/public/pages/dashboard";
-
-    } else {
-
-        console.log('Login:', { email, password });
-    
-        //logica login
-        const res = await fetch("http://127.0.0.1:3000/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-        });
-
-        console.log(res.status);
-
-        if (!res.ok) {
-            const msg = await res.text();
-            //alert(msg);
-            showError(msg);
-            return;
-        }
-    
-        window.location.href = "/public/pages/dashboard";
-
+    } catch (err) {
+        showError("Server error. Please try again later.");
     }
 }
