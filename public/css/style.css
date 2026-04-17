@@ -226,3 +226,11 @@ body {
         padding: 1.5rem 1.25rem;
     }
 }
+
+/*messaggio errore*/
+.error-msg {
+    color: red !important;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: none;
+}

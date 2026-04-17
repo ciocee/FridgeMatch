@@ -21,6 +21,7 @@
             <div class="form-head">
                 <h2 id="formTitle">Welcome back!</h2>
                 <p id="formDesc">Login to start</p>
+                <p id="errorMsg" class="error-msg" style="display:none"></p> <!-- messaggio di errore, nascosto di default -->
             </div>
 
             <form class="fields" id="mainForm" onsubmit="handleSubmit(event)">
@@ -28,7 +29,7 @@
                     <input type="text" placeholder="Username" id="username" name="username">
                 </div>
                 <div class="input-wrap">
-                    <input type="email" placeholder="Email" id="email" name="email" required>
+                    <input type="text" placeholder="Email or Username" id="email" name="email" required>
                 </div>
                 <div class="input-wrap">
                     <input type="password" placeholder="Password" id="password" name="password" minlength="8" required>
