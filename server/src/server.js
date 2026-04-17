@@ -24,6 +24,10 @@ app.use(session({
   saveUninitialized: false
 }));
 
+//Routes
+app.use("/auth", require("./routes/auth"));
+
+//Server
 app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);
 });
