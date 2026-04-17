@@ -23,12 +23,12 @@ exports.register = async (req, res) => {
             return res.status(400).send("Username already have an account");
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        //const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = new User({
             username,
             email,
-            password: hashedPassword
+            password //: hashedPassword
         })
 
         await user.save();

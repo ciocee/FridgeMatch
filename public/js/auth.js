@@ -81,14 +81,12 @@ async function handleSubmit(event) {
             const confirmPwd = document.getElementById('confirmPwd').value;
 
             if (!email.includes('@')) {
-                //alert('Insert a valid email address!');
                 showError('Insert a valid email address!');
                 return;
             }
 
             if (password !== confirmPwd) {
-                //alert('Passwords do not match!');
-                    showError('Passwords do not match!');
+                showError('Passwords do not match!');
                 return;
             }
         
@@ -105,8 +103,6 @@ async function handleSubmit(event) {
                 showError(msg);
                 return;
             }
-
-        
 
         } else {
             const res = await fetch("http://127.0.0.1:3000/auth/login", {

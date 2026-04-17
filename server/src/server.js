@@ -1,6 +1,11 @@
+require("dotenv").config();
+
+console.log("PORT:", process.env.PORT);
+console.log("MONGO:", process.env.MONGO_URI);
+
 const express = require("express");
 const session = require("express-session");
-const mongoos = require("mongoose");
+const mongoose = require("mongoose");
 const cors = require("cors");
 
 const app = express();
@@ -25,7 +30,7 @@ app.use(session({
 }));
 
 //Routes
-app.use("/auth", require("./routes/auth"));
+app.use("/auth", require("../routes/auth"));
 
 //Server
 app.listen(process.env.PORT, () => {
