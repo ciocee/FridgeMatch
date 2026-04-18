@@ -4,8 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FridgeMatch: Dashboard</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <script src="../../js/dashboard.js" defer></script>
 </head>
-<body>
-    <h1>Welcome to your dashboard!</h1>
+
+<body class="dashboard-body">
+<!-- bottone per mobile (inizialmente nascosto)-->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <!-- sidebar a sx -->
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h1 class="brand">FridgeMatch</h1>
+                <nav class="nav-menu">
+                    <ul>
+                        <a href="#" class="active">Homepage</a><br>
+                        <a href="#">Fridge</a><br> 
+                        <a href="#">Grocery list</a><br>
+                        <a href="#">Your favourites</a><br>
+                    </ul>
+                </nav>
+            </div>
+
+        <!-- sezione funzioni social -->
+        <div class="sidebar-section social">
+            <br>
+            <h3>Social</h3>
+                <nav class="nav-menu">
+                    <ul>
+                        <a href="#">Your profile</a><br>
+                        <a href="#">Add recipe</a><br>
+                        <a href="#">View other recipes</a><br>
+                    </ul>
+                </nav>
+            </div>
+            <button class="logout-btn" id = "logout-btn" onclick="handleLogout()">Logout</button>
+        </aside>
+
+        <!-- area principale a dx -->
+        <main class="main-content">
+            <header class="search-bar">
+                <div class = "search-wrapper">
+                    <input type="text" placeholder="Search recipes" id = "search-input">
+                    <button type="submit" class = "search-btn">search</button>
+                </div>
+            </header>
+
+        <!-- riga superiore -->
+            <div class = "widgets-row">
+                <!-- sezione frigo -->
+                <section class="widget fridge-widget">
+                    <div class="fridge-header">
+                        <h2>In the fridge</h2>
+                    </div>
+                    <ul id = "fridge-list" class="data-list">
+                        <!-- lista che verrà popolata dinamicamente dal js-->
+                    </ul>
+                    <button class="add-btn-circle">+</button>
+                    <a href="#" class="view-more">view more ></a>
+
+                </section>
+
+                <!-- sezione scadenze -->
+                <section class="widget alerts-widget">
+                    <div class="alert-msg">
+                        <h2>Items expiring soon</h2>
+                    </div>
+                    <ul id="expiring-list" class="data-list">
+                        <!-- lista che verrà popolata dinamicamente dal js-->
+                    </ul>
+                    <div class="widget-footer">
+                        <a href="#" class="view-more">view more ></a>
+                    </div>
+                </section>
+            </div>
+
+            <hr class="section-divider">
+
+            <!-- sezione ricette preferite -->
+            <section class="recipes-section">
+                <div class="section-header">
+                    <h2>Favourite recipes</h2>
+                </div>
+
+                <div class="recipe-grid" id="favourites-grid">
+                    <article class="recipe-card">
+                        <p class="recipe-title">titolo un attimo</p>
+                        <div class="recipe-img-placeholder"></div>
+                    </article>
+                </div>
+                <a href="#" class="view-more">view more ></a>
+            </section>
+
+            <!-- sezione ricette replicabili -->
+            <section class="recipes-section">
+                <div class="section-header">
+                    <h2>Replicable recipes</h2>
+                </div>
+                <div class="recipe-grid" id="replicable-grid">
+                    <!-- card di ricette popolate con spoonacular API-->
+                    <article class="recipe-card">
+                        <p class="recipe-title">titolo un attimo</p>
+                        <div class="recipe-img-placeholder"></div>
+                    </article>
+                </div>
+                <div class="section-footer">
+                    <a href="#" class="view-more">view more ></a>
+                </div>
+            </section>
+        </main>
+    </div>
 </body>
 </html>

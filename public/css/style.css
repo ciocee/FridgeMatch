@@ -1,3 +1,24 @@
+:root {
+    /* palette colori più utilizzati */
+    --primary-green: #2e5c3a;
+    --accent-orange: #ffb347;
+    --light-green: #6ce883;
+    --danger-red: #ff4d4d;
+    
+    /* colori neutri per sfondi e scritte */
+    --bg-gradient: linear-gradient(135deg, #fff8ee 0%, #edfff4 100%);
+    --white: #ffffff;
+    --gray-light: #f1f3f5;
+    --gray-medium: #888888;
+    --text-dark: #1a1a1a;
+
+    /* layout e ombre */
+    --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.07);
+    --border-radius: 20px;
+    --input-radius: 12px;
+    --transition-speed: 0.3s;
+}
+
 /* reset e stili base */
 * {
     margin: 0;
@@ -8,10 +29,11 @@
 min-height :100vh assicura che l'altezza minima sia il 100% dell'altezza dello schermo*/
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: linear-gradient(135deg, #fff8ee 0%, #edfff4 100%);
+    background: var(--bg-gradient);
     min-height: 100vh;
 }
-/*layout della pagina*/
+
+/* layout della pagina */
 .page {
     min-height: 100vh;
     display: flex;
@@ -20,28 +42,30 @@ body {
     justify-content: center;
     padding: 2rem 1rem;
 }
-/*titolo*/
+
+/* titolo */
 .brand {
     font-size: 2.8rem;
     font-weight: 700;
-    color: #2e5c3a;
-    letter-spacing: -1px; /*lettere del titolo avviccinate leggermente*/
-    margin-bottom: 1.5rem;/*spazio tra titolo e il form*/
+    color: var(--primary-green);
+    letter-spacing: -1px;
+    margin-bottom: 1.5rem;
 }
-/*form*/
+
+/* form card */
 .card {
-    background: #ffffff;
+    background: var(--white);
     width: 100%;
     max-width: 380px;
-    border-radius: 20px;
+    border-radius: var(--border-radius);
     padding: 2rem 1.75rem;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.07);
+    box-shadow: var(--card-shadow);
 }
 
 /*barra di switch*/
 .switch-bar {
     display: flex;/*mette i bottoni attaccati*/
-    background: #f1f3f5;
+    background: var(--gray-light);
     border-radius: 50px;/*forma arrotondata*/
     padding: 4px;
     margin-bottom: 1.75rem;
@@ -54,15 +78,17 @@ body {
     left: 4px;
     width: calc(50% - 4px); /*larga metà barra meno lo spazio del passing*/
     height: calc(100% - 8px);
-    background: #ffffff;
+    background: var(--white);
     border-radius: 50px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);/*ombra*/
-    transition: transform 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28);/*animazione*/
+    transition: transform var(--transition-speed) cubic-bezier(0.18, 0.89, 0.32, 1.28);/*animazione*/
 }
+
 /*quando la barra ha la classe 'register', sposta la pillola*/
 .switch-bar.register .pill {
     transform: translateX(100%);
 }
+
 /*per i bottoni della barra di switch*/
 .tab {
     flex: 1;/*ogni bottone occupa la metà*/
@@ -71,17 +97,19 @@ body {
     padding: 10px;
     font-size: 0.95rem;
     font-weight: 600;
-    color: #aaa;
+    color: var(--gray-medium);
     cursor: pointer;
     position: relative;
     z-index: 1; /*assicura che il testo sia sopra la pillola bianca*/
-    transition: color 0.3s;
+    transition: color var(--transition-speed);
     border-radius: 50px;
 }
+
 /*colore più scuro quando il bottone è selezionato*/
 .tab.active {
-    color: #2e2e2e;
+    color: var(--text-dark);
 }
+
 /*stili dei vari titoli e scritte */
 .form-head {
     text-align: center;
@@ -90,13 +118,13 @@ body {
 
 .form-head h2 {
     font-size: 1.6rem;
-    color: #1a1a1a;
+    color: var(--text-dark);
     font-weight: 700;
 }
 
 .form-head p {
     font-size: 0.88rem;
-    color: #aaa;
+    color: var(--gray-medium);
     margin-top: 4px;
 }
 
@@ -108,25 +136,25 @@ body {
 }
 
 .input-wrap {
-    position: relative;/*serve per posizionare "l'occhio" nell'input*/
+    position: relative; /*serve per posizionare "l'occhio" nell'input*/
 }
 
 .input-wrap input {
     width: 100%;
     padding: 14px 16px;
     border: 1.5px solid #eee;
-    border-radius: 12px;
+    border-radius: var(--input-radius);
     font-size: 0.95rem;
     background: #fafafa;
     outline: none;
     transition: border-color 0.25s, background 0.25s;
-    color: #1a1a1a;
+    color: var(--text-dark);
     font-family: inherit;/*usa lo stesso font del body*/
 }
 
 .input-wrap input:focus {
-    border-color: #ffb347;/*diventa arancione quando clicchi per scrivere*/
-    background: #ffffff;
+    border-color: var(--accent-orange);/*diventa arancione quando clicchi per scrivere*/
+    background: var(--white);
 }
 
 .input-wrap input::placeholder {
@@ -150,7 +178,7 @@ body {
 }
 
 .eye-btn:hover {
-    color: #999;
+    color: var(--gray-medium);
 }
 
 /* Remember me */
@@ -159,14 +187,14 @@ body {
     align-items: center;
     gap: 8px;
     font-size: 0.85rem;
-    color: #888;
+    color: var(--gray-medium);
     cursor: pointer;
     user-select: none;
 }
 
 .remember input[type="checkbox"] {
     width: auto;
-    accent-color: #ffb347;
+    accent-color: var(--accent-orange);
 }
 
 /*bottone Submit*/
@@ -174,12 +202,12 @@ body {
     width: 100%;
     padding: 15px;
     border: none;
-    border-radius: 12px;
-    color: #ffffff;
+    border-radius: var(--input-radius);
+    color: var(--white);
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
-    background: linear-gradient(90deg, #ffb347 0%, #6ce883 100%);
+    background: linear-gradient(90deg, var(--accent-orange) 0%, var(--light-green) 100%);
     transition: transform 0.2s, box-shadow 0.2s;
     font-family: inherit;
     margin-top: 4px;
@@ -199,11 +227,11 @@ body {
     text-align: center;
     margin-top: 1rem;
     font-size: 0.85rem;
-    color: #aaa;
+    color: var(--gray-medium);
 }
 
 .footer-link span {
-    color: #ffb347;
+    color: var(--accent-orange);
     cursor: pointer;
     font-weight: 600;
 }
@@ -229,7 +257,7 @@ body {
 
 /*messaggio errore*/
 .error-msg {
-    color: red !important;
+    color: var(--danger-red) !important;
     font-size: 0.9rem;
     margin-top: 5px;
     display: none;
