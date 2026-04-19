@@ -1,70 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FridgeMatch: Dashboard</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/dashboard.css">
+    <script src="../../js/utils.js" defer></script>
     <script src="../../js/dashboard.js" defer></script>
 </head>
 
 <body class="dashboard-body">
-<!-- bottone per mobile (inizialmente nascosto)-->
+    <!-- overlay per lo sfondo scuro -->
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- bottone per mobile (sempre visibile) -->
     <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
 
     <!-- sidebar a sx -->
     <div class="dashboard-container">
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar"> 
             <div class="sidebar-section">
                 <h1 class="brand">FridgeMatch</h1>
                 <nav class="nav-menu">
                     <ul>
-                        <a href="#" class="active">Homepage</a><br>
-                        <a href="#">Fridge</a><br> 
-                        <a href="#">Grocery list</a><br>
-                        <a href="#">Your favourites</a><br>
+                        <li><a href="#" class="active">Homepage</a></li>
+                        <li><a href="../fridge/index.html">Fridge</a></li>
+                        <li><a href="../grocery/index.html">Grocery list</a></li>
+                        <li><a href="../social/favourites.html">Your favourites</a></li>
                     </ul>
                 </nav>
             </div>
 
-        <!-- sezione funzioni social -->
-        <div class="sidebar-section social">
-            <br>
-            <h3>Social</h3>
-                <nav class="nav-menu">
+            <!-- sezione funzioni social -->
+            <div class="sidebar-section social">
+                <br>
+                <h3>Social</h3>
+                <nav class="nav-menu" id="social-nav-content">
+                    <!-- Questo contenuto verrà cambiato dal JS se l'utente è Guest -->
                     <ul>
-                        <a href="#">Your profile</a><br>
-                        <a href="#">Add recipe</a><br>
-                        <a href="#">View other recipes</a><br>
+                        <li><a href="../social/profile.html">Your profile</a></li>
+                        <li><a href="../social/add-recipe.html">Add recipe</a></li>
+                        <li><a href="../social/community.html">View other recipes</a></li>
                     </ul>
                 </nav>
             </div>
-            <button class="logout-btn" id = "logout-btn" onclick="handleLogout()">Logout</button>
+
+            <!-- Contenitore per bottone Logout o Login -->
+            <div id="auth-button-container" style="margin-top: auto;">
+                <button class="logout-btn" id="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
         </aside>
 
         <!-- area principale a dx -->
         <main class="main-content">
             <header class="search-bar">
-                <div class = "search-wrapper">
-                    <input type="text" placeholder="Search recipes" id = "search-input">
-                    <button type="submit" class = "search-btn">search</button>
+                <div class="search-wrapper">
+                    <input type="text" placeholder="Search recipes or ingredients" id="search-input">
+                    <button type="submit" class="search-btn">search</button>
                 </div>
             </header>
 
-        <!-- riga superiore -->
-            <div class = "widgets-row">
+            <!-- riga superiore -->
+            <div class="widgets-row">
                 <!-- sezione frigo -->
                 <section class="widget fridge-widget">
                     <div class="fridge-header">
                         <h2>In the fridge</h2>
                     </div>
-                    <ul id = "fridge-list" class="data-list">
+                    
+                    <ul id="fridge-list" class="data-list custom-bullets">
                         <!-- lista che verrà popolata dinamicamente dal js-->
                     </ul>
-                    <button class="add-btn-circle">+</button>
-                    <a href="#" class="view-more">view more ></a>
-
+                    <button class="add-btn-circle" onclick="window.location.href='../fridge/index.html'">
+                        <span class="plus-icon">+</span>
+                        <span class="btn-text">Add item</span>
+                    </button>
+                    
+                    <!-- link alla pagina frigo -->
+                    <a href="../fridge/index.html" class="view-more">view more ></a>
                 </section>
 
                 <!-- sezione scadenze -->
@@ -72,30 +87,27 @@
                     <div class="alert-msg">
                         <h2>Items expiring soon</h2>
                     </div>
-                    <ul id="expiring-list" class="data-list">
+                    <ul id="expiring-list" class="data-list notification-style">
                         <!-- lista che verrà popolata dinamicamente dal js-->
                     </ul>
-                    <div class="widget-footer">
-                        <a href="#" class="view-more">view more ></a>
-                    </div>
+                    <a href="../fridge/index.html" class="view-more">view more ></a>
                 </section>
             </div>
 
             <hr class="section-divider">
 
             <!-- sezione ricette preferite -->
-            <section class="recipes-section">
+            <section class="recipes-section" id="section-favourites">
                 <div class="section-header">
                     <h2>Favourite recipes</h2>
                 </div>
-
                 <div class="recipe-grid" id="favourites-grid">
                     <article class="recipe-card">
                         <p class="recipe-title">titolo un attimo</p>
                         <div class="recipe-img-placeholder"></div>
                     </article>
                 </div>
-                <a href="#" class="view-more">view more ></a>
+                <a href="../social/favourites.html" class="view-more">view more ></a>
             </section>
 
             <!-- sezione ricette replicabili -->
@@ -110,11 +122,10 @@
                         <div class="recipe-img-placeholder"></div>
                     </article>
                 </div>
-                <div class="section-footer">
-                    <a href="#" class="view-more">view more ></a>
-                </div>
+                <a href="#" class="view-more">view more ></a>
             </section>
         </main>
     </div>
 </body>
+
 </html>

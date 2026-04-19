@@ -1,0 +1,25 @@
+/* stili specifici per la pagina di autenticazione */
+
+.guest-access {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee; 
+}
+
+.guest-access p {
+    font-size: 0.85rem;
+    color: var(--gray-medium);
+}
+
+.guest-link {
+    color: var(--primary-green);
+    cursor: pointer;
+    font-weight: 600;
+    transition: color var(--transition-speed);
+}
+
+.guest-link:hover {
+    color: var(--accent-orange);
+    text-decoration: underline;
+}

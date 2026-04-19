@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FridgeMatch: Login</title>
     <link rel="stylesheet" href="../../css/style.css">
-</head>
+    <link rel="stylesheet" href="../../css/auth.css"></head>
 <body>
     <div class="page"> 
         <div class="brand"> FridgeMatch</div> <!-- nome app -->
@@ -43,6 +43,14 @@
                     <input type="checkbox" name="remember"> Remember me
                 </label>
                 <button type="submit" class="submit-btn" id="submitBtn">Login</button>
+                
+                <!-- accesso ospiet -->
+                <div class="guest-access">
+                <p>
+                    Don't want to sync data? 
+                    <span onclick="continueAsGuest()" class="guest-link">Continue as Guest</span>
+                </p>
+            </div>
             </form>
 
             <div class="footer-link" id="footerLink"> <!-- link in fondo per passare dalla modalità login alla modalità register -->

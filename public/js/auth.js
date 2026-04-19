@@ -122,3 +122,10 @@ async function handleSubmit(event) {
         showError("Server error. Please try again later.");
     }
 }
+
+// funzione per l'accesso da ospite
+function continueAsGuest() {
+    sessionStorage.setItem('userMode', 'guest'); // sessionstorage per ricordare l'utente solo durante questa sessione di navigazione
+    sessionStorage.setItem('username', 'Guest User');    
+    window.location.href = "../dashboard/index.html";
+}
