@@ -23,3 +23,15 @@
     color: var(--accent-orange);
     text-decoration: underline;
 }
+
+.error-msg {
+    font-size: 0.85rem;
+    color: #e53e3e;
+    background: #fff0f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    text-align: center;
+    /* evita che il div vuoto occupi spazio e copra elementi sopra */
+    min-height: 0;
+}

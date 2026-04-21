@@ -31,6 +31,7 @@ app.use(session({
 
 //Routes
 app.use("/auth", require("../routes/auth"));
+app.use('/api/fridge', require('../routes/fridge'));
 
 //Server
 app.listen(process.env.PORT, () => {

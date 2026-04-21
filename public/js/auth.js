@@ -94,6 +94,7 @@ async function handleSubmit(event) {
             const res = await fetch("http://127.0.0.1:3000/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: 'include',
                 body: JSON.stringify({ username, email, password })
             });
 
@@ -104,10 +105,24 @@ async function handleSubmit(event) {
                 return;
             }
 
+
+            const loginRes = await fetch('http://127.0.0.1:3000/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ email, password })
+            });
+ 
+            if (!loginRes.ok) {
+                showError('Registered! Please login.');
+                switchForm('login');
+                return;
+            }
         } else {
             const res = await fetch("http://127.0.0.1:3000/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: 'include',
                 body: JSON.stringify({ email, password })
             });
         
@@ -117,6 +132,7 @@ async function handleSubmit(event) {
                 return;
             }
         }
+
         window.location.href = "/public/pages/dashboard";
     } catch (err) {
         showError("Server error. Please try again later.");

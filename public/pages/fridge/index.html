@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FridgeMatch: Fridge</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/fridge.css">
+    
+    
+</head>
+<body class="dashboard-body">
+
+    <!-- overlay sfondo scuro -->
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- bottone hamburger mobile -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="dashboard-container">
+
+        <!-- sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h1 class="brand">FridgeMatch</h1>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="../dashboard/index.html">Homepage</a></li>
+                        <li><a href="#" class="active">Fridge</a></li>
+                        <li><a href="../groceries/index.html">Grocery list</a></li>
+                        <li><a href="../favourites/index.html">Your favourites</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="sidebar-section social">
+                <br>
+                <h3>Social</h3>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="#">Your profile</a></li>
+                        <li><a href="#">Add recipe</a></li>
+                        <li><a href="#">View other recipes</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div id="auth-button-container" style="margin-top: auto;">
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </aside>
+
+        <!-- contenuto principale -->
+        <main class="main-content">
+            <div class="fridge-page-header">
+                <h1>My Fridge</h1>
+                <button class="add-item-btn" onclick="openAddModal()">+ Add item</button>
+            </div>
+
+            <!-- filtri e ricerca -->
+            <div class="fridge-toolbar">
+                <div class="fridge-search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search items..." oninput="renderFridge()">
+                </div>
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
+                    <button class="filter-btn" data-filter="red" onclick="setFilter('red', this)">🔴 Critical</button>
+                    <button class="filter-btn" data-filter="orange" onclick="setFilter('orange', this)">🟠 Soon</button>
+                    <button class="filter-btn" data-filter="yellow" onclick="setFilter('yellow', this)">🟡 Moderate</button>
+                    <button class="filter-btn" data-filter="green" onclick="setFilter('green', this)">🟢 Good</button>
+                </div>
+            </div>
+
+            <!-- lista frigo -->
+            <div class="fridge-list-container">
+                <div class="fridge-list-header">
+                    <span></span>
+                    <span>Item</span>
+                    <span>Category</span>
+                    <span>Quantity</span>
+                    <span>Expires</span>
+                    <span>Status</span>
+                    <span></span>
+                </div>
+                <ul id="fridgeList" class="fridge-list"></ul>
+                <div id="emptyState" class="empty-state hidden">
+                    <div class="empty-icon">🥗</div>
+                    <p>Your fridge is empty!</p>
+                    <span>Add your first item to get started.</span>
+                </div>
+            </div>
+
+            <!-- barra azioni selezione multipla -->
+            <div class="bulk-bar" id="bulkBar">
+                <span id="bulkCount">0 items selected</span>
+                <button class="bulk-delete-btn" onclick="confirmBulkDelete()">🗑 Delete selected</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- modal aggiunta elemento -->
+    <div class="modal-backdrop" id="addModalBackdrop" onclick="closeAddModal(event)">
+        <div class="modal" id="addModal">
+            <div class="modal-header">
+                <h2>Add item to fridge</h2>
+                <button class="modal-close" onclick="closeAddModal()">✕</button>
+            </div>
+            <form id="addItemForm" onsubmit="addItem(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Item name</label>
+                        <input type="text" id="itemName" placeholder="e.g. Chicken breast" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <div class="category-grid" id="categoryGrid">
+                            <!-- generato da JS -->
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" id="itemQty" placeholder="0" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Unit</label>
+                            <select id="itemUnit">
+                                <option value="units">units</option>
+                                <option value="g">grams (g)</option>
+                                <option value="kg">kilograms (kg)</option>
+                                <option value="ml">milliliters (ml)</option>
+                                <option value="l">liters (l)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Expiry date</label>
+                        <input type="date" id="itemExpiry" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+                    <button type="submit" class="btn-add">Add to fridge</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- modal conferma eliminazione -->
+    <div class="modal-backdrop" id="deleteModalBackdrop">
+        <div class="modal modal-small">
+            <div class="modal-header">
+                <h2>Delete item</h2>
+                <button class="modal-close" onclick="closeDeleteModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteModalText">Are you sure you want to delete this item?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeDeleteModal()">No, keep it</button>
+                <button class="btn-delete" onclick="confirmDelete()">Yes, delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/fridge.js"></script>
+</body>
+</html>
