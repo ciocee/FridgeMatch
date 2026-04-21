@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FridgeMatch: Grocery List</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/grocery.css">
+</head>
+<body class="dashboard-body">
+
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="dashboard-container">
+
+        <!-- sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h1 class="brand">FridgeMatch</h1>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="../dashboard/index.html">Homepage</a></li>
+                        <li><a href="../fridge/index.html">Fridge</a></li>
+                        <li><a href="#" class="active">Grocery list</a></li>
+                        <li><a href="../favourites/index.html">Your favourites</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="sidebar-section social">
+                <br>
+                <h3>Social</h3>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="#">Your profile</a></li>
+                        <li><a href="#">Add recipe</a></li>
+                        <li><a href="#">View other recipes</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div id="auth-button-container" style="margin-top: auto;">
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </aside>
+
+        <!-- contenuto principale -->
+        <main class="main-content">
+
+            <div class="grocery-page-header">
+                <div class="header-left">
+                    <h1>Grocery List</h1>
+                    <span id="itemCount" class="item-count">0 items</span>
+                </div>
+                <div class="header-actions">
+                    <button class="suggest-btn" onclick="suggestFromFridge()" title="Add expiring fridge items to list">
+                        🔄 Suggest from fridge
+                    </button>
+                    <button class="add-item-btn" onclick="openAddModal()">+ Add item</button>
+                </div>
+            </div>
+
+            <!-- toolbar ricerca -->
+            <div class="grocery-toolbar">
+                <div class="fridge-search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search items..." oninput="renderList()">
+                </div>
+                <div class="filter-group">
+                    <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+                    <button class="filter-btn" onclick="setFilter('pending', this)">🛒 To buy</button>
+                    <button class="filter-btn" onclick="setFilter('fridge', this)">❄️ From fridge</button>
+                </div>
+            </div>
+
+            <!-- lista -->
+            <div class="grocery-list-container">
+                <div class="grocery-list-header">
+                    <span></span>
+                    <span>Item</span>
+                    <span>Category</span>
+                    <span>Quantity</span>
+                    <span>Source</span>
+                    <span></span>
+                </div>
+                <ul id="groceryList" class="grocery-list"></ul>
+                <div id="emptyState" class="empty-state hidden">
+                    <div class="empty-icon">🛒</div>
+                    <p>Your list is empty!</p>
+                    <span>Add items manually or use "Suggest from fridge".</span>
+                </div>
+            </div>
+
+            <!-- barra bulk delete -->
+            <div class="bulk-bar" id="bulkBar">
+                <span id="bulkCount">0 items selected</span>
+                <button class="bulk-delete-btn" onclick="confirmBulkDelete()">🗑 Delete selected</button>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- modal aggiunta item -->
+    <div class="modal-backdrop" id="addModalBackdrop" onclick="closeAddModal(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Add to grocery list</h2>
+                <button class="modal-close" onclick="closeAddModal()">✕</button>
+            </div>
+            <form id="addItemForm" onsubmit="addItem(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Item name</label>
+                        <input type="text" id="itemName" placeholder="e.g. Milk" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <div class="category-grid" id="categoryGrid"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" id="itemQty" placeholder="0" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Unit</label>
+                            <select id="itemUnit">
+                                <option value="units">units</option>
+                                <option value="g">grams (g)</option>
+                                <option value="kg">kilograms (kg)</option>
+                                <option value="ml">milliliters (ml)</option>
+                                <option value="l">liters (l)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeAddModal()">Cancel</button>
+                    <button type="submit" class="btn-add">Add to list</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- modal "segna come acquistato" — chiede la data di scadenza -->
+    <div class="modal-backdrop" id="boughtModalBackdrop" onclick="closeBoughtModal(event)">
+        <div class="modal modal-small">
+            <div class="modal-header">
+                <h2>Add to fridge</h2>
+                <button class="modal-close" onclick="closeBoughtModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>You bought <strong id="boughtItemName"></strong>! Enter the expiry date to add it to your fridge automatically.</p>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label>Expiry date</label>
+                    <input type="date" id="boughtExpiry" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeBoughtModal()">Cancel</button>
+                <button class="btn-add" onclick="confirmBought()">Add to fridge ❄️</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal conferma eliminazione -->
+    <div class="modal-backdrop" id="deleteModalBackdrop">
+        <div class="modal modal-small">
+            <div class="modal-header">
+                <h2>Delete item</h2>
+                <button class="modal-close" onclick="closeDeleteModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteModalText">Are you sure you want to delete this item?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeDeleteModal()">No, keep it</button>
+                <button class="btn-delete" onclick="confirmDelete()">Yes, delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/grocery.js"></script>
+</body>
+</html>
