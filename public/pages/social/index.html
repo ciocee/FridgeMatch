@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FridgeMatch: Community</title>
+    <!-- un attimo
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/social.css">
+    <script src="../../js/utils.js" defer></script>
+    <script src="../../js/social.js" defer></script>
+    -->
+</head>    
+<body>
+    <!-- overlay e sidebar-->
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar"> 
+            <div class="sidebar-section">
+                <h1 class="brand">FridgeMatch</h1>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="#" class="active">Homepage</a></li>
+                        <li><a href="../fridge">Fridge</a></li>
+                        <li><a href="../groceries">Grocery list</a></li>
+                        <li><a href="../favourites">Your favourites</a></li>
+                    </ul>
+                </nav>
+            </div>        
+            <!-- sezione funzioni social -->
+            <div class="sidebar-section social">
+                <br>
+                <h3>Social</h3>
+                <nav class="nav-menu" id="social-nav-content">
+                    <!-- contenuto che verrà cambiato dal JS se l'utente è Guest -->
+                    <ul>
+                        <li><a href="../social/profile.html">Your profile</a></li>
+                        <li><a href="../social/add-recipe.html">Add recipe</a></li>
+                        <li><a href="../social/community.html">View other recipes</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Contenitore per bottone Logout o Login -->
+            <div id="auth-button-container" style="margin-top: auto;">
+                <button class="logout-btn" id="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </aside>
+
+        <!-- contenuto principale -->
+        <main class="main-content">
+            <header class="social-header">
+                <h1>Community feed</h1>
+                <button class="add-item-btn" onclick="openRecipeModal()">+ share recipe</button>
+            </header>
+            
+            <!-- contenitore ricette-->
+             <section id="recipe-feed" class="recipe-feed-grid">
+                <!-- sezione popolata da js-->
+             </section>
+        </main>
+    </div>    
+    
+    <!--modal caricamento ricette-->
+    <div id="recipeModal" class="modal-backdrop" onclick="closeRecipeModal(event)">
+        <div class="modal">
+            <form id="upload-recipe-form" enctype="multipart/form-data">
+                <h2>Share your recipe</h2>
+                <div class="form-group">
+                    <label for="recipe-title">Recipe title</label>
+                    <input type="text" id="recipe-title" name = "title" required>
+                </div>
+                <div class="form-group">
+                    <label for="recipe-img">Photo</label>
+                    <input type="file" id="recipe-img" name="img" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label for="recipe-ingredients">Ingredients used (from your fridge)</label>
+                    <input type="text" id = "ingredient-iniput" list="fridge-ingredients-list">
+                    <datalist id="fridge-ingredients-list"></datalist>
+                    <div id="selected-ingredients-tags"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeRecipeModal()">Cancel</button>
+                    <button type="submit" class="btn-add">Publish</button>
+                </div>                
+            </form>
+        </div>
+    </div>
+</body>
+</html>
