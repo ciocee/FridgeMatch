@@ -30,7 +30,7 @@
 
 /*corpo della pagina: sfondo leggermente sfumato e 
 min-height :100vh assicura che l'altezza minima sia il 100% dell'altezza dello schermo*/
-/* FIX: rimosso il punto davanti a body per applicare il font correttamente */
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: var(--bg-gradient);
