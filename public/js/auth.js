@@ -98,13 +98,11 @@ async function handleSubmit(event) {
                 body: JSON.stringify({ username, email, password })
             });
 
-
             if (!res.ok) {
                 const msg = await res.text();
                 showError(msg);
                 return;
             }
-
 
             const loginRes = await fetch('http://127.0.0.1:3000/auth/login', {
                 method: 'POST',
@@ -133,7 +131,14 @@ async function handleSubmit(event) {
             }
         }
 
-        window.location.href = "/public/pages/dashboard";
+        // Puliamo la memoria del browser per dirgli che non siamo più Guest
+        sessionStorage.removeItem('userMode');
+        sessionStorage.removeItem('username');
+        sessionStorage.removeItem('bannerDismissed');
+        // ==========================================
+
+        window.location.href = "../dashboard/index.html";
+        
     } catch (err) {
         showError("Server error. Please try again later.");
     }

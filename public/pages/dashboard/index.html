@@ -12,6 +12,21 @@
 </head>
 
 <body class="dashboard-body">
+
+    <!-- Banner Modal per Guest aggiunto qui -->
+    <div id="guest-banner-overlay" class="guest-modal-overlay">
+        <div class="guest-modal">
+            <h2>Welcome to FridgeMatch!</h2>
+            <p>You are browsing as a <strong>Guest</strong>. The items you add to the fridge and your grocery list will only be saved temporarily in your browser.</p>
+            <p>Log in or register to save your data permanently and access all community features!</p>
+            
+            <div class="guest-modal-actions">
+                <button class="guest-login-btn-main" onclick="window.location.href='../login/index.html'">Login / Sign Up</button>
+                <button class="guest-continue-btn" onclick="closeGuestBanner()">Continue as Guest</button>
+            </div>
+        </div>
+    </div>
+
     <!-- overlay per lo sfondo scuro -->
     <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 

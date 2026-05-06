@@ -301,3 +301,76 @@
     background-color: var(--primary-green);
     color: var(--white);
 }
+
+/* --- Guest Banner Modal --- */
+.guest-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6); 
+    display: none; /* <-- MODIFICA QUI: cambialo da flex a none */
+    align-items: center;
+    justify-content: center;
+    z-index: 2000; 
+}
+
+
+.guest-modal {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2.5rem;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    text-align: center;
+    /* Adatta questi colori alle variabili del tuo auth.css se necessario */
+}
+
+.guest-modal h2 {
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+
+.guest-modal p {
+    color: var(--gray-medium);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.guest-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.guest-login-btn-main {
+    background-color: var(--primary-green);
+    color: var(--white);
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+}
+
+.guest-login-btn-main:hover {
+    background-color: #244a2e; /* Verde leggermente più scuro */
+}
+
+.guest-continue-btn {
+    background: transparent;
+    color: var(--gray-medium);
+    border: 1px solid var(--gray-light);
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.guest-continue-btn:hover {
+    background: var(--gray-light);
+    color: var(--text-dark);
+}
