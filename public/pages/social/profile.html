@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FridgeMatch: Your Profile</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/social.css">
+    <link rel="stylesheet" href="../../css/profile.css">
+</head>
+<body class="dashboard-body">
+
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h1 class="brand">FridgeMatch</h1>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="../dashboard/index.html">Homepage</a></li>
+                        <li><a href="../fridge/index.html">Fridge</a></li>
+                        <li><a href="../groceries/index.html">Grocery list</a></li>
+                        <li><a href="../favourites/index.html">Your favourites</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="sidebar-section social">
+                <br>
+                <h3>Social</h3>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="./profile.html" class="active">Your profile</a></li>
+                        <li><a href="./add-recipe.html">Add recipe</a></li>
+                        <li><a href="./community.html">View other recipes</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div id="auth-button-container" style="margin-top: auto;">
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <!-- HERO PROFILO -->
+            <section class="profile-hero">
+
+                <!-- avatar emoji -->
+                <div class="profile-avatar-wrap">
+                    <div class="avatar-ring" id="avatarDisplay" onclick="openEmojiPicker()">
+                        <span id="avatarEmoji" class="avatar-emoji">🍳</span>
+                        <div class="avatar-overlay">✏️</div>
+                    </div>
+                    <p class="avatar-hint">Tap to change</p>
+                </div>
+
+                <div class="profile-info">
+                    <h1 id="profileUsername" class="profile-username">Loading...</h1>
+
+                    <div class="bio-section">
+                        <p id="bioText" class="bio-text"></p>
+                        <button class="edit-bio-btn" onclick="openBioEdit()">✏️ Edit bio</button>
+                    </div>
+
+                    <div id="bioForm" class="bio-form hidden">
+                        <textarea id="bioInput" maxlength="300" placeholder="Tell the community about you..."></textarea>
+                        <div class="bio-form-actions">
+                            <span id="bioCharCount" class="char-count">0 / 300</span>
+                            <button class="btn-cancel" onclick="closeBioEdit()">Cancel</button>
+                            <button class="btn-add" onclick="saveBio()">Save</button>
+                        </div>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <span class="stat-number" id="statRecipes">0</span>
+                            <span class="stat-label">Recipes</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" id="statStarred">0</span>
+                            <span class="stat-label">Starred creators</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TABS -->
+            <div class="profile-tabs">
+                <button class="tab-btn active" onclick="switchTab('recipes', this)">🍽️ My Recipes</button>
+                <button class="tab-btn" onclick="switchTab('starred', this)">⭐ Starred Creators</button>
+            </div>
+
+            <section id="tab-recipes" class="tab-content">
+                <div class="tab-header">
+                    <h2>My Recipes</h2>
+                    <a href="./add-recipe.html" class="add-item-btn">+ Add recipe</a>
+                </div>
+                <div id="recipesGrid" class="recipe-feed-grid">
+                    <p class="loading-msg">Loading recipes...</p>
+                </div>
+            </section>
+
+            <section id="tab-starred" class="tab-content hidden">
+                <div class="tab-header">
+                    <h2>Starred Creators</h2>
+                </div>
+                <div id="starredGrid" class="starred-grid">
+                    <p class="loading-msg">Loading...</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- EMOJI PICKER MODAL -->
+    <div class="modal-backdrop" id="emojiPickerBackdrop" onclick="closeEmojiPicker(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Choose your food emoji</h2>
+                <button class="modal-close" onclick="closeEmojiPicker()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:0.85rem;color:var(--gray-medium);margin-bottom:0.5rem">
+                    Pick the emoji that represents you best!
+                </p>
+                <div id="emojiGrid" class="emoji-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal conferma rimozione stella -->
+    <div class="modal-backdrop" id="unstarModalBackdrop">
+        <div class="modal modal-small">
+            <div class="modal-header">
+                <h2>Remove star</h2>
+                <button class="modal-close" onclick="closeUnstarModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="unstarModalText">Remove this creator from your starred list?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeUnstarModal()">Cancel</button>
+                <button class="btn-delete" onclick="confirmUnstar()">Remove</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="../../js/profile.js"></script>
+</body>
+</html>

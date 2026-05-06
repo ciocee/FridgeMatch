@@ -18,14 +18,14 @@ router.get('/', auth, async (req, res) => {
 // POST: aggiunge un item manualmente
 router.post('/', auth, async (req, res) => {
     try {
-        const { name, category, qty, unit } = req.body;
+        const { name, category, qty, unit, fromFridge} = req.body;
         if (!name || !category || !qty || !unit) {
             return res.status(400).send('All fields are required');
         }
         const newItem = new GroceryItem({
             user: req.session.userId,
             name, category, qty, unit,
-            fromFridge: false
+            fromFridge: fromFridge || false
         });
         const saved = await newItem.save();
         res.json(saved);
@@ -35,8 +35,8 @@ router.post('/', auth, async (req, res) => {
     }
 });
 
-// POST /suggest: suggerisce dal frigo gli item in scadenza entro 7 giorni
-router.post('/suggest', auth, async (req, res) => {
+// GET /suggest: restituisce SOLO gli item in scadenza per mostrarli nel modale
+router.get('/suggest', auth, async (req, res) => {
     try {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -49,29 +49,46 @@ router.post('/suggest', auth, async (req, res) => {
         });
 
         if (expiringItems.length === 0) {
-            return res.json({ added: 0, message: 'No items expiring soon in your fridge' });
+            return res.json([]); // Ritorna un array vuoto invece di un oggetto con message
         }
 
         const currentList  = await GroceryItem.find({ user: req.session.userId });
         const existingNames = currentList.map(i => i.name.toLowerCase());
         const toAdd = expiringItems.filter(i => !existingNames.includes(i.name.toLowerCase()));
 
-        if (toAdd.length === 0) {
-            return res.json({ added: 0, message: 'All expiring items are already in your list' });
+        // NON SALVIAMO PIÙ QUI! Restituiamo solo l'array al frontend
+        res.json(toAdd);
+    } catch (err) {
+        console.error('GET /grocery/suggest:', err);
+        res.status(500).send('Server Error');
+    }
+});
+
+// NUOVA ROTTA: Salva gli elementi selezionati dal modale del frigo
+router.post('/suggest/confirm', auth, async (req, res) => {
+    try {
+        const { selectedItems } = req.body;
+        
+        if (!selectedItems || selectedItems.length === 0) {
+            return res.status(400).json({ message: 'Nessun elemento selezionato' });
         }
 
-        await GroceryItem.insertMany(toAdd.map(i => ({
+        // Prepariamo l'array da salvare, forzando fromFridge a true dal server
+        const itemsToInsert = selectedItems.map(item => ({
             user: req.session.userId,
-            name: i.name,
-            category: i.category,
-            qty: i.qty,
-            unit: i.unit,
-            fromFridge: true
-        })));
+            name: item.name,
+            category: item.category,
+            qty: item.qty,
+            unit: item.unit,
+            fromFridge: true // <-- Fissato dal backend, senza bisogno di chiederlo al frontend!
+        }));
 
-        res.json({ added: toAdd.length, message: 'Items added from fridge' });
+        // Salviamo tutto nel database in un colpo solo
+        await GroceryItem.insertMany(itemsToInsert);
+        
+        res.json({ message: 'Items added successfully' });
     } catch (err) {
-        console.error('POST /grocery/suggest:', err);
+        console.error('POST /grocery/suggest/confirm:', err);
         res.status(500).send('Server Error');
     }
 });

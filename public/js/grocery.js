@@ -192,7 +192,7 @@ async function addItem(event) {
     }
 }
 
-/*SUGGERISCI DAL FRIGO */
+/* SUGGERISCI DAL FRIGO */
 async function suggestFromFridge() {
     const btn = document.querySelector('.suggest-btn');
     btn.disabled = true;
@@ -200,20 +200,42 @@ async function suggestFromFridge() {
 
     try {
         const res = await fetch(`${API_URL}/suggest`, {
-            method: 'POST',
+            method: 'GET', 
             credentials: 'include'
         });
 
         if (res.status === 401) { window.location.href = '../login/index.html'; return; }
 
-        const data = await res.json();
-        await loadItems();
+        // Salviamo gli elementi nella nostra nuova variabile in memoria
+        currentSuggestions = await res.json(); 
 
-        if (data.added > 0) {
-            showToast(`✅ ${data.added} item${data.added > 1 ? 's' : ''} added from fridge!`, 'success');
-        } else {
-            showToast('ℹ️ ' + data.message, '');
+        if (!currentSuggestions || currentSuggestions.length === 0) {
+            showToast('ℹ️ No expiring items to suggest!', '');
+            return;
         }
+
+        const container = document.getElementById('suggestionListContainer');
+        container.innerHTML = '';
+
+        // Usiamo l'indice (i) invece di infilare tutti i dati nell'HTML
+        currentSuggestions.forEach((item, i) => {
+            const div = document.createElement('div');
+            div.style.display = 'flex';
+            div.style.alignItems = 'center';
+            div.style.gap = '10px';
+            
+            div.innerHTML = `
+                <input type="checkbox" class="buy-checkbox" id="sug_${i}" value="${i}" checked>
+                <label for="sug_${i}" style="cursor: pointer; font-weight: 600; color: var(--text-dark); display: flex; align-items: center; gap: 8px;">
+                    ${escapeHtml(item.name)} 
+                    <span style="color: var(--gray-medium); font-size: 0.85rem; font-weight: normal;">(${item.qty} ${item.unit})</span>
+                </label>
+            `;
+            container.appendChild(div);
+        });
+
+        document.getElementById('suggestModalBackdrop').classList.add('open');
+
     } catch (e) {
         showToast('Connection error', 'error');
     } finally {
@@ -222,6 +244,42 @@ async function suggestFromFridge() {
     }
 }
 
+function closeSuggestModal(event) {
+    if (event && event.target !== document.getElementById('suggestModalBackdrop')) return;
+    document.getElementById('suggestModalBackdrop').classList.remove('open');
+}
+
+async function confirmSuggestions() {
+    const checkboxes = document.querySelectorAll('#suggestionListContainer input[type="checkbox"]:checked');
+    
+    // Recuperiamo gli items selezionati in base all'indice
+    const selectedItems = Array.from(checkboxes).map(cb => currentSuggestions[cb.value]);
+
+    if (selectedItems.length === 0) {
+        closeSuggestModal();
+        return;
+    }
+
+    try {
+        // Chiamiamo la TUA nuova rotta backend che fa il salvataggio in blocco!
+        const res = await fetch(`${API_URL}/suggest/confirm`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ selectedItems })
+        });
+
+        if (!res.ok) throw new Error("Failed to save items.");
+
+        closeSuggestModal();
+        await loadItems();
+        showToast(`✅ ${selectedItems.length} item(s) added from fridge!`, 'success');
+
+    } catch (e) {
+        console.error('Errore durante l\'aggiunta dei suggerimenti:', e);
+        showToast('Error saving selected items', 'error');
+    }
+}
 /* SEGNA COME ACQUISTATO → AGGIUNGE AL FRIGO*/
 function onBuyCheck(id, name, checkbox) {
     // deseleziona subito — sarà il modal a confermare
@@ -356,6 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeAddModal();
             closeBoughtModal();
             closeDeleteModal();
+            closeSuggestModal();
         }
     });
 });
