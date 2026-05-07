@@ -25,6 +25,11 @@ const RecipeSchema = new mongoose.Schema({
             ref: 'User'
     }],
 
+    readyInMinutes: {
+        type: Number,
+        default: 'unknown',
+    },
+
     comments: [{ 
             user: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
             text: String,
