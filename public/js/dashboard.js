@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // MOSTRA IL BANNER
         const guestBanner = document.getElementById('guest-banner-overlay');
         if (guestBanner && !sessionStorage.getItem('bannerDismissed')) {
-            guestBanner.style.display = 'flex';
+            // attiva l'animazione "goccia" con un piccolo delay
+            setTimeout(() => guestBanner.classList.add('active'), 150);
         }
 
         // Carica i dati dal LocalStorage per l'utente Guest invece di fare la fetch
@@ -43,7 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Funzione per chiudere il banner e non mostrarlo più in questa sessione
 function closeGuestBanner() {
-    document.getElementById('guest-banner-overlay').style.display = 'none';
+    const banner = document.getElementById('guest-banner-overlay');
+    banner.classList.remove('active');
+    banner.style.display = 'none';
     sessionStorage.setItem('bannerDismissed', 'true');
 }
 

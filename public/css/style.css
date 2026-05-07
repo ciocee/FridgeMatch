@@ -1,44 +1,57 @@
-/* stili comuni a più pagine e usati più frequentemente */
+@import url('https://fonts.googleapis.com/css2?family=Caprasimo&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
 
 :root {
-    /* palette colori più utilizzati */
+    /* === Palette principale === */
     --primary-green: #2e5c3a;
+    --primary-green-dark: #1e4127;
     --accent-orange: #ffb347;
     --light-green: #6ce883;
     --danger-red: #ff4d4d;
-    
-    /* colori neutri per sfondi e scritte */
-    --bg-gradient: linear-gradient(135deg, #fff8ee 0%, #edfff4 100%);
+
+    /* === Accenti "frigo & snack" === */
+    --honey-yellow:  #f7c948;
+    --coral:         #ff7e6b;
+    --lavender:      #b39ddb;
+    --cream:         #fff5e1;
+    --strawberry:    #e8506e;
+    --blueberry:     #6c5ce7;
+    --sky:           #cfe9ff;
+    --milk:          #fdfaf2;
+    --brick:         #d6c0a8;
+    --brick-dark:    #8b6f4e;
+
+    /* === Neutri === */
+    --bg-gradient: linear-gradient(180deg, #fff8ee 0%, #ffe9d6 60%, #ffd9b9 100%);
     --white: #ffffff;
     --gray-light: #f1f3f5;
     --gray-medium: #888888;
     --text-dark: #1a1a1a;
+    --text-soft: #4a3f35;
 
-    /* layout e ombre */
-    --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.07);
-    --border-radius: 20px;
-    --input-radius: 12px;
+    /* === Layout & shadow === */
+    --card-shadow: 0 8px 40px rgba(76, 50, 20, 0.08);
+    --soft-shadow: 0 4px 20px rgba(76, 50, 20, 0.06);
+    --pop-shadow: 0 12px 35px rgba(76, 50, 20, 0.12);
+    --border-radius: 22px;
+    --input-radius: 14px;
     --transition-speed: 0.3s;
+
+    /* === Font stacks === */
+    --font-display: 'Caprasimo', 'Georgia', serif;
+    --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* reset e stili base */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-/*corpo della pagina: sfondo leggermente sfumato e 
-min-height :100vh assicura che l'altezza minima sia il 100% dell'altezza dello schermo*/
-/* FIX: rimosso il punto davanti a body per applicare il font correttamente */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--font-body);
     background: var(--bg-gradient);
     min-height: 100vh;
     color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* layout della pagina */
 .page {
     min-height: 100vh;
     display: flex;
@@ -46,18 +59,20 @@ body {
     align-items: center;
     justify-content: center;
     padding: 2rem 1rem;
+    position: relative;
+    overflow: hidden;
 }
 
-/* titolo */
 .brand {
-    font-size: 2.8rem;
-    font-weight: 700;
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 400;
     color: var(--primary-green);
-    letter-spacing: -1px;
-    margin-bottom: 1.5rem;/*spazio tra titolo e il form*/
+    letter-spacing: -0.5px;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 0 var(--honey-yellow);
 }
 
-/* form card */
 .card {
     background: var(--white);
     width: 100%;
@@ -67,83 +82,54 @@ body {
     box-shadow: var(--card-shadow);
 }
 
-/*barra di switch*/
+/* switch-bar */
 .switch-bar {
-    display: flex;/*mette i bottoni attaccati*/
+    display: flex;
     background: var(--gray-light);
-    border-radius: 50px;/*forma arrotondata*/
+    border-radius: 50px;
     padding: 4px;
     margin-bottom: 1.75rem;
-    position: relative;/*posiziona la .pill dentro di sè*/
+    position: relative;
 }
-
 .pill {
-    position: absolute; /*si muove liberamente nello spazio in cui è messa*/
-    top: 4px;
-    left: 4px;
-    width: calc(50% - 4px); /*larga metà barra meno lo spazio del passing*/
+    position: absolute;
+    top: 4px; left: 4px;
+    width: calc(50% - 4px);
     height: calc(100% - 8px);
     background: var(--white);
     border-radius: 50px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);/*ombra*/
-    transition: transform var(--transition-speed) cubic-bezier(0.18, 0.89, 0.32, 1.28);/*animazione*/
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform var(--transition-speed) cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
-
-/*quando la barra ha la classe 'register', sposta la pillola*/
-.switch-bar.register .pill {
-    transform: translateX(100%);
-}
-
-/*per i bottoni della barra di switch*/
+.switch-bar.register .pill { transform: translateX(100%); }
 .tab {
-    flex: 1;/*ogni bottone occupa la metà*/
-    background: none;
-    border: none;
+    flex: 1;
+    background: none; border: none;
     padding: 10px;
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 700;
+    font-family: var(--font-body);
     color: var(--gray-medium);
     cursor: pointer;
     position: relative;
-    z-index: 1; /*assicura che il testo sia sopra la pillola bianca*/
+    z-index: 1;
     transition: color var(--transition-speed);
     border-radius: 50px;
 }
+.tab.active { color: var(--text-dark); }
 
-/*colore più scuro quando il bottone è selezionato*/
-.tab.active {
-    color: var(--text-dark);
-}
-
-/*stili dei vari titoli e scritte */
-.form-head {
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
-
+.form-head { text-align: center; margin-bottom: 1.5rem; }
 .form-head h2 {
-    font-size: 1.6rem;
+    font-family: var(--font-display);
+    font-size: 1.8rem;
     color: var(--text-dark);
-    font-weight: 700;
+    font-weight: 400;
+    letter-spacing: -0.3px;
 }
+.form-head p { font-size: 0.9rem; color: var(--gray-medium); margin-top: 6px; }
 
-.form-head p {
-    font-size: 0.88rem;
-    color: var(--gray-medium);
-    margin-top: 4px;
-}
-
-/*campi di input*/
-.fields {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.input-wrap {
-    position: relative; /*serve per posizionare "l'occhio" nell'input*/
-}
-
+.fields { display: flex; flex-direction: column; gap: 12px; }
+.input-wrap { position: relative; }
 .input-wrap input {
     width: 100%;
     padding: 14px 16px;
@@ -152,41 +138,30 @@ body {
     font-size: 0.95rem;
     background: #fafafa;
     outline: none;
-    transition: border-color 0.25s, background 0.25s;
+    transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
     color: var(--text-dark);
-    font-family: inherit;/*usa lo stesso font del body*/
+    font-family: inherit;
 }
-
 .input-wrap input:focus {
-    border-color: var(--accent-orange);/*diventa arancione quando clicchi per scrivere*/
+    border-color: var(--accent-orange);
     background: var(--white);
+    box-shadow: 0 0 0 4px rgba(255, 179, 71, 0.18);
 }
+.input-wrap input::placeholder { color: var(--gray-medium); }
 
-.input-wrap input::placeholder {
-    color: var(--gray-medium);
-}
-
-/*"occhio"*/
 .eye-btn {
     position: absolute;
-    right: 14px;
-    top: 50%;
+    right: 14px; top: 50%;
     transform: translateY(-50%);
-    background: none;
-    border: none;
+    background: none; border: none;
     cursor: pointer;
     color: var(--gray-medium);
     font-size: 16px;
-    padding: 0;
-    line-height: 1;
+    padding: 0; line-height: 1;
     transition: opacity 0.2s;
 }
+.eye-btn:hover { color: var(--text-dark); }
 
-.eye-btn:hover {
-    color: var(--gray-medium);
-}
-
-/* Remember me */
 .remember {
     display: flex;
     align-items: center;
@@ -196,13 +171,8 @@ body {
     cursor: pointer;
     user-select: none;
 }
+.remember input[type="checkbox"] { width: auto; accent-color: var(--accent-orange); }
 
-.remember input[type="checkbox"] {
-    width: auto;
-    accent-color: var(--accent-orange);
-}
-
-/*bottone Submit*/
 .submit-btn {
     width: 100%;
     padding: 15px;
@@ -216,114 +186,66 @@ body {
     transition: transform 0.2s, box-shadow 0.2s;
     font-family: inherit;
     margin-top: 4px;
+    letter-spacing: 0.3px;
 }
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+.submit-btn:active { transform: translateY(0); }
 
-.submit-btn:hover {
-    transform: translateY(-2px);/*si alza quando si passa sopra */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
+.footer-link { text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--gray-medium); }
+.footer-link span { color: var(--accent-orange); cursor: pointer; font-weight: 700; }
+.footer-link span:hover { text-decoration: underline; }
 
-.submit-btn:active {
-    transform: translateY(0);/*torna giù quando lo clicchi*/
-}
+.hidden { display: none !important; }
 
-/*footer link*/
-.footer-link {
-    text-align: center;
-    margin-top: 1rem;
-    font-size: 0.85rem;
-    color: var(--gray-medium);
-}
-
-.footer-link span {
-    color: var(--accent-orange);
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.footer-link span:hover {
-    text-decoration: underline;/*sottolinea al passaggio del mouse*/
-}
-
-/* Utility */
-.hidden {
-    display: none !important;
-}
-
-/* overlay per scurire lo sfondo quando la sidebar è aperta*/
-.overlay { 
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px); 
+.overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(2px);
     z-index: 999;
-    display: none; 
+    display: none;
 }
-
-.overlay.active {
-    display: block;
-}
-
+.overlay.active { display: block; }
 
 .sidebar {
-    position: fixed; 
-    top: 0;
-    left: -280px; 
-    width: 260px;
-    height: 100vh;
+    position: fixed; top: 0; left: -280px;
+    width: 260px; height: 100vh;
     background: var(--white);
     border-right: 1px solid var(--gray-light);
-    padding: 6rem 1.5rem 2rem; 
-    display: flex;
-    flex-direction: column;
+    padding: 6rem 1.5rem 2rem;
+    display: flex; flex-direction: column;
     z-index: 1000;
     transition: left 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     box-shadow: 10px 0 30px rgba(0,0,0,0.05);
 }
-
-.sidebar.active {
-    left: 0;
-}
-
-.sidebar .brand {
-    font-size: 1.8rem;
-    margin-bottom: 2rem;
-    color: var(--primary-green);
-}
-
+.sidebar.active { left: 0; }
+.sidebar .brand { font-size: 2rem; margin-bottom: 2rem; color: var(--primary-green); text-shadow: 1.5px 1.5px 0 var(--honey-yellow); }
 .sidebar h3 {
-    font-size: 0.8rem;
-    color: #ccc;
+    font-size: 0.75rem;
+    color: var(--gray-medium);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     margin-bottom: 0.5rem;
+    font-weight: 700;
 }
 
 .mobile-menu-btn {
     display: block;
     position: fixed;
-    top: 20px;
-    left: 20px;
+    top: 20px; left: 20px;
     z-index: 1001;
     background-color: var(--primary-green);
     color: var(--white);
     border: none;
     padding: 10px 14px;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     font-size: 1.2rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
 }
+.mobile-menu-btn:hover { transform: rotate(90deg) scale(1.05); }
 
-/*responsive per cellulari*/
 @media (max-width: 420px) {
-    .brand {
-        font-size: 2.2rem;
-    }
-    .card {
-        padding: 1.5rem 1.25rem;
-    }
+    .brand { font-size: 2.4rem; }
+    .card { padding: 1.5rem 1.25rem; }
 }

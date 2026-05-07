@@ -13,29 +13,47 @@
 
 <body class="dashboard-body">
 
-    <!-- Banner Modal per Guest aggiunto qui -->
+    <!-- SVG gooey filter (per drop animation) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+            <filter id="goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+                <feColorMatrix in="blur" mode="matrix"
+                    values="1 0 0 0 0
+                            0 1 0 0 0
+                            0 0 1 0 0
+                            0 0 0 18 -7" result="goo"/>
+                <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Banner Modal Guest con animazione GOCCIA -->
     <div id="guest-banner-overlay" class="guest-modal-overlay">
-        <div class="guest-modal">
-            <h2>Welcome to FridgeMatch!</h2>
-            <p>You are browsing as a <strong>Guest</strong>. The items you add to the fridge and your grocery list will only be saved temporarily in your browser.</p>
-            <p>Log in or register to save your data permanently and access all community features!</p>
-            
-            <div class="guest-modal-actions">
-                <button class="guest-login-btn-main" onclick="window.location.href='../login/index.html'">Login / Sign Up</button>
-                <button class="guest-continue-btn" onclick="closeGuestBanner()">Continue as Guest</button>
+        <div class="drop-wrap">
+            <div class="drop" aria-hidden="true"></div>
+            <span class="drop-wave" aria-hidden="true"></span>
+            <span class="drop-wave w2" aria-hidden="true"></span>
+            <span class="drop-wave w3" aria-hidden="true"></span>
+
+            <div class="guest-modal">
+                <h2>Welcome to FridgeMatch!</h2>
+                <p>You are browsing as a <strong>Guest</strong>. The items you add to the fridge and your grocery list will only be saved temporarily in your browser.</p>
+                <p>Log in or register to save your data permanently and access all community features!</p>
+
+                <div class="guest-modal-actions">
+                    <button class="guest-login-btn-main" onclick="window.location.href='../login/index.html'">Login / Sign Up</button>
+                    <button class="guest-continue-btn" onclick="closeGuestBanner()">Continue as Guest</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- overlay per lo sfondo scuro -->
     <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
-
-    <!-- bottone per mobile (sempre visibile) -->
     <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
 
-    <!-- sidebar a sx -->
     <div class="dashboard-container">
-        <aside class="sidebar" id="sidebar"> 
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-section">
                 <h1 class="brand">FridgeMatch</h1>
                 <nav class="nav-menu">
@@ -48,12 +66,10 @@
                 </nav>
             </div>
 
-            <!-- sezione funzioni social -->
             <div class="sidebar-section social">
                 <br>
                 <h3>Social</h3>
                 <nav class="nav-menu" id="social-nav-content">
-                    <!-- Questo contenuto verrà cambiato dal JS se l'utente è Guest -->
                     <ul>
                         <li><a href="../social/profile.html">Your profile</a></li>
                         <li><a href="../social/add-recipe.html">Add recipe</a></li>
@@ -62,14 +78,21 @@
                 </nav>
             </div>
 
-            <!-- Contenitore per bottone Logout o Login -->
             <div id="auth-button-container" style="margin-top: auto;">
                 <button class="logout-btn" id="logout-btn" onclick="handleLogout()">Logout</button>
             </div>
         </aside>
 
-        <!-- area principale a dx -->
         <main class="main-content">
+
+            <section class="hero-strip">
+                <div>
+                    <h1>What's cooking today?</h1>
+                    <p>Track your fridge, plan your grocery list, beat expirations and discover what you can cook right now with what you've got.</p>
+                </div>
+                <span class="hero-badge">Tasty &amp; smart 🍳</span>
+            </section>
+
             <header class="search-bar">
                 <div class="search-wrapper">
                     <input type="text" placeholder="Search recipes or ingredients" id="search-input">
@@ -77,64 +100,51 @@
                 </div>
             </header>
 
-            <!-- riga superiore -->
             <div class="widgets-row">
-                <!-- sezione frigo -->
                 <section class="widget fridge-widget">
                     <div class="fridge-header">
                         <h2>In the fridge</h2>
                     </div>
-                    
-                    <ul id="fridge-list" class="data-list custom-bullets">
-                        <!-- lista che verrà popolata dinamicamente dal js-->
-                    </ul>
+                    <ul id="fridge-list" class="data-list custom-bullets"></ul>
                     <button class="add-btn-circle" onclick="window.location.href='../fridge/index.html'">
                         <span class="plus-icon">+</span>
                         <span class="btn-text">Add item</span>
                     </button>
-                    
-                    <!-- link alla pagina frigo -->
                     <a href="../fridge/index.html" class="view-more">view more ></a>
                 </section>
 
-                <!-- sezione scadenze -->
                 <section class="widget alerts-widget">
                     <div class="alert-msg">
                         <h2>Items expiring soon</h2>
                     </div>
-                    <ul id="expiring-list" class="data-list notification-style">
-                        <!-- lista che verrà popolata dinamicamente dal js-->
-                    </ul>
+                    <ul id="expiring-list" class="data-list notification-style"></ul>
                     <a href="../fridge/index.html" class="view-more">view more ></a>
                 </section>
             </div>
 
             <hr class="section-divider">
 
-            <!-- sezione ricette preferite -->
             <section class="recipes-section" id="section-favourites">
                 <div class="section-header">
                     <h2>Favourite recipes</h2>
                 </div>
                 <div class="recipe-grid" id="favourites-grid">
                     <article class="recipe-card">
-                        <p class="recipe-title">titolo un attimo</p>
                         <div class="recipe-img-placeholder"></div>
+                        <p class="recipe-title">titolo un attimo</p>
                     </article>
                 </div>
                 <a href="../social/favourites.html" class="view-more">view more ></a>
             </section>
 
-            <!-- sezione ricette replicabili -->
             <section class="recipes-section">
                 <div class="section-header">
                     <h2>Replicable recipes</h2>
                 </div>
                 <div class="recipe-grid" id="replicable-grid">
-                    <!-- card di ricette popolate con spoonacular API-->
                     <article class="recipe-card">
-                        <p class="recipe-title">titolo un attimo</p>
                         <div class="recipe-img-placeholder"></div>
+                        <p class="recipe-title">titolo un attimo</p>
                     </article>
                 </div>
                 <a href="#" class="view-more">view more ></a>

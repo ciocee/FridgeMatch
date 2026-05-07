@@ -4,19 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FridgeMatch: Register</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/auth.css">
 </head>
-<body>
-    <div class="register-container">
-        <form class="register-form" id="register-form">
-            <h2>Register</h2>
-            <div class="input-group">
-                <input type="text" name="username" placeholder="Username" required>
-                <input type="email" name="email" placeholder="Email" required> <br>
-                <input type="password" name="password" placeholder="Password" minlength="8" required>
-                <input type="password" name="confirm-password" placeholder="Confirm Password" minlength="8" required> <br>
-                <button type="submit" name="register">Register</button>
+<body class="auth-body">
+    <div class="page">
+        <div class="brand">FridgeMatch</div>
+
+        <div class="fridge-scene">
+            <div class="freezer">
+                <div class="switch-bar register" id="switchBar">
+                    <div class="pill"></div>
+                    <button class="tab" onclick="switchForm('login')">Login</button>
+                    <button class="tab active" onclick="switchForm('register')">Sign Up</button>
+                </div>
             </div>
-        </form>
+
+            <div class="fridge-body">
+                <div class="form-head">
+                    <h2 id="formTitle">Create account</h2>
+                    <p id="formDesc">Join FridgeMatch today</p>
+                    <p id="errorMsg" class="error-msg" style="display:none"></p>
+                </div>
+
+                <form class="fields" id="mainForm" onsubmit="handleSubmit(event)">
+                    <div class="input-wrap" id="usernameField">
+                        <input type="text" placeholder="Username" id="username" name="username" required>
+                    </div>
+                    <div class="input-wrap">
+                        <input type="email" placeholder="Email" id="email" name="email" required>
+                    </div>
+                    <div class="input-wrap">
+                        <input type="password" placeholder="Password" id="password" name="password" minlength="8" required>
+                        <button type="button" class="eye-btn" onclick="togglePwd('password', this)">👁</button>
+                    </div>
+                    <div class="input-wrap" id="confirmField">
+                        <input type="password" placeholder="Confirm Password" id="confirmPwd" name="confirmPwd" minlength="8">
+                        <button type="button" class="eye-btn" onclick="togglePwd('confirmPwd', this)">👁</button>
+                    </div>
+                    <label class="remember hidden" id="rememberRow">
+                        <input type="checkbox" name="remember"> Remember me
+                    </label>
+                    <button type="submit" class="submit-btn" id="submitBtn">Sign Up</button>
+
+                    <div class="guest-access">
+                        <p>
+                            Don't want to sync data?
+                            <span onclick="continueAsGuest()" class="guest-link">Continue as Guest</span>
+                        </p>
+                    </div>
+                </form>
+
+                <div class="footer-link" id="footerLink">
+                    Already have an account? <span onclick="switchForm('login')">Login</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="fridge-feet" aria-hidden="true" style="max-width: 420px; margin: 0 auto;">
+            <span></span>
+            <span></span>
+        </div>
     </div>
+
+    <script src="../../js/auth.js"></script>
 </body>
 </html>
