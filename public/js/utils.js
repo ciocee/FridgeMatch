@@ -78,3 +78,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// funzione logout (è qui perché comune a tutte le pagine)
+function handleLogout() {
+    if (confirm("Are you sure you want to logout?")) {
+        fetch('http://127.0.0.1:3000/auth/logout', {
+            method: 'POST',
+            credentials: 'include'
+        }).finally(() => {
+            sessionStorage.clear();
+            window.location.href = "../login/index.html";
+        });
+    }
+}

@@ -35,6 +35,7 @@ app.use('/api/fridge', require('../routes/fridge'));
 app.use("/api/grocery", require("../routes/grocery"));
 app.use("/api/profile",   require("../routes/profile"));
 app.use("/api/recipes", require("../routes/recipes"));
+app.use("/api/social", require("../routes/social"));
 
 //Server
 app.listen(process.env.PORT, () => {

@@ -13,16 +13,41 @@ const FOOD_EMOJIS = [
 let profileData     = null;
 let pendingUnstarId = '';
 
+// caricamento profilo
+async function loadProfile(url, isMine) {
+    try {
+        const res = await fetch(url, { credentials: 'include' });
+        if (res.status === 401) { window.location.href = '../login/index.html'; return; }
+        if (!res.ok) { showToast('Error loading profile', 'error'); return; }
+
+        profileData = await res.json();
+        renderProfile(profileData, isMine);
+    } catch (e) {
+        console.error('loadProfile:', e);
+        showToast('Connection error', 'error');
+    }
+}
+
 /* INIT */
 document.addEventListener('DOMContentLoaded', () => {
     buildEmojiGrid();
-    loadProfile();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('id');
+
+    if (userId) {
+        loadProfile(`${PROFILE_URL}/${userId}`, false); // false: profilo non mio
+    } else {
+        loadProfile(`${PROFILE_URL}/me`, true);
+    }
 
     const bioInput = document.getElementById('bioInput');
-    bioInput.addEventListener('input', () => {
-        document.getElementById('bioCharCount').textContent = `${bioInput.value.length} / 300`;
-    });
-
+    if (bioInput) {
+        bioInput.addEventListener('input', () => {
+            document.getElementById('bioCharCount').textContent = `${bioInput.value.length} / 300`;
+        });
+    }    
+    
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
             closeEmojiPicker();
@@ -31,22 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-/* CARICAMENTO PROFILO */
-async function loadProfile() {
-    try {
-        const res = await fetch(`${PROFILE_URL}/me`, { credentials: 'include' });
-        if (res.status === 401) { window.location.href = '../login/index.html'; return; }
-        if (!res.ok) { showToast('Error loading profile', 'error'); return; }
-
-        profileData = await res.json();
-        renderProfile(profileData);
-    } catch (e) {
-        console.error('loadProfile:', e);
-        showToast('Connection error', 'error');
-    }
-}
-
-function renderProfile({ user, recipes }) {
+// render profilo
+function renderProfile({ user, recipes }, isMine) {
     document.getElementById('profileUsername').textContent = `@${user.username}`;
     document.title = `FridgeMatch: @${user.username}`;
 
@@ -57,6 +68,23 @@ function renderProfile({ user, recipes }) {
     document.getElementById('bioText').textContent = user.bio || '';
     document.getElementById('bioInput').value = user.bio || '';
     document.getElementById('bioCharCount').textContent = `${(user.bio || '').length} / 300`;
+
+    // visibilità tasti: nascosti se il profilo non è il proprio non appaiono (btn visibili altrimenti)
+    const editBioBtn = document.querySelector('.edit-bio-btn');
+    const addRecipeBtn = document.querySelector('.add-item-btn');
+    const avatarRing = document.getElementById('avatarDisplay');
+
+    if (!isMine) {
+        if (editBioBtn) editBioBtn.classList.add('hidden');
+        if (addRecipeBtn) addRecipeBtn.classList.add('hidden');
+        if (avatarRing) avatarRing.style.pointerEvents = 'none';
+        document.querySelector('.avatar-hint').style.display = 'none';
+    } else {
+        if (editBioBtn) editBioBtn.classList.remove('hidden');
+        if (addRecipeBtn) addRecipeBtn.classList.remove('hidden');
+        if (avatarRing) avatarRing.style.pointerEvents = 'all';
+        document.querySelector('.avatar-hint').style.display = 'block';
+    }    
 
     // stats
     document.getElementById('statRecipes').textContent = recipes.length;
@@ -159,7 +187,6 @@ function renderRecipes(recipes) {
 /* TAB CREATOR STELLATI */
 function renderStarredCreators(creators) {
     const grid = document.getElementById('starredGrid');
-
     if (creators.length === 0) {
         grid.innerHTML = `
             <div class="empty-tab" style="grid-column:1/-1">
@@ -170,13 +197,16 @@ function renderStarredCreators(creators) {
             </div>`;
         return;
     }
-
     grid.innerHTML = '';
     creators.forEach(creator => {
         const card = document.createElement('div');
         card.className = 'creator-card';
         card.dataset.id = creator._id;
-
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.unstar-btn')) return;
+            window.location.href = `profile.html?id=${creator._id}`;
+        });
         card.innerHTML = `
             <button class="unstar-btn" title="Remove star"
                     onclick="requestUnstar('${creator._id}', '${escapeHtml(creator.username)}')">⭐</button>
