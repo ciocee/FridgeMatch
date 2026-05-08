@@ -39,3 +39,20 @@ router.delete('/', auth, async (req, res) => {
 });
  
 module.exports = router;
+
+// PUT: Modifica un elemento esistente (Parte 1 slide 8)
+router.put('/:id', auth, async (req, res) => {
+    try {
+        const updatedItem = await FridgeItem.findOneAndUpdate(
+            { _id: req.params.id, user: req.session.userId },
+            { $set: req.body }, 
+            { new: true } 
+        );
+
+        if (!updatedItem) return res.status(404).send("Item not found");
+        res.json(updatedItem);
+    } catch (err) {
+        res.status(500).send("Errore durante la modifica");
+    }
+});
+

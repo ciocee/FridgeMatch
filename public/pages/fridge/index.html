@@ -102,10 +102,11 @@
     <div class="modal-backdrop" id="addModalBackdrop" onclick="closeAddModal(event)">
         <div class="modal" id="addModal">
             <div class="modal-header">
-                <h2>Add item to fridge</h2>
+                <h2 id="modalTitle">Add item to fridge</h2>
                 <button class="modal-close" onclick="closeAddModal()">✕</button>
             </div>
-            <form id="addItemForm" onsubmit="addItem(event)">
+            <form id="addItemForm" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" id="editItemId">
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Item name</label>
@@ -140,7 +141,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-cancel" onclick="closeAddModal()">Cancel</button>
-                    <button type="submit" class="btn-add">Add to fridge</button>
+                    <button type="submit" id="submitBtnModal" class="btn-add">Add to fridge</button>
                 </div>
             </form>
         </div>

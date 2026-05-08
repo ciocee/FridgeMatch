@@ -179,7 +179,27 @@
             </div>
         </div>
     </div>
-
+    <!-- modal suggerimenti dal frigo -->
+    <div class="modal-backdrop" id="suggestModalBackdrop" onclick="closeSuggestModal(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Suggest from fridge</h2>
+                <button class="modal-close" onclick="closeSuggestModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>Select the items you want to add to your grocery list:</p>
+                <!-- Contenitore con scroll per la lista delle checkbox -->
+                <div id="suggestionListContainer" style="max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-top: 10px; padding-right: 5px;">
+                    <!-- Le checkbox verranno generate qui via JS -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeSuggestModal()">Cancel</button>
+                <button class="btn-add" onclick="confirmSuggestions()">Add Selected</button>
+            </div>
+        </div>
+    </div>
+    
     <script src="../../js/grocery.js"></script>
 </body>
 </html>

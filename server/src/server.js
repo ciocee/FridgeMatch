@@ -33,6 +33,7 @@ app.use(session({
 app.use("/auth", require("../routes/auth"));
 app.use('/api/fridge', require('../routes/fridge'));
 app.use("/api/grocery", require("../routes/grocery"));
+app.use("/api/profile",   require("../routes/profile"));
 app.use("/api/recipes", require("../routes/recipes"));
 
 //Server

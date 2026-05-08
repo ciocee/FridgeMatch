@@ -1,37 +1,301 @@
-/* stili specifici per la pagina di autenticazione */
+body.auth-body {
+    background:
+        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 220, 150, 0.6) 0%, transparent 70%),
+        repeating-linear-gradient(
+            90deg,
+            #d6c0a8 0px, #d6c0a8 60px,
+            #c9b298 60px, #c9b298 62px,
+            #d6c0a8 62px, #d6c0a8 122px,
+            #c9b298 122px, #c9b298 124px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            #b89a78 0px, #b89a78 30px,
+            #a88862 30px, #a88862 32px
+        );
+    background-blend-mode: normal, multiply, normal;
+    overflow-x: hidden;
+}
+
+.auth-body .page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+    position: relative;
+}
+
+.auth-body .brand {
+    background: var(--honey-yellow);
+    color: var(--primary-green-dark);
+    padding: 0.4rem 1.6rem;
+    border-radius: 6px;
+    transform: rotate(-2deg);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18), inset 0 -3px 0 rgba(0,0,0,0.05);
+    text-shadow: none;
+    font-size: 2.4rem;
+    margin-bottom: 1.2rem;
+    position: relative;
+    z-index: 5;
+}
+
+.fridge-scene {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    margin: 0 auto;
+    animation: fridgeLand 0.9s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+@keyframes fridgeLand {
+    0%   { opacity: 0; transform: translateY(-60px) scale(0.94); }
+    60%  { transform: translateY(8px) scale(1.01); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.freezer {
+    background: linear-gradient(180deg, #fdfaf2 0%, #f1ead8 100%);
+    border: 3px solid var(--brick-dark);
+    border-bottom: none;
+    border-radius: 22px 22px 8px 8px;
+    height: 78px;
+    position: relative;
+    box-shadow: inset 0 -8px 14px rgba(0,0,0,0.08), inset 0 2px 0 rgba(255,255,255,0.8);
+}
+.freezer::after {
+    content: '';
+    position: absolute;
+    right: 18px; top: 14px;
+    width: 8px; height: calc(100% - 28px);
+    background: linear-gradient(180deg, #d8c8a8, #b8a070);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Modificato: Switch bar ora usa VERDE */
+.freezer .switch-bar {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 220px;
+    margin: 0;
+    background: var(--cream);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    border: 2px solid #2e7d32; /* Verde scuro */
+}
+.freezer .switch-bar .pill { background: #2e7d32; } /* Verde scuro */
+.freezer .switch-bar .tab { color: #2e7d32; font-weight: 800; } /* Verde scuro */
+.freezer .switch-bar .tab.active { color: var(--white); }
+
+.fridge-body {
+    background: linear-gradient(180deg, #fffaf0 0%, #f5edd8 100%);
+    border: 3px solid var(--brick-dark);
+    border-radius: 8px 8px 26px 26px;
+    width: 100%;
+    max-width: none;
+    padding: 1.5rem 1.25rem 1.75rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 8px 16px rgba(0,0,0,0.07), 0 18px 40px rgba(0,0,0,0.18);
+}
+
+.fridge-body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 100% 60% at 50% 0%, rgba(255, 245, 200, 0.7) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.shelf-top {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    padding: 0.25rem 0.5rem 0.5rem;
+    border-bottom: 3px solid #e7d9b4;
+    margin-bottom: 1rem;
+    height: 56px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Stili comuni per tutti gli item sul ripiano */
+.shelf-top > div {
+    animation: floatItem 4s ease-in-out infinite;
+}
+
+/* Vasetti stilizzati rimasti */
+.jar {
+    width: 30px; height: 40px;
+    border-radius: 6px 6px 8px 8px;
+    position: relative;
+    box-shadow: inset -3px 0 0 rgba(0,0,0,0.08), inset 2px 2px 0 rgba(255,255,255,0.45);
+}
+.jar::before {
+    content: '';
+    position: absolute;
+    top: -6px; left: -2px; right: -2px;
+    height: 8px;
+    background: var(--brick-dark);
+    border-radius: 3px;
+}
+.jar.j2 { background: var(--lavender); height: 46px; animation-delay: 0.4s; }
+.jar.j4 { background: var(--blueberry); height: 36px; animation-delay: 1.2s; }
+
+/* Nuovi item cibo (icone emoji) */
+.food-item {
+    font-size: 30px; /* Grandezza emoji */
+    display: flex;
+    align-items: flex-end;
+    height: 40px; /* Altezza base simile ai vasetti */
+}
+.food-item.f1 { animation-delay: 0s; }
+.food-item.f3 { animation-delay: 0.8s; font-size: 34px; } /* Insalata un po' più grande */
+.food-item.f5 { animation-delay: 1.6s; }
+
+@keyframes floatItem {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-3px); }
+}
+
+.fridge-body .form-head { margin-bottom: 1rem; position: relative; z-index: 1; }
+.fridge-body .form-head h2 { font-size: 1.45rem; color: var(--primary-green-dark); }
+.fridge-body .form-head p  { font-size: 0.85rem; }
+
+/* Modificato: Messaggio errore usa VERDE */
+.fridge-body .error-msg {
+    background: #e8f5e9 !important; /* Verde chiarissimo */
+    border: 1.5px dashed #2e7d32 !important; /* Verde scuro */
+    color: #1b5e20 !important; /* Verde scurissimo per testo */
+    border-radius: 10px !important;
+    margin-top: 10px !important;
+    font-weight: 600;
+}
+
+.fridge-body .fields { gap: 14px; position: relative; z-index: 1; }
+.fridge-body .input-wrap input {
+    background: var(--white);
+    border: 2px solid #e7d9b4;
+    border-radius: 14px;
+    padding: 13px 16px;
+    font-weight: 500;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.04);
+}
+/* Modificato: Focus input usa VERDE */
+.fridge-body .input-wrap input:focus {
+    border-color: #4caf50; /* Verde standard */
+    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.15); /* Glow verde */
+}
+
+/* Modificato: Submit button ora usa gradiente VERDE */
+.fridge-body .submit-btn {
+    background: linear-gradient(135deg, #4caf50 0%, #8bc34a 50%, var(--honey-yellow) 100%);
+    border-radius: 50px;
+    padding: 16px;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 6px 0 #388e3c, 0 10px 20px rgba(76,175,80,0.35); /* Ombra verde */
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.fridge-body .submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 9px 0 #388e3c, 0 14px 24px rgba(76,175,80,0.45);
+}
+.fridge-body .submit-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 #388e3c, 0 4px 10px rgba(76,175,80,0.3);
+}
 
 .guest-access {
     text-align: center;
     margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #eee; 
+    padding-top: 1.25rem;
+    border-top: 2px dashed #e7d9b4;
+    position: relative;
+    z-index: 1;
 }
-
-.guest-access p {
-    font-size: 0.85rem;
-    color: var(--gray-medium);
-}
-
+.guest-access p { font-size: 0.85rem; color: var(--gray-medium); }
+/* Modificato: Guest link ora usa VERDE */
 .guest-link {
-    color: var(--primary-green);
+    color: #4caf50; /* Verde standard */
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
     transition: color var(--transition-speed);
 }
+.guest-link:hover { color: var(--blueberry); text-decoration: underline; }
 
-.guest-link:hover {
-    color: var(--accent-orange);
-    text-decoration: underline;
+.fridge-body .footer-link { margin-top: 0.75rem; font-size: 0.85rem; position: relative; z-index: 1; }
+/* Modificato: Footer link span ora usa VERDE */
+.fridge-body .footer-link span { color: #4caf50; }
+
+.fridge-feet {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 30px;
+    margin-top: -2px;
+}
+.fridge-feet span {
+    width: 20px; height: 14px;
+    background: var(--brick-dark);
+    border-radius: 0 0 6px 6px;
 }
 
-.error-msg {
-    font-size: 0.85rem;
-    color: #e53e3e;
-    background: #fff0f0;
-    border-radius: 8px;
-    padding: 8px 12px;
-    margin-top: 8px;
+.magnet {
+    position: absolute;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    z-index: 4;
+    animation: wobble 3s ease-in-out infinite;
+}
+
+/* Modificato: Calamita ciliegia -> LIME (Sfondo verde chiaro) */
+.magnet.lime {
+    top: -10px;
+    right: 30px;
+    background: #e8f5e9; /* Verde chiarissimo */
+    transform: rotate(8deg);
+}
+
+.magnet.smile   { top: 90px;  left: -18px; background: var(--honey-yellow); animation-delay: 0.5s; }
+.magnet.note    {
+    top: 140px; right: -22px;
+    width: 56px; height: 56px;
+    border-radius: 4px;
+    background: var(--lavender);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    transform: rotate(-6deg);
     text-align: center;
-    /* evita che il div vuoto occupi spazio e copra elementi sopra */
-    min-height: 0;
+    line-height: 1.1;
+    padding: 4px;
+    animation-delay: 1s;
+}
+
+@keyframes wobble {
+    0%,100% { transform: rotate(8deg) translateY(0); }
+    50%     { transform: rotate(-2deg) translateY(-4px); }
+}
+.magnet.smile  { animation-name: wobbleA; }
+.magnet.note   { animation-name: wobbleB; }
+@keyframes wobbleA { 0%,100% { transform: rotate(0) translateY(0); } 50% { transform: rotate(-10deg) translateY(-3px); } }
+@keyframes wobbleB { 0%,100% { transform: rotate(-6deg) translateY(0); } 50% { transform: rotate(2deg) translateY(-5px); } }
+
+@media (max-width: 480px) {
+    .fridge-scene { max-width: min(360px, calc(100vw - 2rem)); }
+    .magnet.note  { display: none; }
+    /* Modificato riferimento alla classe .lime */
+    .magnet.lime { right: 10px; }
+    .freezer .switch-bar { width: 180px; }
+}
+@media (max-width: 360px) {
+    .magnet { display: none; }
 }

@@ -27,14 +27,46 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
         
-        showEmptyFridge();
-        showEmptyExpiring();
+        // MOSTRA IL BANNER
+        const guestBanner = document.getElementById('guest-banner-overlay');
+        if (guestBanner && !sessionStorage.getItem('bannerDismissed')) {
+            // attiva l'animazione "goccia" con un piccolo delay
+            setTimeout(() => guestBanner.classList.add('active'), 150);
+        }
+
+        // Carica i dati dal LocalStorage per l'utente Guest invece di fare la fetch
+        loadGuestData();
+        
     } else {
         loadDashboardItems();
         loadReplicableRecipes();
     }
 
 });
+
+// Funzione per chiudere il banner e non mostrarlo più in questa sessione
+function closeGuestBanner() {
+    const banner = document.getElementById('guest-banner-overlay');
+    banner.classList.remove('active');
+    banner.style.display = 'none';
+    sessionStorage.setItem('bannerDismissed', 'true');
+}
+
+// Funzione per gestire i dati fittizi del Guest
+function loadGuestData() {
+    // Recupera i dati salvati temporaneamente, o un array vuoto
+    const guestItems = JSON.parse(localStorage.getItem('guestFridgeItems')) || [];
+    
+    if (guestItems.length === 0) {
+        showEmptyFridge();
+        showEmptyExpiring();
+    } else {
+        // Usa le tue funzioni esistenti per popolare la UI
+        guestItems.sort((a, b) => new Date(a.expiry) - new Date(b.expiry));
+        populateFridgeList(guestItems);
+        populateExpiringList(guestItems);
+    }
+}
 
 async function loadDashboardItems() {
     try {
@@ -44,7 +76,12 @@ async function loadDashboardItems() {
         });
  
         if (response.status === 401) {
-            window.location.href = '../login/index.html';
+            // MODIFICA QUI: Invece di reindirizzare al login, impostiamo l'utente come Guest
+            sessionStorage.setItem('userMode', 'guest');
+            sessionStorage.setItem('username', 'Guest User');
+            
+            // Ricarichiamo la pagina in modo che parta in automatico con il banner e la UI da guest
+            window.location.reload(); 
             return;
         }
  

@@ -12,6 +12,7 @@
     font-weight: 700;
 }
 
+/* Riutilizziamo lo stile del bottone "Add" coerente con il frigo */
 .add-item-btn {
     background-color: var(--primary-green);
     color: var(--white);
@@ -29,20 +30,66 @@
     box-shadow: 0 5px 15px rgba(46, 92, 58, 0.3);
 }
 
-/* --- GRID DELLE RICETTE (FEED) --- */
-.recipe-feed-grid {
+/* --- GRID GENERALE (FEED E CREATOR) --- */
+/* Unifichiamo i due blocchi: Responsive auto-fill (PDF Responsive slide 11) */
+.recipe-feed-grid, 
+.starred-grid {
     display: grid;
-    /* colonne da almeno 300px che si adattano allo spazio */
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 2rem;
+    margin-top: 20px;
 }
 
-/* --- CARD DELLA RICETTA (POST) --- */
+/* --- CARD DEI CREATOR (Profili suggeriti) --- */
+.creator-card {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transition: transform var(--transition-speed);
+}
+
+.creator-card:hover { transform: translateY(-5px); }
+
+.creator-avatar {
+    font-size: 3rem;
+    background: var(--gray-light);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--primary-green);
+}
+
+.star-btn {
+    background: none;
+    border: 1.5px solid var(--accent-orange);
+    color: var(--accent-orange);
+    padding: 5px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all var(--transition-speed);
+}
+
+.star-btn.active {
+    background: var(--accent-orange);
+    color: var(--white);
+} /* FIX: Aggiunta parentesi mancante */
+
+/* --- CARD DELLA RICETTA (POST NEL FEED) --- */
 .recipe-card {
     background: var(--white);
     border-radius: var(--border-radius);
     box-shadow: var(--card-shadow);
-    overflow: hidden; /* taglia l'immagine se esce dai bordi arrotondati */
+    overflow: hidden; /* Taglia l'immagine sugli angoli tondi */
     display: flex;
     flex-direction: column;
     transition: transform var(--transition-speed);
@@ -54,8 +101,8 @@
 
 .recipe-image {
     width: 100%;
-    height: 200px;
-    object-fit: cover; /* mantiene le proporzioni dell'immagine ritagliandola */
+    height: 220px;
+    object-fit: cover; /* Gestione ritaglio immagini (Parte 2) */
     background-color: var(--gray-light);
 }
 
@@ -76,10 +123,10 @@
     margin-bottom: 1rem;
 }
 
-/* pulsanti like/commento */
+/* Pulsanti Like e Commento (Parte 2: Flexbox) */
 .recipe-actions {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     padding: 1rem 1.5rem;
     border-top: 1px solid var(--gray-light);
 }
@@ -92,42 +139,33 @@
     color: var(--gray-medium);
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
     transition: color 0.2s;
 }
 
-.action-btn:hover {
-    color: var(--primary-green);
-}
+.action-btn:hover { color: var(--primary-green); }
+.action-btn.liked { color: var(--danger-red); }
 
-.action-btn.liked {
-    color: var(--danger-red);
-}
-
-/* --- MODAL LOGIC --- */
+/* --- MODAL LOGIC (Parte 2: Posizionamento slide 37) --- */
 .modal-backdrop {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5); /* Scurisce lo sfondo */
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); /* Sfondo scuro */
     display: none; 
     justify-content: center;
     align-items: center;
     z-index: 2000;
 }
 
-.modal-backdrop.open {
-    display: flex;
-}
+.modal-backdrop.open { display: flex; }
 
 .modal {
     background: var(--white);
     border-radius: var(--border-radius);
     width: 95%;
     max-width: 500px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
     overflow: hidden;
 }
 
@@ -154,7 +192,7 @@
     gap: 1.2rem;
 }
 
-/*form interno al modal */
+/* Form nel modal (Parte 1) */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -189,6 +227,7 @@
     border-radius: 10px;
     cursor: pointer;
     color: var(--gray-medium);
+    font-family: inherit;
 }
 
 .btn-add {
@@ -199,6 +238,7 @@
     border-radius: 10px;
     font-weight: 700;
     cursor: pointer;
+    font-family: inherit;
 }
 
 /* --- TAGS INGREDIENTI --- */
@@ -212,7 +252,7 @@
 .tag {
     background: var(--light-green);
     color: var(--primary-green);
-    padding: 4px 12px;
+    padding: 5px 14px;
     border-radius: 50px;
     font-size: 0.75rem;
     font-weight: 700;
