@@ -12,7 +12,8 @@ async function loadFeed() {
         const recipes = await res.json();
         container.innerHTML = "";
 
-        recipes.array.forEach(recipe => {
+        // FIX: recipes è già l'array, rimosso .array (Parte 3 slide 21)
+        recipes.forEach(recipe => {
             const article = document.createElement('article');
             article.className = 'recipe-card';
             article.innerHTML = `
@@ -34,16 +35,83 @@ async function loadFeed() {
 
 // funzione like
 async function toggleLike(id, btn) {
-    const res = await fetch(`${API_URL}/like:id`, {
-        method: 'POST';
-        credentials: 'include'
-    });
+    try {
+        // FIX: corretto il passaggio dell'ID nella URL (Parte 1 slide 102)
+        const res = await fetch(`${API_URL}/like/${id}`, {
+            method: 'POST',
+            credentials: 'include'
+        });
 
-    if (res.ok) {
-        const data = await res.json();
-        btn.querySelector('span').textContent = data.likesCount;
-        btn.classList.toggle('active');
+        if (res.ok) {
+            const data = await res.json();
+            btn.querySelector('span').textContent = data.likesCount;
+            btn.classList.toggle('active');
+        }
+    } catch (err) {
+        console.error("Like error:", err);
+    }
+}
+
+// funzione search
+async function executeSearch(query) {
+    try {
+        const res = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}`, { credentials: 'include' });
+        const results = await res.json();
+        const container = document.getElementById('recipe-feed');
+        
+        container.innerHTML = "<h2>From Community</h2>";
+
+        results.community.users.forEach(user => {
+            const div = document.createElement('div');
+            div.className = 'creator-card';
+            div.innerHTML = `
+                <div class="creator-avatar">${user.avatarEmoji}</div>
+                <strong>@${user.username}</strong>
+                <button class="star-btn" onclick="followUser('${user._id}')">⭐ Star</button>`;
+            container.appendChild(div);            
+        });
+
+        results.community.recipes.forEach(r => {
+            const article = document.createElement('article');
+            article.className = 'recipe-card';
+            article.innerHTML = `
+                <img src="${r.image}" class="recipe-image">
+                <div class="recipe-content">
+                    <h3>${r.title}</h3>
+                    <p>By @${r.author.username}</p>
+                </div>`;
+            container.appendChild(article);
+        });
+
+        container.innerHTML += "<h2 style='margin-top:2rem'>Global Suggestions</h2>"; 
+        results.global.forEach(r => {
+            const article = document.createElement('article');
+            article.className = 'recipe-card';
+            article.innerHTML = `
+                <img src="${r.image}" class="recipe-image">
+                <div class="recipe-content">
+                    <h3>${r.title}</h3>
+                    <p>Global Recipe</p>
+                </div>`;
+            
+            container.appendChild(article);
+        });
+    } catch (err) {
+        console.error("Search error:", err);
     }
 }
 
 document.addEventListener('DOMContentLoaded', loadFeed);
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('search-input');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', async (e) => {
+            const query = e.target.value.trim();
+            if (query.length > 2) {
+                await executeSearch(query);
+            }
+        });
+    }
+});
