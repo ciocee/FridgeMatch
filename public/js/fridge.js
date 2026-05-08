@@ -97,16 +97,32 @@ function renderFridge() {
         );
     }
 
-    // Ordinamento per data (Parte 3)
+    // Ordinamento per data 
     items.sort((a, b) => new Date(a.expiry) - new Date(b.expiry));
 
-    list.innerHTML = ''; // Svuota la lista (Parte 4 slide 15)
+    list.innerHTML = ''; // Svuota la lista
 
+    // feedback differenziato
     if (items.length === 0) {
         emptyState.classList.remove('hidden');
+        
+        // se il frigo è proprio vuoto
+        if (fridgeItems.length === 0) {
+            emptyState.innerHTML = `
+                <div class="empty-icon">🥗</div>
+                <p>Your fridge is empty!</p>
+                <span>Add your first item to get started.</span>
+            `;
+        } else { // se il frigo non è vuoto ma la ricerca non produce risultati
+            emptyState.innerHTML = `
+                <div class="empty-icon">🔍</div>
+                <p>No matches found</p>
+                <span>We couldn't find "${escapeHtml(searchVal)}" in your fridge.</span>
+            `;
+        }
+
     } else {
         emptyState.classList.add('hidden');
-        // FIX: Corretta la sintassi del forEach (aggiunta parentesi chiusura)
         items.forEach(item => {
             list.appendChild(createItemRow(item));
         });

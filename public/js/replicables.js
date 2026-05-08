@@ -14,13 +14,10 @@ async function loadReplicableRecipes() {
         const data = await response.json();
         const grid = document.getElementById('replicable-grid');
         
+        if (!grid) return;
+
         if (data.length === 0) {
-            grid.innerHTML = `
-                <article class="recipe-card">
-                    <p class="recipe-title" style="text-align: center;">Nessuna ricetta disponibile</p>
-                    <div class="recipe-img-placeholder" style="background-color: #f0f0f0; height: 120px; border-radius: 10px; margin-bottom: 10px;"></div>
-                </article>
-            `;
+                grid.innerHTML = `<p>No recipes available based on your fridge.</p>`;
             return; 
         }
 
@@ -40,7 +37,7 @@ async function loadReplicableRecipes() {
 
             article.style.cursor = 'pointer';
             article.addEventListener('click', () => {
-                window.location.href = `../recipe/index.html?id=${cleanRecipeInfo.id}`;
+                window.location.href = `../replicable/index.html?id=${cleanRecipeInfo.id}`;
             });
 
             article.innerHTML = `

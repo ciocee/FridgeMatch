@@ -33,16 +33,6 @@ function getPriorityColor(expiryDateStr) {
     return 'green';                      // scadenza ancora lontana
 }
 
-// caricamento dati frigo 
-async function loadFridgeData() {
-    /* ingredienti a caso perché volevo vedere come venivano visualizzati
-    return [
-        { name: "Prosciutto", expiryDate: "2026-04-20" },
-        { name: "Mozzarella", expiryDate: "2026-04-22" },
-        { name: "Cheese", expiryDate: "2026-04-23" },
-        { name: "Strawberry", expiryDate: "2026-04-30" }
-    ]; */
-}
 
 // evidenzia la pagina corrente
 function highlightCurrentPage() {

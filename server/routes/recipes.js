@@ -1,26 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
-// 1. Importiamo il modello del frigo e il middleware di autenticazione
 const FridgeItem = require('../models/fridge');
 const auth = require('../middleware/authMiddleware');
 
 const apiKey = process.env.FOOD_API_KEY;
 
-// 2. Aggiungiamo 'auth' per assicurarci di avere req.session.userId
 router.get('/replicable', auth, async (req, res) => {
     try {
         
-        // 3. Cerchiamo gli ingredienti dell'utente loggato nel database
         const items = await FridgeItem.find({ user: req.session.userId });
 
-        // Se il frigo è vuoto, restituiamo un array vuoto (nessuna ricetta)
         if (!items || items.length === 0) {
             return res.status(200).json([]); 
         }
 
-        // 4. Estraiamo solo i nomi degli ingredienti e li prepariamo per Spoonacular.
-    
         const ingredientsList = items
             .map(item => item.name.trim().replace(/\s+/g, '+')) 
             .join(',+'); 
