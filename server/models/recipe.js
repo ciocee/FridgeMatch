@@ -27,7 +27,7 @@ const RecipeSchema = new mongoose.Schema({
 
     readyInMinutes: {
         type: Number,
-        default: 'unknown',
+        default: 0,
     },
 
     comments: [{ 

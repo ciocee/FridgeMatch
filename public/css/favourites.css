@@ -110,7 +110,7 @@
 
 .favourites-list-header {
     display: grid;
-    grid-template-columns: 40px 1fr 120px 100px 120px 70px 48px;
+    grid-template-columns: 40px 1fr 120px 120px 80px;
     padding: 12px 20px;
     background: #f8f9fa;
     border-bottom: 1.5px solid var(--gray-light);
@@ -130,7 +130,7 @@
 
 .favourites-recipe {
     display: grid;
-    grid-template-columns: 40px 1fr 120px 100px 120px 70px 48px;
+    grid-template-columns: 40px 1fr 120px 120px 80px;
     align-items: center;
     padding: 14px 20px;
     border-bottom: 1px solid #f1f3f5;

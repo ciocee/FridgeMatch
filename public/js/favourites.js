@@ -299,7 +299,7 @@ function handleLogout() {
 
 /* ---- INIT ---- */
 document.addEventListener('DOMContentLoaded', () => {
-    buildCategoryGrid();
+    //buildCategoryGrid();
     loadRecipes(); // Carica le ricette invece degli ingredienti
 
     document.addEventListener('keydown', e => {

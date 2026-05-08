@@ -39,7 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
     } else {
         loadDashboardItems();
+        loadReplicableRecipes();
     }
+
 });
 
 // Funzione per chiudere il banner e non mostrarlo più in questa sessione

@@ -1,5 +1,4 @@
 // gestione caricamento dinamico del feed e interazioni con i like
-
 const API_URL = 'http://127.0.0.1:3000/api/social'; 
 
 // caricamento feed
@@ -12,7 +11,6 @@ async function loadFeed() {
         const recipes = await res.json();
         container.innerHTML = "";
 
-        // FIX: recipes è già l'array, rimosso .array (Parte 3 slide 21)
         recipes.forEach(recipe => {
             const article = document.createElement('article');
             article.className = 'recipe-card';
@@ -101,8 +99,21 @@ async function executeSearch(query) {
     }
 }
 
+// apertura modal
+function openRecipeModal() {
+    document.getElementById('recipeModal').classList.add('open');
+}
+
+// chiusura modal
+function closeRecipeModal(event) {
+    if (!event || event.target.id === 'recipeModal' || event.target.className === 'modal-close' || event.target.className === 'btn-cancel') {
+        document.getElementById('recipeModal').classList.remove('open');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', loadFeed);
 
+// inizializzazione eventi e dati al caricamento
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
 
@@ -114,4 +125,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+});
+
+// Gestione invio
+document.getElementById('upload-recipe-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert("Recipe shared with the community!");
+    closeRecipeModal();
 });

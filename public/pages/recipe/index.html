@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FridgeMatch: Recipe Details</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+</head>
+<body class="dashboard-body">
+
+    <!-- overlay sfondo scuro mobile -->
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="dashboard-container">
+
+        <!-- sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h1 class="brand">FridgeMatch</h1>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="../dashboard">Homepage</a></li>
+                        <li><a href="../fridge">Fridge</a></li>
+                        <li><a href="../groceries">Grocery list</a></li>
+                        <li><a href="../favourites">Your favourites</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="sidebar-section social">
+                <br>
+                <h3>Social</h3>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="#">Your profile</a></li>
+                        <li><a href="#">Add recipe</a></li>
+                        <li><a href="../social/index.html">View other recipes</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div id="auth-button-container" style="margin-top: auto;">
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </aside>
+
+        <!-- contenuto principale -->
+        <main class="main-content">
+            
+            <!-- Pulsante per tornare indietro -->
+            <div style="margin-bottom: 20px;">
+                <button onclick="window.history.back()" style="padding: 8px 16px; background-color: var(--white); border: 1px solid var(--gray-light); border-radius: 8px; cursor: pointer; font-weight: bold; color: var(--gray-medium);">
+                    ← Back to Recipes
+                </button>
+            </div>
+
+            <!-- Messaggio di caricamento -->
+            <div id="loadingMsg" style="text-align: center; margin-top: 50px;">
+                <h2 style="color: var(--primary-green);">Loading recipe details... 🍳</h2>
+            </div>
+
+            <!-- Contenitore della Ricetta (nascosto di default) -->
+            <div id="recipeContent" style="display: none; background: var(--white); padding: 30px; border-radius: var(--border-radius); box-shadow: var(--card-shadow);">
+                
+                <h1 id="recipeTitle" style="color: var(--primary-green); margin-bottom: 25px; font-size: 2rem;"></h1>
+                
+                <div style="display: flex; gap: 30px; flex-wrap: wrap; margin-bottom: 30px;">
+                    <!-- Immagine Ricetta -->
+                    <img id="recipeImage" src="" alt="Recipe Image" style="width: 100%; max-width: 400px; border-radius: 12px; object-fit: cover;">
+                    
+                    <!-- Info Rapide -->
+                    <div style="font-size: 1.1rem; line-height: 2; display: flex; flex-direction: column; justify-content: center;">
+                        <p>⏱ <strong>Ready in:</strong> <span id="recipeTime"></span> minutes</p>
+                        <p>🍽 <strong>Servings:</strong> <span id="recipeServings"></span></p>
+                        <p>❤️ <strong>Health Score:</strong> <span id="recipeHealth"></span> / 100</p>
+                        <div id="recipeDietary" style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr; gap: 30px;">
+                    <!-- Ingredienti -->
+                    <div>
+                        <h3 style="border-bottom: 2px solid var(--gray-light); padding-bottom: 10px; margin-bottom: 15px; color: var(--text-dark);">Ingredients</h3>
+                        <ul id="recipeIngredients" style="margin-left: 20px; line-height: 1.8; color: var(--text-dark);">
+                            <!-- Inseriti tramite JS -->
+                        </ul>
+                    </div>
+
+                    <!-- Riepilogo/Istruzioni -->
+                    <div>
+                        <h3 style="border-bottom: 2px solid var(--gray-light); padding-bottom: 10px; margin-bottom: 15px; color: var(--text-dark);">Summary</h3>
+                        <p id="recipeSummary" style="line-height: 1.6; color: var(--text-dark);"></p>
+                    </div>
+
+                    <div>
+                        <h3 style="border-bottom: 2px solid var(--gray-light); padding-bottom: 10px; margin-bottom: 15px; color: var(--text-dark);">Instructions</h3>
+                        <ol id="recipeSteps" style="margin-left: 20px; line-height: 1.8; color: var(--text-dark);">
+                            <!-- Inseriti tramite JS -->
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Script della pagina -->
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/recipe.js"></script>
+</body>
+</html>

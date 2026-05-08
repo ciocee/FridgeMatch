@@ -43,6 +43,9 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/*corpo della pagina: sfondo leggermente sfumato e 
+min-height :100vh assicura che l'altezza minima sia il 100% dell'altezza dello schermo*/
+
 body {
     font-family: var(--font-body);
     background: var(--bg-gradient);
@@ -91,6 +94,7 @@ body {
     margin-bottom: 1.75rem;
     position: relative;
 }
+
 .pill {
     position: absolute;
     top: 4px; left: 4px;
