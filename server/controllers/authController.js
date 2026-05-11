@@ -37,7 +37,7 @@ exports.register = async (req, res) => {
         await user.save();
         console.log("REGISTER - utente salvato con id:", user._id);
 
-        res.status(201).send("User registered successfully");
+        res.status(201).send({message: "User registered successfully", id: user._id});
         
     }  catch (err) {
         console.error("REGISTER ERROR:", err);
@@ -74,7 +74,7 @@ exports.login = async (req, res) => {
 
         req.session.userId = user._id;
 
-        res.status(200).send("Login successful");
+        res.status(200).send({message: "Login successful", id: user._id});
 
     } catch (err) {
         console.error("LOGIN ERROR:", err);

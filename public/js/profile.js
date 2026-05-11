@@ -71,27 +71,37 @@ function renderProfile({ user, recipes }, isMine) {
 
     // visibilità tasti: nascosti se il profilo non è il proprio non appaiono (btn visibili altrimenti)
     const editBioBtn = document.querySelector('.edit-bio-btn');
-    const addRecipeBtn = document.querySelector('.add-item-btn');
+    const addRecipeBtns = document.querySelectorAll('.add-item-btn');
     const avatarRing = document.getElementById('avatarDisplay');
+    const recipesTabBtn = document.querySelector('.tab-btn'); 
+    const headerAddBtn = document.querySelector('.tab-header .add-item-btn');
 
     if (!isMine) {
         if (editBioBtn) editBioBtn.classList.add('hidden');
-        if (addRecipeBtn) addRecipeBtn.classList.add('hidden');
+        addRecipeBtns.forEach(btn => btn.classList.add('hidden'));
         if (avatarRing) avatarRing.style.pointerEvents = 'none';
         document.querySelector('.avatar-hint').style.display = 'none';
+        if (recipesTabBtn) recipesTabBtn.textContent = `🍽️ ${user.username}'s Recipes`;
     } else {
         if (editBioBtn) editBioBtn.classList.remove('hidden');
-        if (addRecipeBtn) addRecipeBtn.classList.remove('hidden');
+        addRecipeBtns.forEach(btn => btn.classList.remove('hidden'));
         if (avatarRing) avatarRing.style.pointerEvents = 'all';
         document.querySelector('.avatar-hint').style.display = 'block';
+        if (recipesTabBtn) recipesTabBtn.textContent = "🍽️ My Recipes";
+
+        if (recipes.length === 0) {
+            if (headerAddBtn) headerAddBtn.classList.add('hidden');
+        } else {
+            if (headerAddBtn) headerAddBtn.classList.remove('hidden');
+        }
     }    
 
     // stats
     document.getElementById('statRecipes').textContent = recipes.length;
     document.getElementById('statStarred').textContent = (user.starredCreators || []).length;
 
-    renderRecipes(recipes);
-    renderStarredCreators(user.starredCreators || []);
+    renderRecipes(recipes, isMine);
+    renderStarredCreators(user.starredCreators || [], isMine);
 }
 
 /* EMOJI PICKER */
@@ -145,16 +155,20 @@ async function selectEmoji(emoji) {
 }
 
 /* TAB RICETTE */
-function renderRecipes(recipes) {
+function renderRecipes(recipes, isMine) { 
     const grid = document.getElementById('recipesGrid');
 
     if (recipes.length === 0) {
+        // se il profilo è mio e vuoto, mostro solo un pulsante al centro
         grid.innerHTML = `
-            <div class="empty-tab" style="grid-column:1/-1">
+            <div class="empty-tab" style="grid-column:1/-1; text-align:center;">
                 <div class="empty-icon">🍽️</div>
                 <p>No recipes yet</p>
-                <span>Share your first recipe with the community!</span><br><br>
-                <a href="./add-recipe.html" class="add-item-btn" style="display:inline-block;text-decoration:none">+ Add recipe</a>
+                ${isMine ? `
+                    <span>Share your first recipe with the community!</span><br><br>
+                    <!-- FIX: Testo cambiato in 'Share your recipe' per coerenza -->
+                    <button class="add-item-btn" onclick="openRecipeModal()">+ Share your recipe</button>
+                ` : '<span>This user has not shared any recipes yet.</span>'}
             </div>`;
         return;
     }
@@ -163,9 +177,10 @@ function renderRecipes(recipes) {
     recipes.forEach(recipe => {
         const card = document.createElement('div');
         card.className = 'profile-recipe-card';
-        const imgSrc = recipe.image ? `${API_BASE}${recipe.image}` : '';
+        card.style.cursor = 'pointer';
+        card.onclick = () => location.href = `./detail.html?id=${recipe._id}`;
+        const imgSrc = recipe.image ? `http://127.0.0.1:3000${recipe.image}` : '';
         const date   = new Date(recipe.createdAt).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
-        const ings   = (recipe.ingredients || []).slice(0, 4);
 
         card.innerHTML = `
             ${imgSrc
@@ -175,25 +190,25 @@ function renderRecipes(recipes) {
             <div class="recipe-content">
                 <h3>${escapeHtml(recipe.title)}</h3>
                 <p class="recipe-meta">📅 ${date} · ❤️ ${(recipe.likes || []).length} likes</p>
-                <div class="recipe-ingredients-preview">
-                    ${ings.map(i => `<span class="ing-tag">${escapeHtml(i)}</span>`).join('')}
-                    ${recipe.ingredients.length > 4 ? `<span class="ing-tag">+${recipe.ingredients.length - 4}</span>` : ''}
-                </div>
             </div>`;
         grid.appendChild(card);
     });
 }
 
 /* TAB CREATOR STELLATI */
-function renderStarredCreators(creators) {
+function renderStarredCreators(creators, isMine) {
     const grid = document.getElementById('starredGrid');
+    if (!grid) return;
+
     if (creators.length === 0) {
         grid.innerHTML = `
             <div class="empty-tab" style="grid-column:1/-1">
                 <div class="empty-icon">⭐</div>
                 <p>No starred creators yet</p>
-                <span>Visit the community and star your favourite chefs!</span><br><br>
-                <a href="./community.html" class="add-item-btn" style="display:inline-block;text-decoration:none">Browse community</a>
+                ${isMine ? `
+                    <span>Visit the community and star your favourite chefs!</span><br><br>
+                    <a href="./index.html" class="add-item-btn" style="display:inline-block;text-decoration:none">Browse community</a>
+                ` : ''} 
             </div>`;
         return;
     }
@@ -326,3 +341,10 @@ function handleLogout() {
     fetch(`${API_BASE}/auth/logout`, { method: 'POST', credentials: 'include' })
         .finally(() => { window.location.href = '../login/index.html'; });
 }
+
+// forza il ricaricamento dei dati quando si torna indietro col tasto Back (Parte 4 slide 53)
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+        window.location.reload(); 
+    }
+});

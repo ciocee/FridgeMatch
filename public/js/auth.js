@@ -103,6 +103,10 @@ async function handleSubmit(event) {
                 showError(msg);
                 return;
             }
+            
+            const regData = await res.json(); // manda l'oggetto utente
+            sessionStorage.setItem('userId', regData.id); // salva l'ID per i controlli "isMine"
+            sessionStorage.setItem('userMode', 'user');
 
             const loginRes = await fetch('http://127.0.0.1:3000/auth/login', {
                 method: 'POST',
@@ -129,6 +133,10 @@ async function handleSubmit(event) {
                 showError(msg);
                 return;
             }
+            
+            const loginData = await res.json();
+            sessionStorage.setItem('userId', loginData.id);
+            sessionStorage.setItem('userMode', 'user');
         }
 
         // Puliamo la memoria del browser per dirgli che non siamo più Guest

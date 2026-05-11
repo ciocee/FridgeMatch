@@ -7,8 +7,10 @@ const express = require("express");
 const session = require("express-session");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require('path');
 
 const app = express();
+app.use('/uploads', express.static('uploads'));
 
 //DB
 mongoose.connect(process.env.MONGO_URI )

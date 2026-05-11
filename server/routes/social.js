@@ -5,18 +5,105 @@ const User = require('../models/user');
 const Recipe  = require('../models/recipe');
 const auth    = require('../middleware/authMiddleware');
 
-// GET /api/social/feed - recupera tutte le ricette
+// per gestire il caricamento di immagini
+const multer = require('multer');
+const path = require('path');
+const storage = multer.diskStorage({ 
+    destination: 'uploads/recipes',
+    filename: (req, file, cb) => {
+        cb (null, Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({storage: storage});
+
+// POST /api/social/upload-recipe - post ricetta
+router.post('/upload-recipe', auth, upload.single('img'), async (req, res) => {
+   try {
+    const {title, ingredients} = req.body;
+    const ingredientsArray = JSON.parse(ingredients);
+    const newRecipe = new Recipe(
+        { author: req.session.userId, title: title, image: `/uploads/recipes/${req.file.filename}`, ingredients: ingredientsArray}
+    );
+    await newRecipe.save();
+    res.status(201).json(newRecipe);
+   } catch (err) {
+        console.error('POST /social/upload-recipe:', err);
+        res.status(500).send('Server error');
+   }
+});
+
+
+// GET /api/social/feed - recupera tutte le ricette divise per priorità
 router.get('/feed', auth, async (req, res) => {
     try {
-        const recipes = await Recipe.find()
-            .populate('author', 'username avatarEmoji')
-            .sort({createdAt:-1});
-        res.json(recipes);
+        const user = await User.findById(req.session.userId);
+        const starredIds = user.starredCreators;
+        const starredRecipes = await Recipe.find({ author: { $in: starredIds }, _id: { $ne: req.session.userId } })
+            .populate('author', 'username avatarEmoji')         
+            .sort({createdAt: -1});
+
+        const otherRecipes = await Recipe.find({ 
+            author: { $nin: [...starredIds, req.session.userId] },
+            _id: { $ne: req.session.userId } 
+        })
+        .populate('author', 'username avatarEmoji')
+        .sort({ createdAt: -1 });       
+
+        res.json({starredRecipes, otherRecipes});
     } catch (err) {
         console.error('GET /social/feed:', err);
         res.status(500).send('Server error');
     }
 });
+
+// GET /api/social/recipe/:id - recupera una singola ricetta della community 
+router.get('/recipe/:id', auth, async (req, res) => {
+    try {
+        const recipe = await Recipe.findById(req.params.id).populate('author', 'username avatarEmoji');
+        
+        if (!recipe) {
+            return res.status(404).json({ message: "Recipe not found in community" });
+        }
+        
+        res.status(200).json(recipe);
+    } catch (error) {
+        console.error("Errore recupero ricetta community:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+// DELETE /api/social/recipe/:id - elimina una propria ricetta
+router.delete('/recipe/:id', auth, async (req, res) => {
+    try {
+        const recipe = await Recipe.findOneAndDelete({
+            _id: req.params.id,
+            author: req.session.userId
+        });
+        if (!recipe) return res.status(404).send("Recipe not found or unauthorized");
+        res.json({ msg: "Recipe deleted" });
+    } catch (err) {
+        res.status(500).send("Error deleting recipe");
+    }
+});
+
+// POST /api/social/recipe/:id/comment - commenti ricette VALUTARE SE TOGLIERLI !!!
+/*
+router.post('/recipe/:id/comment', auth, async (req, res) => {
+    try {
+        const recipe = await Recipe.findById(req.params.id);
+        const newComment = {
+            user: req.session.userId,
+            text: req.body.text
+        };
+        recipe.comments.push(newComment); 
+        await recipe.save();
+        res.json(recipe.comments);
+    } catch (err) { 
+        console.error('POST /recipe/:id/comment', err);
+        res.status(500).send("Error"); 
+    }
+});
+*/
 
 // POST /api/social/like:id - aggiunge/toglie like
 router.post('/like/:id', auth, async (req, res) => {
