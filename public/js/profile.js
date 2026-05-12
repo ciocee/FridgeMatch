@@ -171,8 +171,7 @@ function renderRecipes(recipes, isMine) {
                 <p>No recipes yet</p>
                 ${isMine ? `
                     <span>Share your first recipe with the community!</span><br><br>
-                    <!-- FIX: Testo cambiato in 'Share your recipe' per coerenza -->
-                    <button class="add-item-btn" onclick="openRecipeModal()">+ Share your recipe</button>
+                    <button class="add-item-btn" onclick="location.href='./add-recipe.html'">+ Share your recipe</button>
                 ` : '<span>This user has not shared any recipes yet.</span>'}
             </div>`;
         return;

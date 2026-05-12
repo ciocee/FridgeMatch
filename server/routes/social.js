@@ -86,7 +86,7 @@ router.delete('/recipe/:id', auth, async (req, res) => {
     }
 });
 
-// POST /api/social/recipe/:id/comment - commenti ricette VALUTARE SE TOGLIERLI !!
+// POST /api/social/recipe/:id/comment - commenti ricette
 router.post('/recipe/:id/comment', auth, async (req, res) => {
     try {
         const recipe = await Recipe.findById(req.params.id);
