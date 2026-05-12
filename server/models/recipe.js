@@ -13,6 +13,11 @@ const RecipeSchema = new mongoose.Schema({
         required: true
     },
 
+    description: {
+        type: String, 
+        default: ""
+    },
+
     image: {
         type: String,   // percorso
         required: true        
