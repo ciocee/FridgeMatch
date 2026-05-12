@@ -1,3 +1,5 @@
+const API_BASE_URL = `http://${window.location.hostname}:3000`;
+
 const CATEGORIES = [
     { id: 'meat',       label: 'Meat',       emoji: '🥩' },
     { id: 'fish',       label: 'Fish',       emoji: '🐟' },
@@ -13,7 +15,7 @@ const CATEGORIES = [
     { id: 'other',      label: 'Other',      emoji: '📦' },
 ];
 
-const API_URL = 'http://127.0.0.1:3000/api/grocery';
+const API_URL = `${API_BASE_URL}/api/grocery`;
 
 let groceryItems     = [];
 let activeFilter     = 'all';
@@ -396,14 +398,6 @@ function toggleSidebar() {
     document.getElementById('overlay').classList.toggle('active');
 }
 
-function handleLogout() {
-    fetch('http://127.0.0.1:3000/auth/logout', {
-        method: 'POST',
-        credentials: 'include'
-    }).finally(() => {
-        window.location.href = '../login/index.html';
-    });
-}
 /*init*/
 document.addEventListener('DOMContentLoaded', () => {
     buildCategoryGrid();

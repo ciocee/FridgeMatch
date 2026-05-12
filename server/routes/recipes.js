@@ -51,6 +51,10 @@ router.get('/recipe/:id', auth, async (req, res) => {
 
         const response = await fetch(spoonacularUrl);
         
+        const quotaUsed = response.headers.get('x-api-quota-used');
+        const quotaLeft = response.headers.get('x-api-quota-left');
+        console.log(`API SPOONACULAR - Punti usati: ${quotaUsed} / Rimanenti: ${quotaLeft}`);
+
         if (!response.ok) {
             return res.status(response.status).json({ message: "Errore API Spoonacular" });
         }

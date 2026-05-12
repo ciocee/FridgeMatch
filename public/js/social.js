@@ -1,5 +1,7 @@
+const API_BASE_URL = `http://${window.location.hostname}:3000`;
+
 // gestione caricamento dinamico del feed e interazioni con i like
-const API_URL = 'http://127.0.0.1:3000/api/social'; 
+const API_URL = `${API_BASE_URL}/api/social`; 
 
 // caricamento feed
 async function loadFeed() {

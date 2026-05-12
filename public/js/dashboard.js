@@ -1,7 +1,4 @@
-/* script specifico per la dashboard */
-const API__BASE_URL = `http://${window.location.hostname}:3000`;
-
-
+const API_BASE_URL = `http://${window.location.hostname}:3000`;
 
 document.addEventListener('DOMContentLoaded', () => {
     // gestione stato guest per adattare il contenuto della dashboard
@@ -72,7 +69,7 @@ function loadGuestData() {
 
 async function loadDashboardItems() {
     try {
-        const response = await fetch(`${API__BASE_URL}/api/fridge`, {
+        const response = await fetch(`${API_BASE_URL}/api/fridge`, {
             method: 'GET',
             credentials: 'include'
         });
@@ -189,20 +186,6 @@ function showEmptyExpiring() {
     const expiringUl = document.getElementById('expiring-list');
     if (expiringUl) {
         expiringUl.innerHTML = "<li>No notifications for now.</li>";
-    }
-}
-
-
-// funzione logout
-function handleLogout() {
-    if (confirm("Are you sure you want to logout?")) {
-        fetch(`${API_BASE_URL}/auth/logout`, {
-            method: 'POST',
-            credentials: 'include'
-        }).finally(() => {
-            sessionStorage.clear();
-            window.location.href = "../login/index.html";
-        });
     }
 }
 

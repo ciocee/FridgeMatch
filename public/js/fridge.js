@@ -1,3 +1,5 @@
+const API_BASE_URL = `http://${window.location.hostname}:3000`;
+
 // Categorie con icone
 const CATEGORIES = [
     { id: 'meat',       label: 'Meat',       emoji: '🥩' },
@@ -20,7 +22,7 @@ let activeFilter = 'all';
 let pendingDeleteIds = [];
 let selectedCategory = '';
 
-const API_URL = 'http://127.0.0.1:3000/api/fridge';
+const API_URL = `${API_BASE_URL}/api/fridge`;
 
 /* ---- CARICAMENTO DAL SERVER (Parte 1: GET) ---- */
 async function loadItems() {
@@ -366,15 +368,6 @@ function toggleSidebar() {
     const overlay = document.getElementById('overlay');
     if (sidebar) sidebar.classList.toggle('active');
     if (overlay) overlay.classList.toggle('active');
-}
-
-function handleLogout() {
-    fetch('http://127.0.0.1:3000/auth/logout', {
-        method: 'POST',
-        credentials: 'include'
-    }).finally(() => {
-        window.location.href = '../login/index.html';
-    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {

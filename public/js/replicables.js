@@ -1,8 +1,10 @@
+const API_BASE_URL = `http://${window.location.hostname}:3000`;
+
 async function loadReplicableRecipes() {
-    const url = 'http://127.0.0.1:3000/api/recipes/replicable';
+    const API_REPLICABLE = `${API_BASE_URL}/api/recipes/replicable`;
 
     try {
-        const response = await fetch(url, {
+        const response = await fetch(API_REPLICABLE, {
             method: 'GET',
             credentials: 'include' 
         });

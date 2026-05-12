@@ -1,4 +1,5 @@
-const API_SINGLE_RECIPE = 'http://127.0.0.1:3000/api/recipes/recipe'; 
+const API_BASE_URL = `http://${window.location.hostname}:3000`;
+const API_SINGLE_RECIPE = `${API_BASE_URL}/api/recipes/recipe`;
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Legge l'ID dall'URL della pagina

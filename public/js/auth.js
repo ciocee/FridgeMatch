@@ -1,3 +1,5 @@
+const API_BASE_URL = `http://${window.location.hostname}:3000`;
+
 //Comandi per i messaggi di errore
 function showError(message) {
     const errorMsg = document.getElementById('errorMsg');
@@ -74,7 +76,6 @@ async function handleSubmit(event) {
     const isRegister = document.getElementById('switchBar').classList.contains('register');
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const API_BASE_URL = `http://${window.location.hostname}:3000`;
 
     try {
         if (isRegister) {
