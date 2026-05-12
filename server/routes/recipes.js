@@ -23,6 +23,10 @@ router.get('/replicable', auth, async (req, res) => {
         console.log(`API SPOONACULAR - Ricerca ricette per: ${ingredientsList}`);
 
         const response = await fetch(spoonacularUrl);
+
+        const quotaUsed = response.headers.get('x-api-quota-used');
+        const quotaLeft = response.headers.get('x-api-quota-left');
+        console.log(`API SPOONACULAR - Punti usati: ${quotaUsed} / Rimanenti: ${quotaLeft}`);
         
         if (!response.ok) {
             return res.status(response.status).json({ message: "Errore di comunicazione con Spoonacular" });

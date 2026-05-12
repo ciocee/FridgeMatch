@@ -1,5 +1,7 @@
 /* script specifico per la dashboard */
-const API_URL = 'http://127.0.0.1:3000/api/fridge';
+const API__BASE_URL = `http://${window.location.hostname}:3000`;
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // gestione stato guest per adattare il contenuto della dashboard
@@ -70,7 +72,7 @@ function loadGuestData() {
 
 async function loadDashboardItems() {
     try {
-        const response = await fetch(API_URL, {
+        const response = await fetch(`${API__BASE_URL}/api/fridge`, {
             method: 'GET',
             credentials: 'include'
         });
@@ -194,7 +196,7 @@ function showEmptyExpiring() {
 // funzione logout
 function handleLogout() {
     if (confirm("Are you sure you want to logout?")) {
-        fetch('http://127.0.0.1:3000/auth/logout', {
+        fetch(`${API_BASE_URL}/auth/logout`, {
             method: 'POST',
             credentials: 'include'
         }).finally(() => {
