@@ -59,6 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // render profilo
 function renderProfile({ user, recipes }, isMine) {
     document.getElementById('profileUsername').textContent = `@${user.username}`;
+    // Mostra/nascondi edit username solo se è il mio profilo
+    const editUsernameBtn = document.getElementById('editUsernameBtn');
+    if (editUsernameBtn) {
+        editUsernameBtn.style.display = isMine ? 'inline-flex' : 'none';
+    }
     document.title = `FridgeMatch: @${user.username}`;
 
     // emoji avatar
@@ -340,6 +345,60 @@ function toggleSidebar() {
 function handleLogout() {
     fetch(`${API_BASE}/auth/logout`, { method: 'POST', credentials: 'include' })
         .finally(() => { window.location.href = '../login/index.html'; });
+}
+
+/* CAMBIO USERNAME */
+function openUsernameEdit() {
+    const current = document.getElementById('profileUsername').textContent.replace('@', '');
+    document.getElementById('usernameInput').value = current;
+    document.getElementById('usernameCharCount').textContent = `${current.length} / 30`;
+    document.getElementById('usernameError').textContent = '';
+    document.getElementById('usernameForm').classList.remove('hidden');
+    document.getElementById('usernameInput').focus();
+}
+
+function closeUsernameEdit() {
+    document.getElementById('usernameForm').classList.add('hidden');
+    document.getElementById('usernameError').textContent = '';
+}
+
+async function saveUsername() {
+    const input = document.getElementById('usernameInput');
+    const errorEl = document.getElementById('usernameError');
+    const username = input.value.trim();
+
+    errorEl.textContent = '';
+
+    if (username.length < 3) {
+        errorEl.textContent = 'At least 3 characters required.';
+        return;
+    }
+    if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+        errorEl.textContent = 'Only letters, numbers, _ and - allowed.';
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/auth/username`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ username })
+        });
+
+        if (res.status === 409) { errorEl.textContent = 'Username already taken.'; return; }
+        if (!res.ok) { errorEl.textContent = await res.text(); return; }
+
+        // Aggiorna UI
+        document.getElementById('profileUsername').textContent = `@${username}`;
+        document.title = `FridgeMatch: @${username}`;
+        if (profileData) profileData.user.username = username;
+
+        document.getElementById('usernameForm').classList.add('hidden');
+        showToast('Username updated!', 'success');
+    } catch (e) {
+        errorEl.textContent = 'Connection error.';
+    }
 }
 
 // forza il ricaricamento dei dati quando si torna indietro col tasto Back (Parte 4 slide 53)

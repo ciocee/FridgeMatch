@@ -479,6 +479,79 @@
 /* utility */
 .hidden { display: none !important; }
 
+/* ========================
+   USERNAME EDIT
+   ======================== */
+
+.username-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+}
+
+/* bottone matitina accanto all'username — stesso stile di .edit-bio-btn */
+.edit-username-btn {
+    background: none;
+    border: 1.5px solid var(--gray-light);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--gray-medium);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+.edit-username-btn:hover {
+    border-color: var(--accent-orange);
+    color: var(--accent-orange);
+    background: #fff8ee;
+}
+
+/* form inline — riusa esattamente .bio-form */
+.username-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 0.75rem;
+}
+
+.username-form input {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid var(--gray-light);
+    border-radius: var(--input-radius);
+    font-family: inherit;
+    font-size: 0.92rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #fafafa;
+    color: var(--text-dark);
+}
+.username-form input:focus {
+    border-color: var(--accent-orange);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(255, 179, 71, 0.15);
+}
+
+.username-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* errore validazione */
+.input-error {
+    font-size: 0.75rem;
+    color: var(--danger-red);
+    margin-right: auto;
+}
+
 /* responsive */
 @media (max-width: 600px) {
     .profile-hero { flex-direction: column; align-items: center; text-align: center; padding: 1.5rem; }

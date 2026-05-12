@@ -59,7 +59,26 @@
                 </div>
 
                 <div class="profile-info">
-                    <h1 id="profileUsername" class="profile-username">Loading...</h1>
+                    <div class="username-row">
+                        <h1 id="profileUsername" class="profile-username">Loading...</h1>
+                        <button id="editUsernameBtn" class="edit-username-btn" onclick="openUsernameEdit()" title="Change username">✏️ edit</button>
+                    </div>
+
+                    <div id="usernameForm" class="username-form hidden">
+                        <input
+                            id="usernameInput"
+                            type="text"
+                            maxlength="30"
+                            placeholder="new_username"
+                            oninput="document.getElementById('usernameCharCount').textContent = this.value.length + ' / 30'"
+                        />
+                        <div class="username-form-actions">
+                            <span id="usernameCharCount" class="char-count">0 / 30</span>
+                            <small id="usernameError" class="input-error"></small>
+                            <button class="btn-cancel" onclick="closeUsernameEdit()">Cancel</button>
+                            <button class="btn-add" onclick="saveUsername()">Save</button>
+                        </div>
+                    </div>
 
                     <div class="bio-section">
                         <p id="bioText" class="bio-text"></p>
