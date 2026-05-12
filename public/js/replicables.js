@@ -3,8 +3,6 @@ window.API_BASE_URL = `http://${window.location.hostname}:3000`;
 async function loadReplicableRecipes() { 
     const API_REPLICABLE = `${API_BASE_URL}/api/recipes/replicable`;
 
-    console.log('REPLICABLE - provando a caricare le ricette replicabili...');
-
     try {
         const response = await fetch(API_REPLICABLE, {
             method: 'GET',
