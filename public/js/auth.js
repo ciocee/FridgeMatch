@@ -74,6 +74,7 @@ async function handleSubmit(event) {
     const isRegister = document.getElementById('switchBar').classList.contains('register');
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const API_BASE_URL = `http://${window.location.hostname}:3000`;
 
     try {
         if (isRegister) {
@@ -91,7 +92,7 @@ async function handleSubmit(event) {
             }
         
             //logica register
-            const res = await fetch("http://127.0.0.1:3000/auth/register", {
+            const res = await fetch(`${API_BASE_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: 'include',
@@ -104,7 +105,7 @@ async function handleSubmit(event) {
                 return;
             }
 
-            const loginRes = await fetch('http://127.0.0.1:3000/auth/login', {
+            const loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -117,7 +118,7 @@ async function handleSubmit(event) {
                 return;
             }
         } else {
-            const res = await fetch("http://127.0.0.1:3000/auth/login", {
+            const res = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: 'include',
