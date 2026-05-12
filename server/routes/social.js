@@ -86,8 +86,7 @@ router.delete('/recipe/:id', auth, async (req, res) => {
     }
 });
 
-// POST /api/social/recipe/:id/comment - commenti ricette VALUTARE SE TOGLIERLI !!!
-/*
+// POST /api/social/recipe/:id/comment - commenti ricette VALUTARE SE TOGLIERLI !!
 router.post('/recipe/:id/comment', auth, async (req, res) => {
     try {
         const recipe = await Recipe.findById(req.params.id);
@@ -103,7 +102,6 @@ router.post('/recipe/:id/comment', auth, async (req, res) => {
         res.status(500).send("Error"); 
     }
 });
-*/
 
 // POST /api/social/like:id - aggiunge/toglie like
 router.post('/like/:id', auth, async (req, res) => {
@@ -150,17 +148,18 @@ router.get('/search', auth, async (req, res) => {
             return userObj;            
         });
 
-        /* ho commentato un attimo per non usare punti api. scommentare quando si vogliono cercare ricette community
-
+        //ho commentato un attimo per non usare punti api. scommentare quando si vogliono cercare ricette community
+        
         const localRecipes = await Recipe.find({ title: { $regex: query, $options: 'i' } }).populate('author', 'username');
         const spoonRes = await fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${query}&number=5&apiKey=${apiKey}`);
         const spoonData = await spoonRes.json();
-        */
+        
 
         // commentare quando si vogliono cercare ricette community
+        /*
         let localRecipes = [];
         let spoonData = { results: [] };
-
+        */
         res.json({
             community: { users: users, recipes: localRecipes },
             global: spoonData.results

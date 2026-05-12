@@ -157,8 +157,9 @@ async function executeSocialSearch() {
                 results.community.recipes.forEach(recipe => {
                     const article = document.createElement('article');
                     article.className = 'recipe-card';
+                    const imageUrl = `http://127.0.0.1:3000${recipe.image}`;
                     article.innerHTML = `
-                        <img src="${recipe.image}" class="recipe-image" onclick="location.href='../social/detail.html?id=${recipe._id}'">
+                        <img src="${imageUrl}" class="recipe-image" onclick="location.href='../social/detail.html?id=${recipe._id}'">
                         <div class="recipe-content">
                         <h3>${recipe.title}</h3>
                         <p>By @${recipe.author ? recipe.author.username : 'Community'}</p>
@@ -170,6 +171,22 @@ async function executeSocialSearch() {
                 recipesSection.classList.add('hidden');
             }
         }
+
+        // caso in cui la ricerca non produce risultati
+        const noUsers = !results.community.users || results.community.users.length === 0;
+        const noRecipes = !results.community.recipes || results.community.recipes.length === 0;
+
+        const existingEmpty = document.getElementById('no-results-msg');
+        if (existingEmpty) existingEmpty.remove();
+
+        if (noUsers && noRecipes) {
+            const msg = document.createElement('p');
+            msg.id = 'no-results-msg';
+            msg.style.cssText = 'padding:2rem; color:var(--gray-medium); text-align:center; font-size:1rem;';
+            msg.textContent = `No results found for "${query}"`;
+            document.getElementById('search-results-area').appendChild(msg);
+        }
+
     } catch (err) {
         console.error("Search error:", err);
     }
