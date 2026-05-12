@@ -38,7 +38,6 @@
                     <ul>
                         <li><a href="profile.html">Your profile</a></li>
                         <li><a href="add-recipe.html">Add recipe</a></li>
-                        <!-- Link alla pagina stessa -->
                         <li><a href="#" class="active">Community feed</a></li>
                     </ul>
                 </nav>
@@ -50,15 +49,42 @@
         </aside>
 
         <main class="main-content">
+            <!-- barra di ricerca per la community -->
+             <header class="search-bar">
+                <div class="search-wrapper">
+                    <input type="text" placeholder="Search recipes or creators..." id="social-search-input">
+                    <button type="button" class="search-btn" onclick="executeSocialSearch()">search</button>
+                </div>
+             </header>
+
             <header class="social-header">
                 <h1>Community feed</h1>
-                <button class="add-item-btn" onclick="openRecipeModal()">+ share recipe</button>
+                <button class="add-item-btn" onclick="location.href='./add-recipe.html'">+ Share your recipe</button>
             </header>
+
+            <!-- area risultati prodotti dalla ricerca -->
+            <div id="search-results-area" class="hidden">
+                
+                <!-- sezione utenti -->
+                <section id="search-users-section" class="hidden">
+                    <h2 class="section-title">Users found</h2>
+                    <div id="search-users-grid" class="users-grid"></div>
+                </section>
+
+                <!-- sezione ricette -->
+                <section id="search-recipes-section" class="hidden">
+                    <h2 class="section-title">Community recipes found</h2>
+                    <div id="search-recipes-grid" class="recipes-feed-grid"></div>
+                </section>
+                <hr class="section-divider">
+            </div>
             
-             <section id="recipe-feed" class="recipe-feed-grid">
-                 <!-- Messaggio di caricamento preso da community.html -->
-                 <p class="loading-msg">Loading recipes from the community...</p>
-             </section>
+            <!-- feed principale -->
+            <section id="main-feed-section">
+                <div id="recipe-feed" class="recipe-feed-grid">
+                    <p class="loading-msg">Loading recipes from the community...</p>
+                </div>
+            </section>
         </main>
     </div>    
     
@@ -79,13 +105,23 @@
                     <div class="form-group">
                         <label for="recipe-img">Photo</label>
                         <input type="file" id="recipe-img" name="img" accept="image/*" required>
+                        <!-- anteprima della foto selezionata -->
+                        <div id="image-preview-container" class="image-preview-container hidden">
+                            <img id="image-preview" src="" alt="Preview">
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="ingredient-input">Ingredients from your fridge</label>
-                        <!-- FIX ID: preso da community.html per far funzionare il JS -->
-                        <input type="text" id="ingredient-input" list="fridge-ingredients-list" placeholder="Search in your fridge...">
-                        <datalist id="fridge-ingredients-list"></datalist>
+                        <label>Ingredients from your fridge:</label>
+                        <!-- contenitore per la checklist automatica dal frigo -->
+                        <div id="fridge-checklist-container" class="fridge-checklist">
+                            <p class="loading-msg">Loading your fridge...</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ingredient-input">Other ingredients (not in fridge):</label>
+                        <input type="text" id="ingredient-input" placeholder="Type and press enter">
                         <div id="selected-ingredients-tags" class="tag-container">
                             <!-- tag ingredienti selezionati via JS -->
                         </div>
@@ -98,5 +134,21 @@
             </form>                       
         </div>
     </div>
+
+    <div class="modal-backdrop" id="unstarModalBackdrop" onclick="closeUnstarModal(event)">
+        <div class="modal modal-small">
+            <div class="modal-header">
+                <h2>Remove star</h2>
+                <button class="modal-close" onclick="closeUnstarModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p id="unstarModalText">Remove this creator from your starred list?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeUnstarModal()">Cancel</button>
+                <button class="btn-delete" onclick="confirmUnstarSocial()">Remove</button>
+            </div>
+        </div>
+    </div> 
 </body>
 </html>

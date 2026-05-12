@@ -165,7 +165,10 @@
     border-radius: var(--border-radius);
     width: 95%;
     max-width: 500px;
+    max-height: 90vh; /* Altezza massima: 90% dello schermo (Parte 2 slide 38) */
     box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column; /* Organizza header, body e footer in verticale */
     overflow: hidden;
 }
 
@@ -190,6 +193,7 @@
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
+    overflow-y: auto; 
 }
 
 /* Form nel modal (Parte 1) */
@@ -256,4 +260,75 @@
     border-radius: 50px;
     font-size: 0.75rem;
     font-weight: 700;
+}
+
+/* stile per la checklist degli ingredienti */ 
+.fridge-checklist {
+    max-height: 150px;
+    overflow-y: auto; 
+    border: 1.5px solid var(--gray-light);
+    border-radius: var(--input-radius);
+    padding: 10px;
+    background: #fafafa;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 0;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-green);
+    cursor: pointer;
+}
+
+.image-preview-container {
+    margin-top: 10px;
+    width: 100%;
+    height: 200px; /* per non far esplodere il layout */
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--gray-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-preview-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
+
+.btn-delete {
+    background-color: var(--white);
+    color: var(--danger-red);
+    border: 2px solid var(--danger-red);
+    padding: 10px 20px;
+    border-radius: var(--input-radius); /* Coerente con gli input */
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body);
+}
+
+.btn-delete:hover {
+    background-color: var(--danger-red);
+    color: var(--white);
+    box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3);
+    transform: translateY(-2px); /* Piccolo scatto verso l'alto */
+}
+
+.btn-delete:active {
+    transform: translateY(0);
 }

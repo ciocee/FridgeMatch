@@ -14,11 +14,31 @@ function initSidebar() {
             if (overlay) overlay.classList.toggle('active', isActive);
         };
 
-        // Chiusura al mouseleave (richiesta precedentemente)
+        // Chiusura al mouseleave 
         sidebar.addEventListener('mouseleave', () => {
             sidebar.classList.remove('active');
             if (overlay) overlay.classList.remove('active');
         });
+    }
+}
+
+// per caricare i dati del frigo ovunque 
+async function loadFridgeData() {
+    try {
+        const response = await fetch('http://127.0.0.1:3000/api/fridge', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (response.status === 401) return []; // se non loggato, restituisci frigo vuoto
+
+        if (response.ok) {
+            return await response.json();
+        }
+        return [];
+    } catch (err) {
+        console.error("Errore recupero dati frigo:", err);
+        return [];
     }
 }
 

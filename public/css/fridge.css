@@ -235,21 +235,33 @@
 .status-badge.green .status-dot-circle  { background: #38a169; }
 
 /* bottone elimina riga */
-.delete-row-btn {
+.delete-row-btn,
+.edit-row-btn {
     background: none;
-    border: none;
+    border: 1.5px solid var(--gray-light);
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 1rem;
-    color: #ddd;
-    transition: color 0.2s, transform 0.2s;
-    padding: 4px;
-    border-radius: 6px;
+    font-size: 0.82rem;
+    color: var(--gray-medium);
+    padding: 5px 8px;
+    transition: all 0.2s;
+    font-family: inherit;
+    line-height: 1;
     justify-self: center;
 }
 
 .delete-row-btn:hover {
-    color: #e53e3e;
-    transform: scale(1.15);
+    border-color: var(--danger-red);
+    color: var(--danger-red);
+    background: #fff0f0;
+    transform: scale(1.08);
+}
+
+.edit-row-btn:hover {
+    border-color: var(--accent-orange);
+    color: var(--accent-orange);
+    background: #fff8ee;
+    transform: scale(1.08);
 }
 
 /* stato vuoto */

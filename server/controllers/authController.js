@@ -37,7 +37,7 @@ exports.register = async (req, res) => {
         await user.save();
         console.log("REGISTER - utente salvato con id:", user._id);
 
-        res.status(201).send("User registered successfully");
+        res.status(201).send({message: "User registered successfully", id: user._id});
         
     }  catch (err) {
         console.error("REGISTER ERROR:", err);
@@ -74,7 +74,7 @@ exports.login = async (req, res) => {
 
         req.session.userId = user._id;
 
-        res.status(200).send("Login successful");
+        res.status(200).send({message: "Login successful", id: user._id});
 
     } catch (err) {
         console.error("LOGIN ERROR:", err);
@@ -87,4 +87,40 @@ exports.logout = (req, res) => {
     req.session.destroy(err => {
         res.send("Logout successful");
     });
+};
+
+// Cambio username
+exports.changeUsername = async (req, res) => {
+    try {
+        if (!req.session.userId) {
+            return res.status(401).send("Not authenticated");
+        }
+
+        const { username } = req.body;
+
+        if (!username || username.trim().length < 3) {
+            return res.status(400).send("Username must be at least 3 characters");
+        }
+
+        const trimmed = username.trim();
+
+        // Controlla caratteri validi (lettere, numeri, underscore, trattino)
+        if (!/^[a-zA-Z0-9_-]+$/.test(trimmed)) {
+            return res.status(400).send("Username can only contain letters, numbers, _ and -");
+        }
+
+        // Controlla se già in uso da un altro utente
+        const existing = await User.findOne({ username: trimmed });
+        if (existing && existing._id.toString() !== req.session.userId.toString()) {
+            return res.status(409).send("Username already taken");
+        }
+
+        await User.findByIdAndUpdate(req.session.userId, { username: trimmed });
+
+        res.status(200).send({ message: "Username updated successfully", username: trimmed });
+
+    } catch (err) {
+        console.error("CHANGE USERNAME ERROR:", err);
+        res.status(500).send("Server error");
+    }
 };

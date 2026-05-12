@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FridgeMatch: Add recipe</title>
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/add-recipe.css">
+    <link rel="stylesheet" href="../../css/social.css">
+
+    <script src="../../js/utils.js" defer></script> 
+    <script src="../../js/add-recipe.js" defer></script>
+</head>
+<body class="dashboard-body">
+
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="dashboard-container">
+        <!-- sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h1 class="brand">FridgeMatch</h1>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="../dashboard/index.html">Homepage</a></li>
+                        <li><a href="../fridge/index.html">Fridge</a></li>
+                        <li><a href="../groceries/index.html">Grocery list</a></li>
+                        <li><a href="../favourites/index.html">Your favourites</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="sidebar-section social">
+                <br>
+                <h3>Social</h3>
+                <nav class="nav-menu" id="social-nav-content">
+                    <ul>
+                        <li><a href="./profile.html">Your profile</a></li>
+                        <li><a href="./add-recipe.html" class="active">Add recipe</a></li>
+                        <li><a href="./index.html">Community feed</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div id="auth-button-container" style="margin-top: auto;">
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </aside>
+
+        <!-- FIX: Corretto nome classe main-content -->
+        <main class="main-content">
+            <header class="social-header">
+                <h1>Share a New Recipe</h1>
+                <button onclick="history.back()" class="btn-cancel">Cancel</button>
+            </header>
+
+            <form id="upload-recipe-form" class="add-recipe-grid" enctype="multipart/form-data">
+                <!-- immagine ricetta (upload-zone) -->
+                <div class="upload-zone">
+                    <label for="recipe-img" class="drop-area">
+                        <input type="file" id="recipe-img" name="img" accept="image/*" required class="hidden">
+                        <div id="image-preview-container" class="preview-box">
+                            <div id="placeholder-text">
+                                <p>Click to upload your dish photo</p>
+                            </div>
+                            <img id="image-preview" src="" class="hidden">
+                        </div>
+                    </label>
+                </div>
+
+                <!-- dettagli ricetta (details-zone) -->
+                <div class="details-zone">
+                    <div class="form-group">
+                        <label>Recipe Title</label>
+                        <input type="text" id="recipe-title" name="title" placeholder="Give it a name!" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description (How did you cook it?)</label>
+                        <textarea id="recipe-desc" name="description" rows="5" placeholder="Share the story or the steps..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Select from your fridge:</label>
+                        <!-- checklist da js -->
+                        <div id="fridge-checklist-container" class="fridge-checklist">
+                            <p class="loading-msg">Loading your fridge...</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ingredient-input-manual">Other ingredients:</label>
+                        <input type="text" id="ingredient-input-manual" placeholder="Type and press Enter">
+                        <div id="selected-ingredients-tags" class="tag-container">
+                            <!-- tag da js-->
+                        </div>
+                    </div>
+                    <button type="submit" class="publish-btn-full">Publish Recipe</button>
+                </div>
+            </form>
+        </main>
+    </div>
+</body>
+</html>
