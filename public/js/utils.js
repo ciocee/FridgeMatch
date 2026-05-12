@@ -1,4 +1,5 @@
 /* File js per gestire funzioni comuni a più pagine*/
+const API_BASE_URL = `http://${window.location.hostname}:3000`;
 
 // gestione sidebar
 function initSidebar() {

@@ -1,4 +1,4 @@
-const API_BASE_URL = `http://${window.location.hostname}:3000`;
+window.API_BASE_URL = `http://${window.location.hostname}:3000`;
 const PROFILE_URL = `${API_BASE_URL}/api/profile`;
 
 const FOOD_EMOJIS = [

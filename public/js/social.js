@@ -1,4 +1,4 @@
-const API_BASE_URL = `http://${window.location.hostname}:3000`;
+window.API_BASE_URL = `http://${window.location.hostname}:3000`;
 
 // gestione caricamento dinamico del feed e interazioni con i like
 const API_URL = `${API_BASE_URL}/api/social`; 

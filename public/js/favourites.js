@@ -1,4 +1,4 @@
-const API_BASE_URL = `http://${window.location.hostname}:3000`;
+window.API_BASE_URL = `http://${window.location.hostname}:3000`;
 
 // Categorie per le Ricette
 const CATEGORIES = [

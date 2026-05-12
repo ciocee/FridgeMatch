@@ -1,4 +1,4 @@
-const API_BASE_URL = `http://${window.location.hostname}:3000`;
+window.API_BASE_URL = `http://${window.location.hostname}:3000`;
 
 document.addEventListener('DOMContentLoaded', () => {
     // gestione stato guest per adattare il contenuto della dashboard
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             authContainer.innerHTML = `
                 <button class="logout-btn" 
                         style="background-color: var(--primary-green); color: var(--white);" 
-                        onclick="location.href='../login/index.html'">
+                        onclick="location.href='../login'">
                     Login
                 </button>
             `;
@@ -191,5 +191,5 @@ function showEmptyExpiring() {
 
 // funzione che porta alla sezione per l'aggiunta di items al frigo
 function goToAddItem() {
-    window.location.href = "../fridge/index.html";
+    window.location.href = "../fridge";
 }

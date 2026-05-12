@@ -1,4 +1,4 @@
-const API_BASE_URL = `http://${window.location.hostname}:3000`;
+window.API_BASE_URL = `http://${window.location.hostname}:3000`;
 const API_SINGLE_RECIPE = `${API_BASE_URL}/api/recipes/recipe`;
 
 document.addEventListener('DOMContentLoaded', () => {

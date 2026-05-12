@@ -40,3 +40,5 @@ app.use("/api/recipes", require("../routes/recipes"));
 app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);
 });
+const apiKey = process.env.FOOD_API_KEY;
+console.log("SPOONACULAR API KEY: ", apiKey ? "Loaded" : "Not found");
