@@ -1,3 +1,5 @@
+window.API_BASE_URL = `http://${window.location.hostname}:3000`;
+
 // Categorie per le Ricette
 const CATEGORIES = [
     { id: 'breakfast',  label: 'Breakfast',    emoji: '☕' }, 
@@ -16,7 +18,7 @@ let activeFilter = 'all';
 let pendingDeleteIds = [];
 let selectedCategory = '';
 
-const API_URL = 'http://127.0.0.1:3000/api/favourites'; 
+const API_URL = `${API_BASE_URL}/api/favourites`; 
 
 /* ---- CARICAMENTO DAL SERVER ---- */
 async function loadRecipes() {
@@ -285,16 +287,6 @@ function closeDeleteModal() {
 
 function getRecipeName(id) {
     return (favouriteRecipes.find(r => (r._id || r.id) === id) || {}).name || '';
-}
-
-/* ---- SIDEBAR ---- */
-function handleLogout() {
-    fetch('http://127.0.0.1:3000/auth/logout', {
-        method: 'POST',
-        credentials: 'include'
-    }).finally(() => {
-        window.location.href = '../login/index.html';
-    });
 }
 
 /* ---- INIT ---- */

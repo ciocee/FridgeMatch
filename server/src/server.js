@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGO_URI )
 
 //Middleware
 app.use(cors({
-  origin: "http://127.0.0.1:5500",
+  origin: true,
   credentials: true
 }));
 app.use(express.json());
@@ -76,3 +76,5 @@ exports.changeUsername = async (req, res) => {
         res.status(500).send("Server error");
     }
 };
+const apiKey = process.env.FOOD_API_KEY;
+console.log("SPOONACULAR API KEY: ", apiKey ? "Loaded" : "Not found");

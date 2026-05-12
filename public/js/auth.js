@@ -1,3 +1,5 @@
+window.API_BASE_URL = `http://${window.location.hostname}:3000`;
+
 //Comandi per i messaggi di errore
 function showError(message) {
     const errorMsg = document.getElementById('errorMsg');
@@ -91,7 +93,7 @@ async function handleSubmit(event) {
             }
         
             //logica register
-            const res = await fetch("http://127.0.0.1:3000/auth/register", {
+            const res = await fetch(`${API_BASE_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: 'include',
@@ -108,7 +110,7 @@ async function handleSubmit(event) {
             sessionStorage.setItem('userId', regData.id); // salva l'ID per i controlli "isMine"
             sessionStorage.setItem('userMode', 'user');
 
-            const loginRes = await fetch('http://127.0.0.1:3000/auth/login', {
+            const loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -121,7 +123,7 @@ async function handleSubmit(event) {
                 return;
             }
         } else {
-            const res = await fetch("http://127.0.0.1:3000/auth/login", {
+            const res = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: 'include',

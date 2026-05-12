@@ -1,8 +1,10 @@
-async function loadReplicableRecipes() {
-    const url = 'http://127.0.0.1:3000/api/recipes/replicable';
+window.API_BASE_URL = `http://${window.location.hostname}:3000`;
+
+async function loadReplicableRecipes() { 
+    const API_REPLICABLE = `${API_BASE_URL}/api/recipes/replicable`;
 
     try {
-        const response = await fetch(url, {
+        const response = await fetch(API_REPLICABLE, {
             method: 'GET',
             credentials: 'include' 
         });
@@ -51,7 +53,7 @@ async function loadReplicableRecipes() {
         });
 
     } catch (error) {
-        console.error("Si è verificato un errore durante il recupero delle ricette:", error);
-        document.getElementById('replicable-grid').innerHTML = '<p class="error-msg">Impossibile caricare le ricette in questo momento.</p>';
+        console.error("There was an error during recipe loading:", error);
+        document.getElementById('replicable-grid').innerHTML = '<p class="error-msg">Impossible to load recipes at the moment.</p>';
     }
 }

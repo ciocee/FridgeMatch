@@ -1,5 +1,4 @@
-/* script specifico per la dashboard */
-const API_URL = 'http://127.0.0.1:3000/api/fridge';
+window.API_BASE_URL = `http://${window.location.hostname}:3000`;
 
 document.addEventListener('DOMContentLoaded', () => {
     // gestione stato guest per adattare il contenuto della dashboard
@@ -21,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             authContainer.innerHTML = `
                 <button class="logout-btn" 
                         style="background-color: var(--primary-green); color: var(--white);" 
-                        onclick="location.href='../login/index.html'">
+                        onclick="location.href='../login'">
                     Login
                 </button>
             `;
@@ -70,7 +69,7 @@ function loadGuestData() {
 
 async function loadDashboardItems() {
     try {
-        const response = await fetch(API_URL, {
+        const response = await fetch(`${API_BASE_URL}/api/fridge`, {
             method: 'GET',
             credentials: 'include'
         });
@@ -192,5 +191,5 @@ function showEmptyExpiring() {
 
 // funzione che porta alla sezione per l'aggiunta di items al frigo
 function goToAddItem() {
-    window.location.href = "../fridge/index.html";
+    window.location.href = "../fridge";
 }

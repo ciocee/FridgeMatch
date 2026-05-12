@@ -1,4 +1,5 @@
 /* File js per gestire funzioni comuni a più pagine*/
+const API_BASE_URL = `http://${window.location.hostname}:3000`;
 
 // gestione sidebar
 function initSidebar() {
@@ -99,10 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// funzione logout (è qui perché comune a tutte le pagine)
+// funzione logout
 function handleLogout() {
     if (confirm("Are you sure you want to logout?")) {
-        fetch('http://127.0.0.1:3000/auth/logout', {
+        fetch(`${API_BASE_URL}/auth/logout`, {
             method: 'POST',
             credentials: 'include'
         }).finally(() => {

@@ -1,5 +1,5 @@
-const API_BASE    = 'http://127.0.0.1:3000';
-const PROFILE_URL = `${API_BASE}/api/profile`;
+window.API_BASE_URL = `http://${window.location.hostname}:3000`;
+const PROFILE_URL = `${API_BASE_URL}/api/profile`;
 
 const FOOD_EMOJIS = [
     '🍕','🍔','🌮','🌯','🥗','🍣','🍜','🍝','🍛','🥘',
@@ -339,11 +339,6 @@ function showToast(message, type) {
 function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('active');
     document.getElementById('overlay').classList.toggle('active');
-}
-
-function handleLogout() {
-    fetch(`${API_BASE}/auth/logout`, { method: 'POST', credentials: 'include' })
-        .finally(() => { window.location.href = '../login/index.html'; });
 }
 
 /* CAMBIO USERNAME */
