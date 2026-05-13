@@ -33,7 +33,7 @@ async function loadItems() {
         });
 
         if (response.status === 401) {
-            window.location.href = '../login/index.html';
+            window.location.href = '../login';
             return;
         }
 

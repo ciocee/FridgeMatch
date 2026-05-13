@@ -147,7 +147,7 @@ async function handleSubmit(event) {
         sessionStorage.removeItem('bannerDismissed');
         // ==========================================
 
-        window.location.href = "../dashboard/index.html";
+        window.location.href = "../dashboard";
         
     } catch (err) {
         showError("Server error. Please try again later.");
@@ -158,5 +158,5 @@ async function handleSubmit(event) {
 function continueAsGuest() {
     sessionStorage.setItem('userMode', 'guest'); // sessionstorage per ricordare l'utente solo durante questa sessione di navigazione
     sessionStorage.setItem('username', 'Guest User');    
-    window.location.href = "../dashboard/index.html";
+    window.location.href = "../dashboard";
 }

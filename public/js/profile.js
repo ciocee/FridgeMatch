@@ -17,7 +17,7 @@ let pendingUnstarId = '';
 async function loadProfile(url, isMine) {
     try {
         const res = await fetch(url, { credentials: 'include' });
-        if (res.status === 401) { window.location.href = '../login/index.html'; return; }
+        if (res.status === 401) { window.location.href = '../login'; return; }
         if (!res.ok) { showToast('Error loading profile', 'error'); return; }
 
         profileData = await res.json();
@@ -171,7 +171,7 @@ function renderRecipes(recipes, isMine) {
                 <p>No recipes yet</p>
                 ${isMine ? `
                     <span>Share your first recipe with the community!</span><br><br>
-                    <button class="add-item-btn" onclick="location.href='./add-recipe.html'">+ Share your recipe</button>
+                    <button class="add-item-btn" onclick="location.href='./add-recipe'">+ Share your recipe</button>
                 ` : '<span>This user has not shared any recipes yet.</span>'}
             </div>`;
         return;
@@ -182,8 +182,8 @@ function renderRecipes(recipes, isMine) {
         const card = document.createElement('div');
         card.className = 'profile-recipe-card';
         card.style.cursor = 'pointer';
-        card.onclick = () => location.href = `./detail.html?id=${recipe._id}`;
-        const imgSrc = recipe.image ? `http://127.0.0.1:3000${recipe.image}` : '';
+        card.onclick = () => location.href = `./detail/?id=${recipe._id}`;
+        const imgSrc = recipe.image ? `API_BASE_URL${recipe.image}` : '';
         const date   = new Date(recipe.createdAt).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
 
         card.innerHTML = `
@@ -211,7 +211,7 @@ function renderStarredCreators(creators, isMine) {
                 <p>No starred creators yet</p>
                 ${isMine ? `
                     <span>Visit the community and star your favourite chefs!</span><br><br>
-                    <a href="./index.html" class="add-item-btn" style="display:inline-block;text-decoration:none">Browse community</a>
+                    <a href="../social" class="add-item-btn" style="display:inline-block;text-decoration:none">Browse community</a>
                 ` : ''} 
             </div>`;
         return;
@@ -224,7 +224,7 @@ function renderStarredCreators(creators, isMine) {
         card.style.cursor = 'pointer';
         card.addEventListener('click', (e) => {
             if (e.target.closest('.unstar-btn')) return;
-            window.location.href = `profile.html?id=${creator._id}`;
+            window.location.href = `profile/?id=${creator._id}`;
         });
         card.innerHTML = `
             <button class="unstar-btn" title="Remove star"

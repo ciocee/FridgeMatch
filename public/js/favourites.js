@@ -29,7 +29,7 @@ async function loadRecipes() {
         });
 
         if (response.status === 401) {
-            window.location.href = '../login/index.html';
+            window.location.href = '../login';
             return;
         }
 
@@ -235,7 +235,7 @@ async function addRecipe(event) {
         });
 
         if (response.status === 401) {
-            window.location.href = '../login/index.html';
+            window.location.href = '../login';
             return;
         }
 

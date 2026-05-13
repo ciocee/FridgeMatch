@@ -27,7 +27,7 @@ let pendingBoughtId  = '';
 async function loadItems() {
     try {
         const res = await fetch(API_URL, { credentials: 'include' });
-        if (res.status === 401) { window.location.href = '../login/index.html'; return; }
+        if (res.status === 401) { window.location.href = '../login'; return; }
         if (!res.ok) { console.error('Errore caricamento lista:', res.status); return; }
         groceryItems = await res.json();
         renderList();
@@ -182,7 +182,7 @@ async function addItem(event) {
             body: JSON.stringify({ name, category: selectedCategory, qty: parseFloat(qty), unit })
         });
 
-        if (res.status === 401) { window.location.href = '../login/index.html'; return; }
+        if (res.status === 401) { window.location.href = '../login'; return; }
 
         if (res.ok) {
             await loadItems();
@@ -206,7 +206,7 @@ async function suggestFromFridge() {
             credentials: 'include'
         });
 
-        if (res.status === 401) { window.location.href = '../login/index.html'; return; }
+        if (res.status === 401) { window.location.href = '../login'; return; }
 
         // Salviamo gli elementi nella nostra nuova variabile in memoria
         currentSuggestions = await res.json(); 
@@ -323,7 +323,7 @@ async function confirmBought() {
             body: JSON.stringify({ expiry })
         });
 
-        if (res.status === 401) { window.location.href = '../login/index.html'; return; }
+        if (res.status === 401) { window.location.href = '../login'; return; }
 
         if (res.ok) {
             document.getElementById('boughtModalBackdrop').classList.remove('open');

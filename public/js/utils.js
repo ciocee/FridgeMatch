@@ -25,7 +25,7 @@ function initSidebar() {
 // per caricare i dati del frigo ovunque 
 async function loadFridgeData() {
     try {
-        const response = await fetch('http://127.0.0.1:3000/api/fridge', {
+        const response = await fetch(`${API_BASE_URL}/api/fridge`, {
             method: 'GET',
             credentials: 'include'
         });
@@ -77,7 +77,7 @@ function handleSearch(inputElementId) {
         if (e.key === 'Enter') { 
             const query = input.value.trim();
             if (query) {
-                window.location.href = `../social/community.html?search=${encodeURIComponent(query)}`;
+                window.location.href = `../social/community/?search=${encodeURIComponent(query)}`;
             }
         }
     });
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Enter') {
                 const query = searchInput.value.trim();
                 if (query) {
-                    window.location.href = `../social/community.html?q=${encodeURIComponent(query)}`;
+                    window.location.href = `../social/community/?q=${encodeURIComponent(query)}`;
                 }
             }
         });
@@ -108,7 +108,7 @@ function handleLogout() {
             credentials: 'include'
         }).finally(() => {
             sessionStorage.clear();
-            window.location.href = "../login/index.html";
+            window.location.href = "../login";
         });
     }
 }

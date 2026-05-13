@@ -1,6 +1,4 @@
 window.API_BASE_URL = `http://${window.location.hostname}:3000`;
-
-// gestione caricamento dinamico del feed e interazioni con i like
 const API_URL = `${API_BASE_URL}/api/social`; 
 
 // caricamento feed
@@ -44,17 +42,17 @@ async function loadFeed() {
 function createRecipeArticle(recipe) {
     const article = document.createElement('article');
     article.className = 'recipe-card';
-    const imageUrl = `http://127.0.0.1:3000${recipe.image}`;
+    const imageUrl = `${API_BASE_URL}${recipe.image}`;
     
     const myId = sessionStorage.getItem('userId');
     const authorId = recipe.author._id || recipe.author;
     const isMine = recipe.author._id === myId;
 
     article.innerHTML = `
-        <img src="${imageUrl}" class="recipe-image" onclick="location.href='./detail.html?id=${recipe._id}'">
+        <img src="${imageUrl}" class="recipe-image" onclick="location.href='./detail/?id=${recipe._id}'">
         <div class="recipe-content">
             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                <h3 onclick="location.href='./detail.html?id=${recipe._id}'" style="cursor:pointer">${recipe.title}</h3>
+                <h3 onclick="location.href='./detail/?id=${recipe._id}'" style="cursor:pointer">${recipe.title}</h3>
                 ${isMine ? `<button class="delete-post-btn" onclick="deleteMyRecipe('${recipe._id}', this)">🗑️</button>` : ''}
             </div>
             <p>By @${recipe.author.username}</p>
@@ -137,8 +135,8 @@ async function executeSocialSearch() {
                     const div = document.createElement('div');
                     div.className = 'creator-card';
                     div.innerHTML = `
-                        <div class="creator-avatar" onclick="location.href='profile.html?id=${user._id}'">${user.avatarEmoji || '👤'}</div>
-                        <strong onclick="location.href='profile.html?id=${user._id}'">@${user.username}</strong>
+                        <div class="creator-avatar" onclick="location.href='profile/?id=${user._id}'">${user.avatarEmoji || '👤'}</div>
+                        <strong onclick="location.href='profile/?id=${user._id}'">@${user.username}</strong>
                         <button class="star-btn ${user.isStarred ? 'active' : ''}" 
                                 onclick="toggleStar('${user._id}', this)">
                             ${user.isStarred ? '⭐ Starred' : '⭐ Star'}
@@ -159,9 +157,9 @@ async function executeSocialSearch() {
                 results.community.recipes.forEach(recipe => {
                     const article = document.createElement('article');
                     article.className = 'recipe-card';
-                    const imageUrl = `http://127.0.0.1:3000${recipe.image}`;
+                    const imageUrl = `${API_BASE_URL}${recipe.image}`;
                     article.innerHTML = `
-                        <img src="${imageUrl}" class="recipe-image" onclick="location.href='../social/detail.html?id=${recipe._id}'">
+                        <img src="${imageUrl}" class="recipe-image" onclick="location.href='../social/detail/?id=${recipe._id}'">
                         <div class="recipe-content">
                         <h3>${recipe.title}</h3>
                         <p>By @${recipe.author ? recipe.author.username : 'Community'}</p>
@@ -212,7 +210,7 @@ async function toggleStar(userId, btn) {
     }
 
     try {
-        const res = await fetch(`http://127.0.0.1:3000/api/social/star/${userId}`, {
+        const res = await fetch(`${API_BASE_URL}/api/social/star/${userId}`, {
             method: 'POST',
             credentials: 'include'
         });
@@ -235,7 +233,7 @@ function closeUnstarModal(event) {
 
 async function confirmUnstarSocial() {
     try {
-        const res = await fetch(`http://127.0.0.1:3000/api/social/star/${pendingUnstarId}`, {
+        const res = await fetch(`${API_BASE_URL}/api/social/star/${pendingUnstarId}`, {
             method: 'POST',
             credentials: 'include'
         });

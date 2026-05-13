@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async() => {
 
                 if (res.ok) {
                     alert("Recipe shared with the community!");
-                    location.href = "../social/index.html"; 
+                    location.href = "../social"; 
                 }
             } catch (err) {
                 console.error("Errore invio:", err);

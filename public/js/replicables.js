@@ -39,7 +39,7 @@ async function loadReplicableRecipes() {
 
             article.style.cursor = 'pointer';
             article.addEventListener('click', () => {
-                window.location.href = `../replicable/index.html?id=${cleanRecipeInfo.id}`;
+                window.location.href = `../replicable/?id=${cleanRecipeInfo.id}`;
             });
 
             article.innerHTML = `

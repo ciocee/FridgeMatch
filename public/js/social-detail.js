@@ -1,10 +1,12 @@
+window.API_BASE_URL = `http://${window.location.hostname}:3000`;
+
 async function toggleLikeDetail() {
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
     const btn = document.getElementById('det-like-btn');
 
     try {
-        const res = await fetch(`http://127.0.0.1:3000/api/social/like/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/api/social/like/${id}`, {
             method: 'POST',
             credentials: 'include'
         });
@@ -29,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        const res = await fetch(`http://127.0.0.1:3000/api/social/recipe/${recipeId}`, { 
+        const res = await fetch(`${API_BASE_URL}/api/social/recipe/${recipeId}`, { 
             credentials: 'include' 
         });
         
@@ -46,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.getElementById('det-title').textContent = recipe.title;
         document.getElementById('det-author').textContent = `By @${recipe.author.username}`;
-        document.getElementById('det-image').src = `http://127.0.0.1:3000${recipe.image}`;
+        document.getElementById('det-image').src = `${API_BASE_URL}${recipe.image}`;
         document.getElementById('det-like-btn').querySelector('span').textContent = recipe.likes.length;
 
         const ingContainer = document.getElementById('det-ingredients');
@@ -71,12 +73,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 // per cancellare un post ricetta
 async function deleteRecipeDetail(id) {
     if (!confirm("Delete this post?")) return;
-    const res = await fetch(`http://127.0.0.1:3000/api/social/recipe/${id}`, { 
+    const res = await fetch(`${API_BASE_URL}/api/social/recipe/${id}`, { 
         method: 'DELETE', 
         credentials: 'include' 
     });
     if (res.ok) {
         alert("Deleted!");
-        window.location.href = "./profile.html"; 
+        window.location.href = "./profile"; 
     }
 };

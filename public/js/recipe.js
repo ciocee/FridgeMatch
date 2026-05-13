@@ -20,8 +20,8 @@ async function loadRecipeDetails(id) {
         const isCommunityRecipe = id.length === 24;
         
         const endpoint = isCommunityRecipe 
-            ? `http://127.0.0.1:3000/api/social/recipe/${id}` 
-            : `http://127.0.0.1:3000/api/recipes/recipe/${id}`;
+            ? `${API_BASE_URL}/api/social/recipe/${id}` 
+            : `${API_SINGLE_RECIPE}/${id}`;
 
         const response = await fetch(endpoint, {
             method: 'GET',
@@ -38,7 +38,7 @@ async function loadRecipeDetails(id) {
 
             const imgElement = document.getElementById('recipeImage');
             imgElement.src = isCommunityRecipe 
-                ? `http://127.0.0.1:3000${recipe.image}` 
+                ? `${API_BASE_URL}${recipe.image}` 
                 : recipe.image;
 
             document.getElementById('recipeTime').textContent = recipe.readyInMinutes || '--';
