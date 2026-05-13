@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="../../css/dashboard.css">
 
     <script src="../../js/utils.js" defer></script>
-    <script src="../../js/social-detail.js" defer></script>
     <script src="../../js/social.js" defer></script>
+    <script src="../../js/social-detail.js" defer></script>
     
 </head>
 <body class="dashboard-body">
@@ -25,7 +25,7 @@
                         <li><a href="../dashboard">Homepage</a></li> 
                         <li><a href="../fridge">Fridge</a></li>
                         <li><a href="../groceries">Grocery list</a></li>
-                        <li><a href="../social" class="active">Your favourites</a></li> 
+                        <li><a href="../social">Your favourites</a></li> 
                     </ul>
                 </nav>
             </div>
@@ -37,7 +37,7 @@
                     <ul>
                         <li><a href="../social/profile.html">Your profile</a></li>
                         <li><a href="../social/add-recipe.html">Add recipe</a></li>
-                        <li><a href="../social/index.html">Community feed</a></li>
+                        <li><a href="../social/index.html" class="active">Community feed</a></li>
                     </ul>
                 </nav>
             </div>
@@ -65,6 +65,25 @@
                         <!-- tag messi da js -->
                     </div>
                 </div>
+                
+                <!-- parte per la descrizione del post-->
+                <div class = "det-description-box">
+                    <p id="det-description"></p>
+                </div>
+
+                <!-- sezione commenti-->
+                <section class="comments-section">
+                    <h3>Comments</h3>
+                    <div class="comments-container" id="comments-list">
+                        <!-- popolato da js-->
+                    </div>
+
+                    <!-- aggiunta nuovo commento-->
+                    <div class="add-comment-form">
+                        <input type="text" id="comment-text" placeholder="Add a comment" maxlength="900">
+                        <button onclick="postComment()" class="btn-add">Post</button>
+                    </div>                        
+                </section>
 
                 <div style="margin-top: 2rem; display: flex; align-items: center; gap: 10px;">
                     <button id="det-like-btn" class="like-btn" style="font-size: 1.5rem;">❤️ <span>0</span></button>

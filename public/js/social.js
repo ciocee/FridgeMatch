@@ -1,7 +1,5 @@
-window.API_BASE_URL = `http://${window.location.hostname}:3000`;
-
 // gestione caricamento dinamico del feed e interazioni con i like
-const API_URL = `${API_BASE_URL}/api/social`; 
+const API_URL = 'http://127.0.0.1:3000/api/social'; 
 
 // caricamento feed
 async function loadFeed() {
@@ -47,8 +45,10 @@ function createRecipeArticle(recipe) {
     const imageUrl = `http://127.0.0.1:3000${recipe.image}`;
     
     const myId = sessionStorage.getItem('userId');
+    const hasMyLike = myId && recipe.likes && recipe.likes.includes(myId);
+    
     const authorId = recipe.author._id || recipe.author;
-    const isMine = recipe.author._id === myId;
+    const isMine = myId && authorId === myId;
 
     article.innerHTML = `
         <img src="${imageUrl}" class="recipe-image" onclick="location.href='./detail.html?id=${recipe._id}'">
@@ -57,9 +57,9 @@ function createRecipeArticle(recipe) {
                 <h3 onclick="location.href='./detail.html?id=${recipe._id}'" style="cursor:pointer">${recipe.title}</h3>
                 ${isMine ? `<button class="delete-post-btn" onclick="deleteMyRecipe('${recipe._id}', this)">🗑️</button>` : ''}
             </div>
-            <p>By @${recipe.author.username}</p>
-            <button class="like-btn" onclick="toggleLike('${recipe._id}', this)">
-                ❤️ <span>${recipe.likes.length}</span>
+            <p>By @${recipe.author ? recipe.author.username : 'user'}</p>
+            <button class="like-btn ${hasMyLike ? 'active' : ''}" onclick="toggleLike('${recipe._id}', this)">
+                ❤️ <span>${recipe.likes ? recipe.likes.length : 0}</span>
             </button>
         </div>
     `;
@@ -84,7 +84,7 @@ async function deleteMyRecipe(id, btn) {
     }
 }
 
-// funzione like ricetta
+// funzione like ricetta (Motore universale)
 async function toggleLike(id, btn) {
     try {
         const res = await fetch(`${API_URL}/like/${id}`, {
@@ -109,7 +109,7 @@ async function executeSocialSearch() {
     const resultsArea = document.getElementById('search-results-area');
     const mainFeed = document.getElementById('main-feed-section');
 
-    if (query === "") { // torna al main feed
+    if (query === "") { 
         if(resultsArea) resultsArea.classList.add('hidden');
         if(mainFeed) mainFeed.classList.remove('hidden');
         return;
@@ -119,7 +119,6 @@ async function executeSocialSearch() {
         const res = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}`, { credentials: 'include' });
         const results = await res.json();
 
-        // visibilità sezioni
         if (mainFeed) mainFeed.classList.add('hidden');
         if (resultsArea) resultsArea.classList.remove('hidden');
 
@@ -159,9 +158,8 @@ async function executeSocialSearch() {
                 results.community.recipes.forEach(recipe => {
                     const article = document.createElement('article');
                     article.className = 'recipe-card';
-                    const imageUrl = `http://127.0.0.1:3000${recipe.image}`;
                     article.innerHTML = `
-                        <img src="${imageUrl}" class="recipe-image" onclick="location.href='../social/detail.html?id=${recipe._id}'">
+                        <img src="http://127.0.0.1:3000${recipe.image}" class="recipe-image" onclick="location.href='./detail.html?id=${recipe._id}'">
                         <div class="recipe-content">
                         <h3>${recipe.title}</h3>
                         <p>By @${recipe.author ? recipe.author.username : 'Community'}</p>
@@ -173,40 +171,23 @@ async function executeSocialSearch() {
                 recipesSection.classList.add('hidden');
             }
         }
-
-        // caso in cui la ricerca non produce risultati
-        const noUsers = !results.community.users || results.community.users.length === 0;
-        const noRecipes = !results.community.recipes || results.community.recipes.length === 0;
-
-        const existingEmpty = document.getElementById('no-results-msg');
-        if (existingEmpty) existingEmpty.remove();
-
-        if (noUsers && noRecipes) {
-            const msg = document.createElement('p');
-            msg.id = 'no-results-msg';
-            msg.style.cssText = 'padding:2rem; color:var(--gray-medium); text-align:center; font-size:1rem;';
-            msg.textContent = `No results found for "${query}"`;
-            document.getElementById('search-results-area').appendChild(msg);
-        }
-
     } catch (err) {
         console.error("Search error:", err);
     }
 }
 
-// gestione stella: se un creator è starred, chiede conferma prima di toglierla. sennò la mette
-let pendingUnstarBtn = null;
+// gestione stella
+let socialPendingUnstarId = '';
+let socialPendingUnstarBtn = null;
 
 async function toggleStar(userId, btn) {
     const isCurrentlyStarred = btn.classList.contains('active');
 
     if (isCurrentlyStarred) {
-        const username = btn.closest('.creator-card')
-            .querySelector('strong').textContent;
-        pendingUnstarId = userId;
-        pendingUnstarBtn = btn;
-        document.getElementById('unstarModalText').innerHTML =
-            `Remove <strong>${username}</strong> from your starred creators?`;
+        const username = btn.closest('.creator-card').querySelector('strong').textContent;
+        socialPendingUnstarId = userId;
+        socialPendingUnstarBtn = btn;
+        document.getElementById('unstarModalText').innerHTML = `Remove <strong>${username}</strong>?`;
         document.getElementById('unstarModalBackdrop').classList.add('open');
         return; 
     }
@@ -221,16 +202,13 @@ async function toggleStar(userId, btn) {
             btn.classList.toggle('active', data.isStarred);
             btn.textContent = data.isStarred ? '⭐ Starred' : '⭐ Star';
         }
-    } catch (err) {
-        console.error('Star error:', err);
-    }
+    } catch (err) { console.error('Star error:', err); }
 }
 
-function closeUnstarModal(event) {
-    if (event && event.target !== document.getElementById('unstarModalBackdrop')) return;
+function closeUnstarModal() {
     document.getElementById('unstarModalBackdrop').classList.remove('open');
-    pendingUnstarId = '';
-    pendingUnstarBtn = null;
+    socialPendingUnstarId = '';     
+    socialPendingUnstarBtn = null;    
 }
 
 async function confirmUnstarSocial() {
@@ -240,15 +218,13 @@ async function confirmUnstarSocial() {
             credentials: 'include'
         });
         if (res.ok) {
-            pendingUnstarBtn.classList.remove('active');
-            pendingUnstarBtn.textContent = '⭐ Star';
+            if(pendingUnstarBtn) {
+                socialPendingUnstarId.classList.remove('active');
+                socialPendingUnstarBtn.textContent = '⭐ Star';
+            }
         }
-    } catch (err) {
-        console.error('Unstar error:', err);
-    }
-    document.getElementById('unstarModalBackdrop').classList.remove('open');
-    pendingUnstarId = '';
-    pendingUnstarBtn = null;
+    } catch (err) { console.error('Unstar error:', err); }
+    closeUnstarModal();
 }
 
 // apertura modal upload ricetta
@@ -258,13 +234,11 @@ function openRecipeModal() {
 }
 
 // chiusura modal upload ricetta
-function closeRecipeModal(event) {
-    if (!event || event.target.id === 'recipeModal' || event.target.className === 'modal-close' || event.target.className === 'btn-cancel') {
-        document.getElementById('recipeModal').classList.remove('open');
-    }
+function closeRecipeModal() {
+    document.getElementById('recipeModal').classList.remove('open');
 }
 
-// per suggerire gli ingredienti dal proprio frigo quando si pubblica una ricetta
+// per suggerire gli ingredienti dal proprio frigo
 async function suggestFridgeIngredients() {
     const container = document.getElementById('fridge-checklist-container');
     if (!container) return;
@@ -272,62 +246,41 @@ async function suggestFridgeIngredients() {
     try {
         const ingredients = await loadFridgeData();
         container.innerHTML = ""; 
-
         if (ingredients.length === 0) {
-            container.innerHTML = "<p style='font-size:0.8rem; color:var(--gray-medium)'>Your fridge is empty.</p>";
+            container.innerHTML = "<p>Fridge is empty.</p>";
             return;
         }   
-
         ingredients.forEach(item => {
             const div = document.createElement('div');
             div.className = "checkbox-item";
-
-            const checkbox = document.createElement('input');
-                checkbox.type = "checkbox";
-                checkbox.value = item.name;
-                checkbox.id = `check-${item._id}`;
-            
-            checkbox.onchange = (e) => {
-                if (e.target.checked) {
-                    if (!selectedIngredients.includes(item.name)) selectedIngredients.push(item.name);
-                } else {
-                    const index = selectedIngredients.indexOf(item.name);
-                    if (index > -1) selectedIngredients.splice(index, 1);
-                }
-                renderIngredientTags(); // Aggiorna la visualizzazione dei tag (Parte 4)
-            };
-
-            const label = document.createElement('label');
-            label.htmlFor = `check-${item._id}`;
-            label.textContent = item.name;
-
-            div.appendChild(checkbox);
-            div.appendChild(label);
+            div.innerHTML = `
+                <input type="checkbox" value="${item.name}" id="check-${item._id}" onchange="handleCheckChange(this)">
+                <label for="check-${item._id}">${item.name}</label>
+            `;
             container.appendChild(div);
         });               
-    } catch (err) {
-        container.innerHTML = "<p>Error loading ingredients.</p>";
-    }
+    } catch (err) { container.innerHTML = "<p>Error loading ingredients.</p>"; }
 }
 
 function renderIngredientTags() {
     const container = document.getElementById('selected-ingredients-tags');
     container.innerHTML = selectedIngredients.map(ing => 
-        `<span class="tag">${ing} <small onclick="removeIng('${ing}')" style="cursor:pointer">x</small></span>`
+        `<span class="tag">${ing} <small onclick="removeTag('${ing}')" style="cursor:pointer">x</small></span>`
     ).join('');
 }
 
-// per rimuovere i tag degli ingredienti
-function removeIng(name) {
+function removeTag(name) {
     const index = selectedIngredients.indexOf(name);
     if (index > -1) {
         selectedIngredients.splice(index, 1);
+        const cb = Array.from(document.querySelectorAll('.checkbox-item input')).find(i => i.value === name);
+        if (cb) cb.checked = false;
         renderIngredientTags();
     }
 }
-window.removeIng = removeIng;
+window.removeTag = removeTag;
 
-const selectedIngredients = []; // array ingredienti scelti dal frigo
+const selectedIngredients = [];
 
 function initUploadEvents() {
     const ingInput = document.getElementById('ingredient-input');
@@ -335,29 +288,25 @@ function initUploadEvents() {
         ingInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault(); 
-
-                const item = e.target.value;
+                const item = e.target.value.trim();
                 if (item && !selectedIngredients.includes(item)) {
                     selectedIngredients.push(item);
                     renderIngredientTags();
                     e.target.value = "";
                 }
-        }   
-    });
+            }
+        });
     }
 
     const imgInput = document.getElementById('recipe-img');
-    const imgPreview = document.getElementById('image-preview');
-    const previewContainer = document.getElementById('image-preview-container');
-
     if (imgInput) {
         imgInput.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    imgPreview.src = e.target.result;
-                    previewContainer.classList.remove('hidden');
+                reader.onload = (e) => {
+                    document.getElementById('image-preview').src = e.target.result;
+                    document.getElementById('image-preview-container').classList.remove('hidden');
                 }
                 reader.readAsDataURL(file);
             }
@@ -378,51 +327,38 @@ function initUploadEvents() {
                     body: formData, 
                     credentials: 'include'
                 });        
-
                 if (res.ok) {
-                    alert("Recipe shared with the community!");
-                    selectedIngredients.length = 0; // per svuotare l'array
-                    renderIngredientTags();
+                    alert("Recipe shared!");
+                    selectedIngredients.length = 0;
                     closeRecipeModal();
-                    if (typeof loadFeed === "function" && document.getElementById('recipe-feed')) {
-                        loadFeed();
-                    } else {
-                    // se nel profilo, ricarica la pagina per vedere la nuova ricetta tra le mie ricette
-                        window.location.reload();
-                    }
-                } else {
-                    const errorMsg = await res.text();
-                    alert("Upload failed: " + errorMsg);                    
+                    loadFeed();
                 }
-            } catch (err) {
-                console.error("Errore di rete:", err);            
-            }                        
+            } catch (err) { console.error(err); }                        
         });
     }
 }
 
-// caricamento del feed
+function handleCheckChange(checkbox) {
+    if (checkbox.checked) {
+        if (!selectedIngredients.includes(checkbox.value)) selectedIngredients.push(checkbox.value);
+    } else {
+        const index = selectedIngredients.indexOf(checkbox.value);
+        if (index > -1) selectedIngredients.splice(index, 1);
+    }
+    renderIngredientTags();
+}
+
+// Inizializzazione 
 document.addEventListener('DOMContentLoaded', () => {
     loadFeed();
     initUploadEvents();
     const searchInput = document.getElementById('social-search-input');
     if (searchInput) {
-        searchInput.addEventListener('input', async (e) => {
-            const query = e.target.value.trim();
-            if (query.length > 2 || query.length === 0) {
-                await executeSocialSearch();
-            }
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.trim().length > 2 || searchInput.value.trim().length === 0) executeSocialSearch();
         });
         searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                executeSocialSearch();
-            }
+            if (e.key === 'Enter') executeSocialSearch();
         });        
     }
 });
-
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeUnstarModal();
-});
-
-

@@ -19,11 +19,15 @@ const upload = multer({storage: storage});
 // POST /api/social/upload-recipe - post ricetta
 router.post('/upload-recipe', auth, upload.single('img'), async (req, res) => {
    try {
-    const {title, ingredients} = req.body;
+    const {title, ingredients, description} = req.body;
     const ingredientsArray = JSON.parse(ingredients);
-    const newRecipe = new Recipe(
-        { author: req.session.userId, title: title, image: `/uploads/recipes/${req.file.filename}`, ingredients: ingredientsArray}
-    );
+    const newRecipe = new Recipe({ 
+        author: req.session.userId, 
+        title: title, 
+        description: description,
+        image: `/uploads/recipes/${req.file.filename}`, 
+        ingredients: JSON.parse(ingredients)
+    });
     await newRecipe.save();
     res.status(201).json(newRecipe);
    } catch (err) {
@@ -37,21 +41,20 @@ router.post('/upload-recipe', auth, upload.single('img'), async (req, res) => {
 router.get('/feed', auth, async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
-        const starredIds = user.starredCreators;
-        const starredRecipes = await Recipe.find({ author: { $in: starredIds }, _id: { $ne: req.session.userId } })
-            .populate('author', 'username avatarEmoji')         
-            .sort({createdAt: -1});
+        const starredIds = user.starredCreators; 
+
+        const starredRecipes = await Recipe.find({ 
+            author: { $in: starredIds }, 
+            _id: { $ne: req.session.userId } 
+        }).populate('author', 'username avatarEmoji').sort({ createdAt: -1 });
 
         const otherRecipes = await Recipe.find({ 
             author: { $nin: [...starredIds, req.session.userId] },
             _id: { $ne: req.session.userId } 
-        })
-        .populate('author', 'username avatarEmoji')
-        .sort({ createdAt: -1 });       
+        }).populate('author', 'username avatarEmoji').sort({ createdAt: -1 });       
 
-        res.json({starredRecipes, otherRecipes});
+        res.json({ starredRecipes, otherRecipes });
     } catch (err) {
-        console.error('GET /social/feed:', err);
         res.status(500).send('Server error');
     }
 });
@@ -59,7 +62,9 @@ router.get('/feed', auth, async (req, res) => {
 // GET /api/social/recipe/:id - recupera una singola ricetta della community 
 router.get('/recipe/:id', auth, async (req, res) => {
     try {
-        const recipe = await Recipe.findById(req.params.id).populate('author', 'username avatarEmoji');
+        const recipe = await Recipe.findById(req.params.id)
+            .populate('author', 'username avatarEmoji')
+            .populate('comments.user', 'username avatarEmoji'); 
         
         if (!recipe) {
             return res.status(404).json({ message: "Recipe not found in community" });
@@ -86,22 +91,49 @@ router.delete('/recipe/:id', auth, async (req, res) => {
     }
 });
 
-// POST /api/social/recipe/:id/comment - commenti ricette
+// POST /api/social/recipe/:id/comment - aggiunta commenti ricette
 router.post('/recipe/:id/comment', auth, async (req, res) => {
     try {
         const recipe = await Recipe.findById(req.params.id);
+        if (!recipe) return res.status(404).send("Recipe not found");
+
         const newComment = {
             user: req.session.userId,
             text: req.body.text
         };
+
         recipe.comments.push(newComment); 
         await recipe.save();
-        res.json(recipe.comments);
+
+        const updatedRecipe = await Recipe.findById(req.params.id).populate('comments.user', "username avaratEmoji");        
+        res.json(updatedRecipe.comments);
     } catch (err) { 
         console.error('POST /recipe/:id/comment', err);
-        res.status(500).send("Error"); 
+        res.status(500).send("Error adding comment"); 
     }
 });
+
+// DELETE /api/social/recipe/:id/commentId - rimozione commenti ricette
+router.delete('/recipe/:id/comment/:commentId', auth, async (req, res) => {
+    try {
+        const recipe = await Recipe.findById(req.params.id);
+        const comment = recipe.comments.id(req.params.commentId);
+        if (!comment) return res.status(404).send("Comment not found");
+
+        if (comment.user.toString() !== req.session.userId) {
+            return res.status(403).send("Unauthorized: you can only delete your own comments");
+        }
+
+        comment.deleteOne();
+        await recipe.save();
+
+        res.json({ msg: "Comment deleted"});
+    } catch (err) {
+        console.error('DELETE /recipe/:id/comment', err);
+        res.status(500).send("Error deleting comment"); 
+    }
+});
+
 
 // POST /api/social/like:id - aggiunge/toglie like
 router.post('/like/:id', auth, async (req, res) => {

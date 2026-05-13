@@ -82,7 +82,7 @@
 .star-btn.active {
     background: var(--accent-orange);
     color: var(--white);
-} /* FIX: Aggiunta parentesi mancante */
+}
 
 /* --- CARD DELLA RICETTA (POST NEL FEED) --- */
 .recipe-card {
@@ -331,4 +331,102 @@
 
 .btn-delete:active {
     transform: translateY(0);
+}
+
+/* per i commenti */
+.like-btn {
+    background: var(--white);
+    border: 1.5px solid var(--gray-light);
+    padding: 8px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    transition: all var(--transition-speed);
+}
+
+.like-btn.active {
+    background: #fff0f0;
+    border-color: var(--danger-red);
+    color: var(--danger-red);
+}
+
+.like-btn:hover { transform: scale(1.05); }
+
+.comment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px;
+    background: var(--white);
+    margin-bottom: 8px;
+    border-radius: 10px;
+}
+
+.delete-comment-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    opacity: 0.4;
+}
+
+.delete-comment-btn:hover { opacity: 1; color: var(--danger-red); }
+
+.delete-post-btn {
+    background: var(--gray-light);
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 6px;
+    border-radius: 8px;
+    transition: all var(--transition-speed);
+}
+
+.delete-post-btn:hover {
+    background-color: var(--danger-red);
+    color: var(--white);
+}
+
+.status-dot-circle {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.add-comment-form {
+    display: flex;
+    gap: 12px;
+    background: var(--gray-light);
+    padding: 12px;
+    border-radius: 16px;
+    margin-top: 1.5rem;
+}
+
+.add-comment-form input {
+    flex: 1;
+    border: 1.5px solid transparent;
+    padding: 10px 16px;
+    border-radius: 10px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.add-comment-form input:focus {
+    border-color: var(--primary-green);
+}
+
+.profile-link {
+    color: var(--primary-green);
+    cursor: pointer;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.profile-link:hover {
+    text-decoration: underline;
 }

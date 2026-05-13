@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', async() => {
         uploadForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const formData = new FormData(this);
+            formData.delete('ingredients'); 
             formData.append('ingredients', JSON.stringify(selectedIngredients));
 
             try {
@@ -68,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async() => {
 
                 if (res.ok) {
                     alert("Recipe shared with the community!");
-                    location.href = "../social/index.html"; 
+                    location.href = "../social/profile.html"; 
                 }
             } catch (err) {
                 console.error("Errore invio:", err);
