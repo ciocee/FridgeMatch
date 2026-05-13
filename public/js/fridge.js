@@ -57,6 +57,7 @@ function getExpiryStatus(expiryDateStr) {
     const diffMs = expiry - today;
     const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
+    if (diffDays < 0)   return 'expired';
     if (diffDays <= 7)  return 'red';
     if (diffDays <= 14) return 'orange';
     if (diffDays <= 21) return 'yellow';
@@ -65,6 +66,7 @@ function getExpiryStatus(expiryDateStr) {
 
 function getStatusLabel(status) {
     switch (status) {
+        case 'expired': return 'Expired';
         case 'red':    return '< 1 week';
         case 'orange': return '< 2 weeks';
         case 'yellow': return '< 3 weeks';

@@ -153,23 +153,25 @@ function populateFridgeList(items) {
 function populateExpiringList(items) {
     const expiringUl = document.getElementById('expiring-list');
     if (!expiringUl) return;
- 
-    // mostra solo items in scadenza entro 7 giorni
     const expiring = items.filter(i => getExpiryStatus(i.expiry) === 'red');
- 
+    
     if (expiring.length === 0) {
         showEmptyExpiring();
         return;
     }
- 
+
     expiringUl.innerHTML = expiring.map(item => {
         const today = new Date();
         today.setHours(0,0,0,0);
         const exp = new Date(item.expiry);
         exp.setHours(0,0,0,0);
         const days = Math.ceil((exp - today) / (1000 * 60 * 60 * 24));
-        const daysText = days <= 0 ? 'Expired!' : days === 1 ? 'tomorrow' : `in ${days} days`;
-        return `<li>⚠️ <strong>${item.name}</strong> expires ${daysText}</li>`;
+        
+        const statusText = days <= 0 
+            ? '<strong>Expired!</strong>' 
+            : `expires ${days === 1 ? 'tomorrow' : `in ${days} days`}`;
+
+        return `<li>⚠️ <strong>${item.name}</strong> ${statusText}</li>`;
     }).join('');
 }
 

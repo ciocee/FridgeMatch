@@ -6,6 +6,7 @@
     <title>FridgeMatch: Recipe Details</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/dashboard.css">
+    <script src="../../js/theme.js"></script>
 </head>
 <body class="dashboard-body">
 
@@ -39,6 +40,17 @@
                     </ul>
                 </nav>
             </div>
+
+            <div class="sidebar-theme-row">
+                <span class="sidebar-theme-label"> Dark mode</span>
+                <button class="theme-toggle"
+                        role="switch"
+                        aria-checked="false"
+                        onclick="toggleTheme()"
+                        title="Toggle dark mode">
+                </button>
+            </div>
+
             <div id="auth-button-container" style="margin-top: auto;">
                 <button class="logout-btn" onclick="handleLogout()">Logout</button>
             </div>

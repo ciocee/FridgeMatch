@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FridgeMatch: Post details</title>
-    <link rel="stylesheet" href="../../../css/style.css">
-    <link rel="stylesheet" href="../../../css/social.css">
-    <link rel="stylesheet" href="../../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/social.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    <script src="../../../js/theme.js"></script>
 
     <script src="../../../js/utils.js" defer></script>
     <script src="../../../js/social-detail.js" defer></script>
@@ -40,6 +41,16 @@
                         <li><a href="../../social">Community feed</a></li>
                     </ul>
                 </nav>
+            </div>
+
+            <div class="sidebar-theme-row">
+                <span class="sidebar-theme-label"> Dark mode</span>
+                <button class="theme-toggle"
+                        role="switch"
+                        aria-checked="false"
+                        onclick="toggleTheme()"
+                        title="Toggle dark mode">
+                </button>
             </div>
 
             <div id="auth-button-container" style="margin-top: auto;">

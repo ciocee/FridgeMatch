@@ -253,3 +253,261 @@ body {
     .brand { font-size: 2.4rem; }
     .card { padding: 1.5rem 1.25rem; }
 }
+
+/* ============================================================
+   DARK THEME — sovrascrive le variabili :root
+   ============================================================ */
+[data-theme="dark"] {
+    --primary-green:      #6ce883;
+    --primary-green-dark: #4caf50;
+    --accent-orange:      #ffb347;
+    --light-green:        #4caf50;
+    --danger-red:         #ff6b6b;
+
+    --honey-yellow:  #f7c948;
+    --lavender:      #c5b8f0;
+    --cream:         #2a2a3e;
+
+    --bg-gradient:  linear-gradient(180deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+    --white:        #1e1e2e;
+    --gray-light:   #2a2a3e;
+    --gray-medium:  #9a9aaa;
+    --text-dark:    #eeeef5;
+    --text-soft:    #ccccdd;
+
+    --card-shadow:  0 8px 40px rgba(0, 0, 0, 0.45);
+    --soft-shadow:  0 4px 20px rgba(0, 0, 0, 0.35);
+    --pop-shadow:   0 12px 35px rgba(0, 0, 0, 0.55);
+}
+
+/* Fix colori hardcoded nei vari CSS — reagiscono al dark */
+[data-theme="dark"] body                         { color: var(--text-dark); }
+[data-theme="dark"] .fridge-list-header          { background: #252535; }
+[data-theme="dark"] .grocery-list-header         { background: #252535; }
+[data-theme="dark"] .favourites-list-header      { background: #252535; }
+[data-theme="dark"] .fridge-item:hover,
+[data-theme="dark"] .grocery-item:hover,
+[data-theme="dark"] .favourites-recipe:hover     { background: #252535; }
+[data-theme="dark"] .fridge-item.selected,
+[data-theme="dark"] .grocery-item.selected,
+[data-theme="dark"] .favourites-recipe.selected  { background: #2a2218; }
+[data-theme="dark"] .fridge-item                 { border-bottom-color: #2a2a3e; }
+[data-theme="dark"] .bio-text                    { color: var(--text-soft); }
+[data-theme="dark"] .bio-text:empty::before      { color: #555568; }
+[data-theme="dark"] .empty-tab p,
+[data-theme="dark"] .empty-state p               { color: var(--text-dark); }
+[data-theme="dark"] .modal-body p                { color: var(--text-soft); }
+[data-theme="dark"] .modal-close:hover           { background: #3a3a4e; }
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .bio-form textarea,
+[data-theme="dark"] .username-form input,
+[data-theme="dark"] .input-wrap input            { background: #252535; color: var(--text-dark); border-color: #3a3a50; }
+[data-theme="dark"] .fridge-search-wrap,
+[data-theme="dark"] .favourites-search-wrap      { background: #252535; border-color: #3a3a50; }
+[data-theme="dark"] .fridge-search-wrap input    { color: var(--text-dark); }
+[data-theme="dark"] .filter-btn                  { background: #252535; border-color: #3a3a50; color: var(--gray-medium); }
+[data-theme="dark"] .cat-btn                     { background: #252535; border-color: #3a3a50; }
+[data-theme="dark"] .cat-btn:hover               { background: #2a2218; border-color: var(--accent-orange); }
+[data-theme="dark"] .cat-btn.selected            { background: #1a2e20; border-color: var(--primary-green); }
+[data-theme="dark"] .fridge-checklist            { background: #252535; border-color: #3a3a50; }
+[data-theme="dark"] .preview-box                 { background: #252535; border-color: #3a3a50; }
+[data-theme="dark"] .status-badge.red            { background: #2e1a1a; color: #ff8888; }
+[data-theme="dark"] .status-badge.orange         { background: #2e2318; color: #ffb347; }
+[data-theme="dark"] .status-badge.yellow         { background: #2a2818; color: #f7c948; }
+[data-theme="dark"] .status-badge.green          { background: #1a2e20; color: #6ce883; }
+[data-theme="dark"] .source-badge.manual         { background: #1a1a35; color: #99aaff; }
+[data-theme="dark"] .source-badge.fridge         { background: #1a2e20; color: #6ce883; }
+[data-theme="dark"] .tag                         { background: #1a2e20; color: var(--primary-green); }
+[data-theme="dark"] .ing-tag                     { background: #252535; color: var(--text-dark); }
+[data-theme="dark"] .recipe-actions              { border-top-color: #2a2a3e; }
+[data-theme="dark"] .profile-tabs                { border-bottom-color: #2a2a3e; }
+[data-theme="dark"] .sidebar                     { border-right-color: #2a2a3e; box-shadow: 10px 0 30px rgba(0,0,0,0.4); }
+
+/* ============================================================
+   TOGGLE STILE APPLE
+   Uso: <button class="theme-toggle" onclick="toggleTheme()" 
+              role="switch" aria-checked="false" title="Dark mode">
+         </button>
+   ============================================================ */
+.theme-toggle {
+    /* dimensioni stile Apple */
+    width: 51px;
+    height: 31px;
+    border-radius: 31px;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+    background: #e5e5ea;          /* grigio chiaro iOS — stato OFF */
+    transition: background 0.3s ease;
+    flex-shrink: 0;
+    outline: none;
+}
+
+.theme-toggle:focus-visible {
+    box-shadow: 0 0 0 3px rgba(255, 179, 71, 0.5);
+}
+
+/* thumb bianco che scorre */
+.theme-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.22);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* stato ON (dark) — verde iOS */
+.theme-toggle.on {
+    background: #34c759;
+}
+
+.theme-toggle.on::after {
+    transform: translateX(20px);
+}
+
+/* ── Wrapper del toggle in basso alla sidebar ── */
+.sidebar-theme-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0 0;
+    margin-top: 12px;
+    border-top: 1px solid var(--gray-light);
+    gap: 10px;
+}
+
+.sidebar-theme-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gray-medium);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* DARK THEME */
+
+/* ── Textarea (add-recipe, social) ── */
+[data-theme="dark"] textarea,
+[data-theme="dark"] .form-group textarea,
+[data-theme="dark"] .modal-body textarea {
+    background: #252535 !important;
+    color: var(--text-dark) !important;
+    border-color: #3a3a50 !important;
+}
+[data-theme="dark"] textarea::placeholder { color: #666680 !important; }
+
+/* ── Checkbox bianchi → sfondo scuro ── */
+[data-theme="dark"] input[type="checkbox"] {
+    accent-color: var(--accent-orange);
+    filter: brightness(0.85);
+}
+
+/* ── Righe liste (fridge/grocery/favourites) ── */
+[data-theme="dark"] .fridge-item,
+[data-theme="dark"] .grocery-item,
+[data-theme="dark"] .favourites-recipe {
+    border-bottom-color: #2a2a3e;
+}
+[data-theme="dark"] .fridge-list-container,
+[data-theme="dark"] .grocery-list-container,
+[data-theme="dark"] .favourites-list-container {
+    background: var(--white);
+}
+
+/* ── Testo data scadenza leggibile ── */
+[data-theme="dark"] .item-expiry,
+[data-theme="dark"] .item-qty,
+[data-theme="dark"] .item-category,
+[data-theme="dark"] .item-name,
+[data-theme="dark"] .recipe-name {
+    color: var(--text-dark);
+}
+
+/* ── Profilo hero card ── */
+[data-theme="dark"] .profile-hero {
+    background: var(--white);
+}
+[data-theme="dark"] .profile-username { color: var(--primary-green); }
+[data-theme="dark"] .bio-text         { color: var(--text-soft); }
+[data-theme="dark"] .stat-number      { color: var(--primary-green); }
+[data-theme="dark"] .creator-card,
+[data-theme="dark"] .profile-recipe-card { background: var(--white); }
+[data-theme="dark"] .emoji-option     { background: #252535; }
+[data-theme="dark"] .emoji-option:hover { background: #2a2218; }
+
+/* ── Add recipe ── */
+[data-theme="dark"] .preview-box {
+    background: #252535;
+    border-color: #3a3a50;
+}
+[data-theme="dark"] .preview-box:hover {
+    background: #2a2218;
+    border-color: var(--primary-green);
+}
+[data-theme="dark"] .fridge-checklist .checkbox-item { color: var(--text-dark); }
+[data-theme="dark"] .details-zone .form-group label  { color: var(--gray-medium); }
+
+/* ── Dashboard widget "expiring soon" ── */
+[data-theme="dark"] .expiry-item,
+[data-theme="dark"] [class*="expir"] {
+    background: #252535;
+    color: var(--text-dark);
+}
+
+/* ── Modal backdrop in dark ── */
+[data-theme="dark"] .modal { background: #1e1e2e; }
+[data-theme="dark"] .modal-header { background: transparent; }
+[data-theme="dark"] .modal-header h2 { color: var(--text-dark); }
+[data-theme="dark"] .modal-footer   { border-top-color: #2a2a3e; }
+
+/* ── Social feed ── */
+[data-theme="dark"] .recipe-card    { background: var(--white); }
+[data-theme="dark"] .recipe-content h3 { color: var(--text-dark); }
+[data-theme="dark"] .creator-avatar { background: #252535; }
+
+/* ── Auth page: input dentro il frigo ── */
+[data-theme="dark"] .fridge-body {
+    background: linear-gradient(180deg, #1e1e2e 0%, #16213e 100%);
+    border-color: #3a3a50;
+}
+[data-theme="dark"] .fridge-body .input-wrap input {
+    background: #252535;
+    border-color: #3a3a50;
+    color: var(--text-dark);
+}
+[data-theme="dark"] .freezer {
+    background: linear-gradient(180deg, #252535 0%, #1e1e2e 100%);
+    border-color: #3a3a50;
+}
+
+/* ── Sidebar ── */
+[data-theme="dark"] .sidebar          { background: #1e1e2e; border-right-color: #2a2a3e; }
+[data-theme="dark"] .nav-menu a       { color: var(--text-soft); }
+[data-theme="dark"] .nav-menu a:hover,
+[data-theme="dark"] .nav-menu a.active { background: #252535; color: var(--primary-green); }
+[data-theme="dark"] .sidebar-theme-row { border-top-color: #2a2a3e; }
+
+/* ── Bulk bar ── */
+[data-theme="dark"] .bulk-bar { background: #252535; }
+
+/* ── Dashboard widget specifici ── */
+[data-theme="dark"] .widget,
+[data-theme="dark"] .recipes-section     { background: var(--white); }
+[data-theme="dark"] .data-list li        { border-bottom-color: #2a2a3e; color: var(--text-dark); }
+[data-theme="dark"] .data-list li:hover  { background: #252535; }
+[data-theme="dark"] .notification-style li {
+    background: #2a1a1a !important;
+    border-left-color: var(--coral);
+    color: var(--text-dark);
+}
+[data-theme="dark"] .notification-style li:hover { background: #351a1a !important; }
+[data-theme="dark"] .recipe-card         { background: var(--white); }
+[data-theme="dark"] .recipe-card h3      { color: var(--text-dark); }

@@ -263,6 +263,12 @@
     background: #fff8ee;
     transform: scale(1.08);
 }
+/*diventano grigio se scaduto */
+.status-badge.expired {
+    background: #f0f0f0;
+    color: #888;
+}
+.status-badge.expired .status-dot-circle { background: #aaa; }
 
 /* stato vuoto */
 .empty-state {
