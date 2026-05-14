@@ -3,10 +3,12 @@ const router = express.Router();
 
 const FridgeItem = require('../models/fridge');
 const RecipeCache = require('../models/recipeCache');
+const GlobalSearchCache = require('../models/globalSearchCache'); // <-- Nuovo modello
 const auth = require('../middleware/authMiddleware');
 
 const apiKey = process.env.FOOD_API_KEY;
 
+// --- ROTTA REPLICABLE: Con Global Search Cache ---
 router.get('/replicable', auth, async (req, res) => {
     try {
         const items = await FridgeItem.find({ user: req.session.userId });
@@ -15,13 +17,23 @@ router.get('/replicable', auth, async (req, res) => {
             return res.status(200).json([]); 
         }
 
-        const ingredientsList = items
-            .map(item => item.name.trim().replace(/\s+/g, '+')) 
-            .join(',+'); 
-        
-        const spoonacularUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsList}&number=4&apiKey=${apiKey}`;
-        console.log(`API SPOONACULAR - Ricerca ricette per: ${ingredientsList}`);
+        // 1. CREAZIONE CHIAVE NORMALIZZATA
+        const sortedIngredients = [...new Set(items.map(i => i.name.toLowerCase().trim()))].sort();
+        const ingredientsKey = sortedIngredients.join(',');
 
+        // 2. CONTROLLO CACHE GLOBALE
+        const cachedResults = await GlobalSearchCache.findOne({ ingredientsKey: ingredientsKey });
+
+        if (cachedResults) {
+            console.log(`GLOBAL CACHE HIT - Risultati trovati per: [${ingredientsKey}]`);
+            return res.status(200).json(cachedResults.results);
+        }
+
+        // 3. SE NON TROVATA, CHIAMATA API
+        const ingredientsParam = sortedIngredients.map(name => name.replace(/\s+/g, '+')).join(',+');
+        const spoonacularUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&number=4&apiKey=${apiKey}`;
+        
+        console.log("GLOBAL CACHE MISS - Chiamata a Spoonacular...");
         const response = await fetch(spoonacularUrl);
 
         const quotaUsed = response.headers.get('x-api-quota-used');
@@ -33,6 +45,18 @@ router.get('/replicable', auth, async (req, res) => {
         }
 
         const data = await response.json();
+
+        // 4. SALVATAGGIO NELLA CACHE GLOBALE
+        try {
+            const newCache = new GlobalSearchCache({
+                ingredientsKey: ingredientsKey,
+                results: data
+            });
+            await newCache.save();
+            console.log(`GLOBAL CACHE - Nuova combinazione salvata: [${ingredientsKey}]`);
+        } catch (saveError) {
+            console.log("Nota: Cache già presente o errore di salvataggio concorrente.");
+        }
         
         res.status(200).json(data);
 
@@ -42,9 +66,9 @@ router.get('/replicable', auth, async (req, res) => {
     }
 });
 
+// --- ROTTA RECIPE/:ID ---
 router.get('/recipe/:id', auth, async (req, res) => {
     try {
-        
         const recipeId = Number(req.params.id);
         
         // 1. CERCA LA RICETTA NEL DATABASE MONGODB
@@ -55,7 +79,7 @@ router.get('/recipe/:id', auth, async (req, res) => {
             return res.status(200).json(cachedRecipe);
         }
 
-        // 2. SE NON ESISTE, CHIAMA L'API DI SPOONACULAR (includeNutrition=true)
+        // 2. SE NON ESISTE, CHIAMA L'API DI SPOONACULAR
         const spoonacularUrl = `https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=true&apiKey=${apiKey}`;
         console.log(`API SPOONACULAR - Ricerca dettagli per ID: ${recipeId} (Non presente in Cache)`);
 
@@ -71,7 +95,7 @@ router.get('/recipe/:id', auth, async (req, res) => {
 
         const data = await response.json();
 
-        // --- Funzione helper per estrarre i macronutrienti in sicurezza ---
+        // Funzione helper per estrarre i macronutrienti
         const getNutrient = (name) => {
             if (!data.nutrition || !data.nutrition.nutrients) return "N/A";
             const nut = data.nutrition.nutrients.find(n => n.name === name);
@@ -98,7 +122,6 @@ router.get('/recipe/:id', auth, async (req, res) => {
                 original: ing.original
             })) : [],
             
-            //MACRO
             macros: {
                 calories: getNutrient('Calories'),
                 protein: getNutrient('Protein'),
@@ -106,7 +129,6 @@ router.get('/recipe/:id', auth, async (req, res) => {
                 fat: getNutrient('Fat')
             },
             
-            // Salviamo solo i passaggi testuali delle istruzioni
             analyzedInstructions: data.analyzedInstructions ? data.analyzedInstructions.map(instructionBlock => ({
                 name: instructionBlock.name,
                 steps: instructionBlock.steps.map(step => ({
@@ -121,7 +143,6 @@ router.get('/recipe/:id', auth, async (req, res) => {
         await newCachedRecipe.save();
         console.log(`DB CACHE - Nuova ricetta salvata nel db per ID: ${recipeId}`);
 
-        // 5. INVIA I DATI AL FRONTEND
         res.status(200).json(recipeDataToSave);
 
     } catch (error) {
