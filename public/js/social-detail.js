@@ -93,7 +93,7 @@ function renderComments(comments) {
     container.innerHTML = ""; 
 
     if (!comments || comments.length === 0) {
-        container.innerHTML = "<p>No comments yet. Be the first!</p>";
+        container.innerHTML = "<p>No comments yet.</p>";
         return;
     }
 

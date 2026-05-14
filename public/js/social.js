@@ -176,56 +176,6 @@ async function executeSocialSearch() {
     }
 }
 
-// gestione stella
-let socialPendingUnstarId = '';
-let socialPendingUnstarBtn = null;
-
-async function toggleStar(userId, btn) {
-    const isCurrentlyStarred = btn.classList.contains('active');
-
-    if (isCurrentlyStarred) {
-        const username = btn.closest('.creator-card').querySelector('strong').textContent;
-        socialPendingUnstarId = userId;
-        socialPendingUnstarBtn = btn;
-        document.getElementById('unstarModalText').innerHTML = `Remove <strong>${username}</strong>?`;
-        document.getElementById('unstarModalBackdrop').classList.add('open');
-        return; 
-    }
-
-    try {
-        const res = await fetch(`http://127.0.0.1:3000/api/social/star/${userId}`, {
-            method: 'POST',
-            credentials: 'include'
-        });
-        if (res.ok) {
-            const data = await res.json();
-            btn.classList.toggle('active', data.isStarred);
-            btn.textContent = data.isStarred ? '⭐ Starred' : '⭐ Star';
-        }
-    } catch (err) { console.error('Star error:', err); }
-}
-
-function closeUnstarModal() {
-    document.getElementById('unstarModalBackdrop').classList.remove('open');
-    socialPendingUnstarId = '';     
-    socialPendingUnstarBtn = null;    
-}
-
-async function confirmUnstarSocial() {
-    try {
-        const res = await fetch(`http://127.0.0.1:3000/api/social/star/${pendingUnstarId}`, {
-            method: 'POST',
-            credentials: 'include'
-        });
-        if (res.ok) {
-            if(pendingUnstarBtn) {
-                socialPendingUnstarId.classList.remove('active');
-                socialPendingUnstarBtn.textContent = '⭐ Star';
-            }
-        }
-    } catch (err) { console.error('Unstar error:', err); }
-    closeUnstarModal();
-}
 
 // apertura modal upload ricetta
 function openRecipeModal() {
