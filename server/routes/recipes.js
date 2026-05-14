@@ -25,7 +25,7 @@ router.get('/replicable', auth, async (req, res) => {
         const cachedResults = await GlobalSearchCache.findOne({ ingredientsKey: ingredientsKey });
 
         if (cachedResults) {
-            console.log(`GLOBAL CACHE HIT - Risultati trovati per: [${ingredientsKey}]`);
+            console.log(`GLOBAL CACHE - Risultati trovati per: [${ingredientsKey}]`);
             return res.status(200).json(cachedResults.results);
         }
 
@@ -33,12 +33,12 @@ router.get('/replicable', auth, async (req, res) => {
         const ingredientsParam = sortedIngredients.map(name => name.replace(/\s+/g, '+')).join(',+');
         const spoonacularUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&number=4&apiKey=${apiKey}`;
         
-        console.log("GLOBAL CACHE MISS - Chiamata a Spoonacular...");
+        console.log("GLOBAL CACHE - Chiamata a Spoonacular...");
         const response = await fetch(spoonacularUrl);
 
         const quotaUsed = response.headers.get('x-api-quota-used');
         const quotaLeft = response.headers.get('x-api-quota-left');
-        console.log(`API SPOONACULAR - Punti usati: ${quotaUsed} / Rimanenti: ${quotaLeft}`);
+        console.log(`API SPOONACULAR - Ricerca ricette per: [${ingredientsKey}] - Punti usati: ${quotaUsed} / Rimanenti: ${quotaLeft}`);
         
         if (!response.ok) {
             return res.status(response.status).json({ message: "Errore di comunicazione con Spoonacular" });
