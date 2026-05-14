@@ -1,334 +1,453 @@
 /* --- HEADER E PULSANTE SHARE --- */
 .social-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 2rem;
 }
 
 .social-header h1 {
-    font-size: 1.8rem;
-    color: var(--primary-green);
-    font-weight: 700;
+font-size: 1.8rem;
+color: var(--primary-green);
+font-weight: 700;
 }
 
-/* Riutilizziamo lo stile del bottone "Add" coerente con il frigo */
 .add-item-btn {
-    background-color: var(--primary-green);
-    color: var(--white);
-    border: none;
-    padding: 12px 24px;
-    border-radius: 50px; 
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-    font-family: inherit;
+background-color: var(--primary-green);
+color: var(--white);
+border: none;
+padding: 12px 24px;
+border-radius: 50px;
+font-weight: 700;
+cursor: pointer;
+transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+font-family: inherit;
 }
 
 .add-item-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(46, 92, 58, 0.3);
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(46, 92, 58, 0.3);
 }
 
-/* --- GRID GENERALE (FEED E CREATOR) --- */
-/* Unifichiamo i due blocchi: Responsive auto-fill (PDF Responsive slide 11) */
-.recipe-feed-grid, 
+/* --- GRID GENERALE (FEED E CREATOR) --- /
+/ Unifichiamo i due blocchi: Responsive auto-fill */
+.recipe-feed-grid,
 .starred-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 20px;
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+gap: 2rem;
+margin-top: 20px;
 }
 
 /* --- CARD DEI CREATOR (Profili suggeriti) --- */
 .creator-card {
-    background: var(--white);
-    border-radius: var(--border-radius);
-    padding: 1.5rem;
-    text-align: center;
-    box-shadow: var(--card-shadow);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    transition: transform var(--transition-speed);
+background: var(--white);
+border-radius: var(--border-radius);
+padding: 1.5rem;
+text-align: center;
+box-shadow: var(--card-shadow);
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 12px;
+transition: transform var(--transition-speed);
 }
 
 .creator-card:hover { transform: translateY(-5px); }
 
 .creator-avatar {
-    font-size: 3rem;
-    background: var(--gray-light);
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid var(--primary-green);
+font-size: 3rem;
+background: var(--gray-light);
+width: 80px;
+height: 80px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+border: 2px solid var(--primary-green);
 }
 
 .star-btn {
-    background: none;
-    border: 1.5px solid var(--accent-orange);
-    color: var(--accent-orange);
-    padding: 5px 20px;
-    border-radius: 50px;
-    cursor: pointer;
-    font-weight: 700;
-    transition: all var(--transition-speed);
+background: none;
+border: 1.5px solid var(--accent-orange);
+color: var(--accent-orange);
+padding: 5px 20px;
+border-radius: 50px;
+cursor: pointer;
+font-weight: 700;
+transition: all var(--transition-speed);
 }
 
 .star-btn.active {
-    background: var(--accent-orange);
-    color: var(--white);
-} /* FIX: Aggiunta parentesi mancante */
+background: var(--accent-orange);
+color: var(--white);
+}
 
 /* --- CARD DELLA RICETTA (POST NEL FEED) --- */
 .recipe-card {
-    background: var(--white);
-    border-radius: var(--border-radius);
-    box-shadow: var(--card-shadow);
-    overflow: hidden; /* Taglia l'immagine sugli angoli tondi */
-    display: flex;
-    flex-direction: column;
-    transition: transform var(--transition-speed);
+background: var(--white);
+border-radius: var(--border-radius);
+box-shadow: var(--card-shadow);
+overflow: hidden;
+display: flex;
+flex-direction: column;
+transition: transform var(--transition-speed);
 }
 
 .recipe-card:hover {
-    transform: translateY(-5px);
+transform: translateY(-5px);
 }
 
 .recipe-image {
-    width: 100%;
-    height: 220px;
-    object-fit: cover; /* Gestione ritaglio immagini (Parte 2) */
-    background-color: var(--gray-light);
+width: 100%;
+height: 220px;
+object-fit: cover; /* Gestione ritaglio immagini */
+background-color: var(--gray-light);
 }
 
 .recipe-content {
-    padding: 1.5rem;
-    flex-grow: 1;
+padding: 1.5rem;
+flex-grow: 1;
 }
 
 .recipe-content h3 {
-    font-size: 1.2rem;
-    color: var(--text-dark);
-    margin-bottom: 0.5rem;
+font-size: 1.2rem;
+color: var(--text-dark);
+margin-bottom: 0.5rem;
 }
 
 .recipe-author {
-    font-size: 0.85rem;
-    color: var(--gray-medium);
-    margin-bottom: 1rem;
+font-size: 0.85rem;
+color: var(--gray-medium);
+margin-bottom: 1rem;
 }
 
-/* Pulsanti Like e Commento (Parte 2: Flexbox) */
+/* Pulsanti Like e Commento */
 .recipe-actions {
-    display: flex;
-    gap: 1.5rem;
-    padding: 1rem 1.5rem;
-    border-top: 1px solid var(--gray-light);
+display: flex;
+gap: 1.5rem;
+padding: 1rem 1.5rem;
+border-top: 1px solid var(--gray-light);
 }
 
 .action-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    color: var(--gray-medium);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: color 0.2s;
+background: none;
+border: none;
+cursor: pointer;
+font-size: 1rem;
+color: var(--gray-medium);
+display: flex;
+align-items: center;
+gap: 8px;
+transition: color 0.2s;
 }
 
 .action-btn:hover { color: var(--primary-green); }
 .action-btn.liked { color: var(--danger-red); }
 
-/* --- MODAL LOGIC (Parte 2: Posizionamento slide 37) --- */
+/* --- MODAL LOGIC --- */
 .modal-backdrop {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5); /* Sfondo scuro */
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Scurisce lo sfondo */
+    z-index: 2000; 
     display: none; 
     justify-content: center;
     align-items: center;
-    z-index: 2000;
 }
 
-.modal-backdrop.open { display: flex; }
+.modal-backdrop.open {
+    display: flex;
+}
 
 .modal {
-    background: var(--white);
-    border-radius: var(--border-radius);
-    width: 95%;
-    max-width: 500px;
-    max-height: 90vh; /* Altezza massima: 90% dello schermo (Parte 2 slide 38) */
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-    display: flex;
-    flex-direction: column; /* Organizza header, body e footer in verticale */
-    overflow: hidden;
+background: var(--white);
+border-radius: var(--border-radius);
+width: 95%;
+max-width: 500px;
+max-height: 90vh; /* Altezza massima: 90% dello schermo (Parte 2 slide 38) */
+box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+display: flex;
+flex-direction: column; /* Organizza header, body e footer in verticale */
+overflow: hidden;
 }
 
 .modal-header {
-    padding: 1.2rem 1.5rem;
-    background: var(--gray-light);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+padding: 1.2rem 1.5rem;
+background: var(--gray-light);
+display: flex;
+justify-content: space-between;
+align-items: center;
 }
 
 .modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--gray-medium);
+background: none;
+border: none;
+font-size: 1.5rem;
+cursor: pointer;
+color: var(--gray-medium);
 }
 
 .modal-body {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-    overflow-y: auto; 
+padding: 1.5rem;
+display: flex;
+flex-direction: column;
+gap: 1.2rem;
+overflow-y: auto;
 }
 
-/* Form nel modal (Parte 1) */
+/* Form nel modal */
 .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+display: flex;
+flex-direction: column;
+gap: 8px;
 }
 
 .form-group label {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--primary-green);
+font-size: 0.85rem;
+font-weight: 700;
+color: var(--primary-green);
 }
 
 .form-group input {
-    padding: 12px;
-    border: 1.5px solid var(--gray-light);
-    border-radius: var(--input-radius);
-    font-family: inherit;
+padding: 12px;
+border: 1.5px solid var(--gray-light);
+border-radius: var(--input-radius);
+font-family: inherit;
 }
 
 .modal-footer {
-    padding: 1.2rem 1.5rem;
-    border-top: 1px solid var(--gray-light);
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+padding: 1.2rem 1.5rem;
+border-top: 1px solid var(--gray-light);
+display: flex;
+justify-content: flex-end;
+gap: 10px;
 }
 
 .btn-cancel {
-    background: none;
-    border: 1px solid var(--gray-medium);
-    padding: 10px 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    color: var(--gray-medium);
-    font-family: inherit;
+background: none;
+border: 1px solid var(--gray-medium);
+padding: 10px 20px;
+border-radius: 10px;
+cursor: pointer;
+color: var(--gray-medium);
+font-family: inherit;
 }
 
 .btn-add {
-    background-color: var(--primary-green);
-    color: var(--white);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
+background-color: var(--primary-green);
+color: var(--white);
+border: none;
+padding: 10px 20px;
+border-radius: 10px;
+font-weight: 700;
+cursor: pointer;
+font-family: inherit;
 }
 
 /* --- TAGS INGREDIENTI --- */
 .tag-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+margin-top: 10px;
 }
 
 .tag {
-    background: var(--light-green);
-    color: var(--primary-green);
-    padding: 5px 14px;
-    border-radius: 50px;
-    font-size: 0.75rem;
-    font-weight: 700;
+background: var(--light-green);
+color: var(--primary-green);
+padding: 5px 14px;
+border-radius: 50px;
+font-size: 0.75rem;
+font-weight: 700;
 }
 
-/* stile per la checklist degli ingredienti */ 
+/* stile per la checklist degli ingredienti */
 .fridge-checklist {
-    max-height: 150px;
-    overflow-y: auto; 
-    border: 1.5px solid var(--gray-light);
-    border-radius: var(--input-radius);
-    padding: 10px;
-    background: #fafafa;
+max-height: 150px;
+overflow-y: auto;
+border: 1.5px solid var(--gray-light);
+border-radius: var(--input-radius);
+padding: 10px;
+background: #fafafa;
 }
 
 .checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 5px 0;
-    font-size: 0.9rem;
-    color: var(--text-dark);
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 5px 0;
+font-size: 0.9rem;
+color: var(--text-dark);
 }
 
 .checkbox-item input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--primary-green);
-    cursor: pointer;
+width: 18px;
+height: 18px;
+accent-color: var(--primary-green);
+cursor: pointer;
 }
 
 .image-preview-container {
-    margin-top: 10px;
-    width: 100%;
-    height: 200px; /* per non far esplodere il layout */
-    border-radius: 12px;
-    overflow: hidden;
-    background: var(--gray-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+margin-top: 10px;
+width: 100%;
+height: 200px; /* per non far esplodere il layout */
+border-radius: 12px;
+overflow: hidden;
+background: var(--gray-light);
+display: flex;
+align-items: center;
+justify-content: center;
 }
 
 .image-preview-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
+width: 100%;
+height: 100%;
+object-fit: cover;
 }
 
 .btn-delete {
-    background-color: var(--white);
-    color: var(--danger-red);
-    border: 2px solid var(--danger-red);
-    padding: 10px 20px;
-    border-radius: var(--input-radius); /* Coerente con gli input */
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all var(--transition-speed) ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-body);
+background-color: var(--white);
+color: var(--danger-red);
+border: 2px solid var(--danger-red);
+padding: 10px 20px;
+border-radius: var(--input-radius); /* Coerente con gli input */
+font-size: 0.9rem;
+font-weight: 700;
+cursor: pointer;
+transition: all var(--transition-speed) ease;
+display: inline-flex;
+align-items: center;
+gap: 8px;
+font-family: var(--font-body);
 }
 
 .btn-delete:hover {
-    background-color: var(--danger-red);
-    color: var(--white);
-    box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3);
-    transform: translateY(-2px); /* Piccolo scatto verso l'alto */
+background-color: var(--danger-red);
+color: var(--white);
+box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3);
+transform: translateY(-2px); /* Piccolo scatto verso l'alto */
 }
 
 .btn-delete:active {
-    transform: translateY(0);
+transform: translateY(0);
 }
+
+/* per i commenti */
+.like-btn {
+background: var(--white);
+border: 1.5px solid var(--gray-light);
+padding: 8px 16px;
+border-radius: 12px;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 8px;
+font-weight: 700;
+transition: all var(--transition-speed);
+}
+
+.like-btn.active {
+background: #fff0f0;
+border-color: var(--danger-red);
+color: var(--danger-red);
+}
+
+.like-btn:hover { transform: scale(1.05); }
+
+.comment-item {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+padding: 12px;
+background: var(--white);
+margin-bottom: 8px;
+border-radius: 10px;
+}
+
+.delete-comment-btn {
+background: none;
+border: none;
+cursor: pointer;
+font-size: 0.8rem;
+opacity: 0.4;
+}
+
+.delete-comment-btn:hover { opacity: 1; color: var(--danger-red); }
+
+.delete-post-btn {
+background: var(--gray-light);
+border: none;
+cursor: pointer;
+font-size: 1rem;
+padding: 6px;
+border-radius: 8px;
+transition: all var(--transition-speed);
+}
+
+.delete-post-btn:hover {
+background-color: var(--danger-red);
+color: var(--white);
+}
+
+.status-dot-circle {
+display: inline-block;
+width: 8px;
+height: 8px;
+border-radius: 50%;
+}
+
+.add-comment-form {
+display: flex;
+gap: 12px;
+background: var(--gray-light);
+padding: 12px;
+border-radius: 16px;
+margin-top: 1.5rem;
+}
+
+.add-comment-form input {
+flex: 1;
+border: 1.5px solid transparent;
+padding: 10px 16px;
+border-radius: 10px;
+outline: none;
+font-family: inherit;
+transition: border-color 0.2s;
+}
+
+.add-comment-form input:focus {
+border-color: var(--primary-green);
+}
+
+.profile-link {
+color: var(--primary-green);
+cursor: pointer;
+font-weight: 700;
+text-decoration: none;
+}
+
+.profile-link:hover {
+text-decoration: underline;
+}
+
+/* feed scrollabile orizzontalmente */
+#starred-recipe-feed,
+#recipe-feed {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+/* non serve più (?)
+#starred-recipe-feed .recipe-card,
+#recipe-feed .recipe-card {
+    min-width: 300px;
+    max-width: 300px;
+    flex-shrink: 0;
+}
+    */

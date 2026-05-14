@@ -1,6 +1,9 @@
 /* File js per gestire funzioni comuni a più pagine*/
 const API_BASE_URL = `http://${window.location.hostname}:3000`;
 
+let pendingUnstarId = '';
+let pendingUnstarBtn = null;
+
 // gestione sidebar
 function initSidebar() {
     const sidebar = document.querySelector('.sidebar');
@@ -112,3 +115,96 @@ function handleLogout() {
         });
     }
 }
+
+// funzione per aggiungere/togliere stella ad un creator 
+async function toggleStar(userId, btn) {
+    if (btn.classList.contains('active')) {
+        const container = btn.closest('article, .creator-card, .profile-hero');
+        const username = container.querySelector('strong, .profile-username, .creator-name').textContent;
+        requestUnstar(userId, username, btn);
+        return;
+    }
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/social/star/${userId}`, { method: 'POST', credentials: 'include' });
+        if (res.ok) {
+            btn.classList.add('active');
+            btn.textContent = '⭐ Starred';
+            showToast('Added to starred!', 'success');
+        }
+    } catch (err) { console.error('Star error:', err); }
+}
+
+
+function showToast(message, type) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.className = `toast ${type}`;
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function requestUnstar(id, username, btn) {
+    pendingUnstarId = id;
+    pendingUnstarBtn = btn;
+    const textEl = document.getElementById('unstarModalText');
+    if (textEl) textEl.innerHTML = `Remove <strong>${username}</strong> from your starred list?`;
+    document.getElementById('unstarModalBackdrop').classList.add('open');
+}
+
+function closeUnstarModal() {
+    document.getElementById('unstarModalBackdrop').classList.remove('open');
+    pendingUnstarId = ''; pendingUnstarBtn = null;
+}
+
+async function confirmUnstar() {
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/social/star/${pendingUnstarId}`, { 
+            method: 'POST', 
+            credentials: 'include' 
+        });
+
+        if (res.ok) {
+            if (pendingUnstarBtn) {
+                pendingUnstarBtn.classList.remove('active');
+                pendingUnstarBtn.textContent = '⭐ Star';
+            }
+            
+            if (window.location.pathname.includes('profile.html')) {
+                window.location.reload(); 
+            } else {
+                showToast('Removed from starred', 'success');
+            }
+        }
+    } catch (err) { 
+        console.error("Errore durante l'unstar:", err); 
+    }
+    
+    closeUnstarModal(); 
+}
+
+function showToast(message, type) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.className = `toast ${type} show`;
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+}
+
+// inizializzazione
+document.addEventListener('DOMContentLoaded', () => {
+    initSidebar();
+    highlightCurrentPage();
+});
+
+window.toggleStar = toggleStar;
+window.handleLogout = handleLogout;
+window.requestUnstar = requestUnstar;
+window.closeUnstarModal = closeUnstarModal;
+window.confirmUnstar = confirmUnstar;

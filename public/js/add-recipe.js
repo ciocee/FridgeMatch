@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', async() => {
         uploadForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const formData = new FormData(this);
+            formData.delete('ingredients'); 
             formData.append('ingredients', JSON.stringify(selectedIngredients));
 
             try {

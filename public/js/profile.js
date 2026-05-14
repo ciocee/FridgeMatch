@@ -10,8 +10,6 @@ const FOOD_EMOJIS = [
     '🧁','🍰','🎂','🍮','🍭','🍫','🍩','🍪','🥐','🥖'
 ];
 
-let profileData     = null;
-let pendingUnstarId = '';
 
 // caricamento profilo
 async function loadProfile(url, isMine) {
@@ -21,7 +19,7 @@ async function loadProfile(url, isMine) {
         if (!res.ok) { showToast('Error loading profile', 'error'); return; }
 
         profileData = await res.json();
-        renderProfile(profileData, isMine);
+        renderProfile(profileData, isMine, profileData.isStarred);
     } catch (e) {
         console.error('loadProfile:', e);
         showToast('Connection error', 'error');
@@ -52,14 +50,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') {
             closeEmojiPicker();
             closeUnstarModal();
+            closeDeleteAccountModal();
         }
     });
 });
 
 // render profilo
-function renderProfile({ user, recipes }, isMine) {
+function renderProfile({ user, recipes }, isMine, isStarred = false) {    
     document.getElementById('profileUsername').textContent = `@${user.username}`;
-    // Mostra/nascondi edit username solo se è il mio profilo
+    
+    // mostra edit username solo se è il mio profilo
     const editUsernameBtn = document.getElementById('editUsernameBtn');
     if (editUsernameBtn) {
         editUsernameBtn.style.display = isMine ? 'inline-flex' : 'none';
@@ -80,19 +80,33 @@ function renderProfile({ user, recipes }, isMine) {
     const avatarRing = document.getElementById('avatarDisplay');
     const recipesTabBtn = document.querySelector('.tab-btn'); 
     const headerAddBtn = document.querySelector('.tab-header .add-item-btn');
+    const deleteAccountBtn = document.querySelector(".btn-delete-account");
 
     if (!isMine) {
+        if (!document.getElementById('profileStarBtn')) {
+            const starBtn = document.createElement('button');
+            starBtn.id = 'profileStarBtn';
+            starBtn.className = `star-btn ${isStarred ? 'active' : ''}`;
+            starBtn.textContent = isStarred ? '⭐ Starred' : '⭐ Star';
+            starBtn.onclick = () => toggleStar(user._id, starBtn);
+            
+            document.getElementById('profileUsername').insertAdjacentElement('afterend', starBtn);
+        }
+        
         if (editBioBtn) editBioBtn.classList.add('hidden');
         addRecipeBtns.forEach(btn => btn.classList.add('hidden'));
         if (avatarRing) avatarRing.style.pointerEvents = 'none';
         document.querySelector('.avatar-hint').style.display = 'none';
         if (recipesTabBtn) recipesTabBtn.textContent = `🍽️ ${user.username}'s Recipes`;
+        if (!deleteAccountBtn) deleteAccountBtn.classList.add("hidden");
+
     } else {
         if (editBioBtn) editBioBtn.classList.remove('hidden');
         addRecipeBtns.forEach(btn => btn.classList.remove('hidden'));
         if (avatarRing) avatarRing.style.pointerEvents = 'all';
         document.querySelector('.avatar-hint').style.display = 'block';
         if (recipesTabBtn) recipesTabBtn.textContent = "🍽️ My Recipes";
+        if (!deleteAccountBtn) deleteAccountBtn.classList.remove("hidden");
 
         if (recipes.length === 0) {
             if (headerAddBtn) headerAddBtn.classList.add('hidden');
@@ -112,6 +126,8 @@ function renderProfile({ user, recipes }, isMine) {
 /* EMOJI PICKER */
 function buildEmojiGrid() {
     const grid = document.getElementById('emojiGrid');
+    if (!grid) return;
+
     grid.innerHTML = '';
     FOOD_EMOJIS.forEach(emoji => {
         const btn = document.createElement('button');
@@ -134,7 +150,8 @@ function openEmojiPicker() {
 
 function closeEmojiPicker(event) {
     if (event && event.target !== document.getElementById('emojiPickerBackdrop')) return;
-    document.getElementById('emojiPickerBackdrop').classList.remove('open');
+    const backdrop = document.getElementById('emojiPickerBackdrop');
+    if (backdrop) backdrop.classList.remove('open');
 }
 
 async function selectEmoji(emoji) {
@@ -162,6 +179,7 @@ async function selectEmoji(emoji) {
 /* TAB RICETTE */
 function renderRecipes(recipes, isMine) { 
     const grid = document.getElementById('recipesGrid');
+    if (!grid) return;
 
     if (recipes.length === 0) {
         // se il profilo è mio e vuoto, mostro solo un pulsante al centro
@@ -242,7 +260,8 @@ function switchTab(tab, btn) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(s => s.classList.add('hidden'));
     btn.classList.add('active');
-    document.getElementById(`tab-${tab}`).classList.remove('hidden');
+    const content = document.getElementById(`tab-${tab}`);
+    if (content) content.classList.remove('hidden');
 }
 
 /* BIO */
@@ -280,45 +299,6 @@ async function saveBio() {
     }
 }
 
-/* RIMOZIONE STELLA */
-function requestUnstar(id, username) {
-    pendingUnstarId = id;
-    document.getElementById('unstarModalText').innerHTML =
-        `Remove <strong>@${escapeHtml(username)}</strong> from your starred creators?`;
-    document.getElementById('unstarModalBackdrop').classList.add('open');
-}
-
-function closeUnstarModal() {
-    document.getElementById('unstarModalBackdrop').classList.remove('open');
-    pendingUnstarId = '';
-}
-
-async function confirmUnstar() {
-    try {
-        const res = await fetch(`${PROFILE_URL}/star/${pendingUnstarId}`, {
-            method: 'POST',
-            credentials: 'include'
-        });
-
-        if (!res.ok) { showToast('Error removing star', 'error'); return; }
-
-        document.querySelector(`.creator-card[data-id="${pendingUnstarId}"]`)?.remove();
-
-        const current = parseInt(document.getElementById('statStarred').textContent);
-        document.getElementById('statStarred').textContent = Math.max(0, current - 1);
-
-        if (profileData) {
-            profileData.user.starredCreators = (profileData.user.starredCreators || [])
-                .filter(c => c._id !== pendingUnstarId);
-            if (profileData.user.starredCreators.length === 0) renderStarredCreators([]);
-        }
-
-        closeUnstarModal();
-        showToast('Creator removed from starred', '');
-    } catch (e) {
-        showToast('Connection error', 'error');
-    }
-}
 
 /* UTILITIES */
 function escapeHtml(str) {
@@ -330,6 +310,7 @@ function escapeHtml(str) {
 
 function showToast(message, type) {
     const toast = document.getElementById('toast');
+    if (!toast) return;
     toast.textContent = message;
     toast.className = `toast ${type}`;
     requestAnimationFrame(() => toast.classList.add('show'));
@@ -337,13 +318,17 @@ function showToast(message, type) {
 }
 
 function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('active');
-    document.getElementById('overlay').classList.toggle('active');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    if (sidebar) sidebar.classList.toggle('active');
+    if (overlay) overlay.classList.toggle('active');
 }
 
 /* CAMBIO USERNAME */
 function openUsernameEdit() {
-    const current = document.getElementById('profileUsername').textContent.replace('@', '');
+    const usernameEl = document.getElementById('profileUsername');
+    if (!usernameEl) return;
+    const current = usernameEl.textContent.replace('@', '');
     document.getElementById('usernameInput').value = current;
     document.getElementById('usernameCharCount').textContent = `${current.length} / 30`;
     document.getElementById('usernameError').textContent = '';
@@ -352,8 +337,8 @@ function openUsernameEdit() {
 }
 
 function closeUsernameEdit() {
-    document.getElementById('usernameForm').classList.add('hidden');
-    document.getElementById('usernameError').textContent = '';
+    const form = document.getElementById('usernameForm');
+    if (form) form.classList.add('hidden');
 }
 
 async function saveUsername() {
@@ -361,14 +346,14 @@ async function saveUsername() {
     const errorEl = document.getElementById('usernameError');
     const username = input.value.trim();
 
-    errorEl.textContent = '';
+    if (errorEl) errorEl.textContent = '';
 
     if (username.length < 3) {
-        errorEl.textContent = 'At least 3 characters required.';
+        if (errorEl) errorEl.textContent = 'At least 3 characters required.';
         return;
     }
     if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
-        errorEl.textContent = 'Only letters, numbers, _ and - allowed.';
+        if (errorEl) errorEl.textContent = 'Only letters, numbers, _ and - allowed.';
         return;
     }
 
@@ -380,10 +365,9 @@ async function saveUsername() {
             body: JSON.stringify({ username })
         });
 
-        if (res.status === 409) { errorEl.textContent = 'Username already taken.'; return; }
-        if (!res.ok) { errorEl.textContent = await res.text(); return; }
+        if (res.status === 409) { if (errorEl) errorEl.textContent = 'Username already taken.'; return; }
+        if (!res.ok) { if (errorEl) errorEl.textContent = await res.text(); return; }
 
-        // Aggiorna UI
         document.getElementById('profileUsername').textContent = `@${username}`;
         document.title = `FridgeMatch: @${username}`;
         if (profileData) profileData.user.username = username;
@@ -391,13 +375,38 @@ async function saveUsername() {
         document.getElementById('usernameForm').classList.add('hidden');
         showToast('Username updated!', 'success');
     } catch (e) {
-        errorEl.textContent = 'Connection error.';
+        if (errorEl) errorEl.textContent = 'Connection error.';
     }
 }
 
-// forza il ricaricamento dei dati quando si torna indietro col tasto Back (Parte 4 slide 53)
 window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
         window.location.reload(); 
     }
 });
+
+// gestione eliminazione account
+function requestDeleteAccount() {
+    document.getElementById('deleteAccountBackdrop').classList.add('open');
+}
+
+function closeDeleteAccountModal() {
+    document.getElementById('deleteAccountBackdrop').classList.remove('open');
+}
+
+async function confirmDeleteAccount() {
+    try {
+        const res = await fetch(`${PROFILE_URL}/me`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        if (res.ok) {
+            sessionStorage.clear();
+            window.location.href = '../login/index.html';
+        } else {
+            showToast('Error deleting account', 'error');
+        }
+    } catch (e) {
+        showToast('Connection error', 'error');
+    }
+}

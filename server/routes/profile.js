@@ -97,4 +97,26 @@ router.post('/star/:id', auth, async (req, res) => {
     }
 });
 
+// DELETE /api/profile/me — elimina account 
+router.delete('/me', auth, async (req, res) => {
+    console.log('DELETE /me chiamata, userId:', req.session.userId);
+    try {
+        const userId = req.session.userId;
+
+        await Recipe.deleteMany({ author: userId });
+        await User.updateMany(
+            { starredCreators: userId },
+            { $pull: { starredCreators: userId } }
+        );
+
+        await User.findByIdAndDelete(userId);
+        req.session.destroy();
+
+        res.json({ message: 'Account deleted' });
+    } catch (err) {
+        console.error('DELETE /profile/me:', err);
+        res.status(500).send('Server error');
+    }
+});
+
 module.exports = router;

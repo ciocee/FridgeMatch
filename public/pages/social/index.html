@@ -70,10 +70,13 @@
 
             <header class="social-header">
                 <h1>Community feed</h1>
-                <button class="add-item-btn" onclick="location.href='./add-recipe.html'">+ Share your recipe</button>
+                <button class="add-item-btn" onclick="location.href='./add-recipe.html'">+ Share your recipe</button>                
             </header>
 
-            <!-- area risultati prodotti dalla ricerca -->
+<!-- UN ATTIMO -->            
+           <hr class="section-divider">
+            
+           <!-- area risultati prodotti dalla ricerca -->
             <div id="search-results-area" class="hidden">
                 
                 <!-- sezione utenti -->
@@ -90,62 +93,33 @@
                 <hr class="section-divider">
             </div>
             
-            <!-- feed principale -->
-            <section id="main-feed-section">
-                <div id="recipe-feed" class="recipe-feed-grid">
-                    <p class="loading-msg">Loading recipes from the community...</p>
+            <!-- sezione ricette da creatori starred -->
+            <section id="starred-feed-section" class="recipes-section hidden">
+                <div class="section-header">
+                    <h2>Posts from creators you starred</h2>
                 </div>
+                <div id="starred-recipe-feed" class="recipe-feed-grid"></div>
             </section>
+
+            <hr id="feed-divider" class="section-divider hidden">
+
+            <!-- sezione ricette generali -->
+            <section id="main-feed-section" class="recipes-section hidden">
+                <div class="section-header">
+                    <h2>Recent Recipes</h2>
+                </div>
+                <div id="recipe-feed" class="recipe-feed-grid"></div>
+            </section>
+
+<!-- UN ATTIMO -->            
+
+            
+            
+
         </main>
     </div>    
-    
-    <!--modal caricamento ricette (nascosto dal css)-->
-    <div id="recipeModal" class="modal-backdrop" onclick="closeRecipeModal(event)">
-        <div class="modal">
-            <div class="modal-header">
-                <h2>Share your recipe</h2>
-                <button class="modal-close" onclick="closeRecipeModal()">✕</button>
-            </div>
-            <form id="upload-recipe-form" enctype="multipart/form-data">
-                <div class="modal-body">                    
-                    <div class="form-group">
-                        <label for="recipe-title">Recipe title</label>
-                        <input type="text" id="recipe-title" name="title" placeholder="Give it a name" required>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="recipe-img">Photo</label>
-                        <input type="file" id="recipe-img" name="img" accept="image/*" required>
-                        <!-- anteprima della foto selezionata -->
-                        <div id="image-preview-container" class="image-preview-container hidden">
-                            <img id="image-preview" src="" alt="Preview">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Ingredients from your fridge:</label>
-                        <!-- contenitore per la checklist automatica dal frigo -->
-                        <div id="fridge-checklist-container" class="fridge-checklist">
-                            <p class="loading-msg">Loading your fridge...</p>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="ingredient-input">Other ingredients (not in fridge):</label>
-                        <input type="text" id="ingredient-input" placeholder="Type and press enter">
-                        <div id="selected-ingredients-tags" class="tag-container">
-                            <!-- tag ingredienti selezionati via JS -->
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-cancel" onclick="closeRecipeModal()">Cancel</button>
-                    <button type="submit" class="btn-add">Publish recipe</button>
-                </div>     
-            </form>                       
-        </div>
-    </div>
-
+    <!-- modal conferma rimozione stella -->
     <div class="modal-backdrop" id="unstarModalBackdrop" onclick="closeUnstarModal(event)">
         <div class="modal modal-small">
             <div class="modal-header">
@@ -157,7 +131,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn-cancel" onclick="closeUnstarModal()">Cancel</button>
-                <button class="btn-delete" onclick="confirmUnstarSocial()">Remove</button>
+                <button class="btn-delete" onclick="confirmUnstar()">Remove</button>
             </div>
         </div>
     </div> 

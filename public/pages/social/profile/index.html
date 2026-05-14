@@ -73,7 +73,7 @@
                 <div class="profile-info">
                     <div class="username-row">
                         <h1 id="profileUsername" class="profile-username">Loading...</h1>
-                        <button id="editUsernameBtn" class="edit-username-btn" onclick="openUsernameEdit()" title="Change username">✏️ edit</button>
+                        <button id="editUsernameBtn" class="edit-username-btn" onclick="openUsernameEdit()" title="Change username">✏️ Edit username</button>
                     </div>
 
                     <div id="usernameForm" class="username-form hidden">
@@ -117,6 +117,11 @@
                         </div>
                     </div>
                 </div>
+
+                <button class="btn-delete-account" onclick="requestDeleteAccount()">
+                    Delete account
+                </button>
+
             </section>
 
             <!-- TABS -->
@@ -178,52 +183,20 @@
         </div>
     </div>
 
-    <div id="toast" class="toast"></div>
-
-    <!--modal caricamento ricette (nascosto dal css)-->
-    <div id="recipeModal" class="modal-backdrop" onclick="closeRecipeModal(event)">
-        <div class="modal">
+    <div class="modal-backdrop" id="deleteAccountBackdrop">
+        <div class="modal modal-small">
             <div class="modal-header">
-                <h2>Share your recipe</h2>
-                <button class="modal-close" onclick="closeRecipeModal()">✕</button>
+                <h2>Delete account</h2>
+                <button class="modal-close" onclick="closeDeleteAccountModal()">✕</button>
             </div>
-            <form id="upload-recipe-form" enctype="multipart/form-data">
-                <div class="modal-body">                    
-                    <div class="form-group">
-                        <label for="recipe-title">Recipe title</label>
-                        <input type="text" id="recipe-title" name="title" placeholder="Give it a name" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="recipe-img">Photo</label>
-                        <input type="file" id="recipe-img" name="img" accept="image/*" required>
-                        <!-- anteprima della foto selezionata -->
-                        <div id="image-preview-container" class="image-preview-container hidden">
-                            <img id="image-preview" src="" alt="Preview">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Ingredients from your fridge:</label>
-                        <!-- contenitore per la checklist automatica dal frigo -->
-                        <div id="fridge-checklist-container" class="fridge-checklist">
-                            <p class="loading-msg">Loading your fridge...</p>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="ingredient-input">Other ingredients (not in fridge):</label>
-                        <input type="text" id="ingredient-input" placeholder="Type and press enter">
-                        <div id="selected-ingredients-tags" class="tag-container">
-                            <!-- tag ingredienti selezionati via JS -->
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-cancel" onclick="closeRecipeModal()">Cancel</button>
-                    <button type="submit" class="btn-add">Publish recipe</button>
-                </div>     
-            </form>                       
+            <div class="modal-body">
+                <p>Are you sure? This will permanently delete your account, all your recipes and remove you from everyone's starred list.</p>
+                <p><strong>This action cannot be undone.</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeDeleteAccountModal()">Cancel</button>
+                <button class="btn-delete" onclick="confirmDeleteAccount()">Delete account</button>
+            </div>
         </div>
     </div>
     

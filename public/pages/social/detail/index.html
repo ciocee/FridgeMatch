@@ -71,11 +71,30 @@
                 </div>
 
                 <div class="det-info">
-                    <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Ingredients Used:</h3>
+                    <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 0.5rem;">Ingredients Used</h3>
                     <div id="det-ingredients" class="tag-container">
                         <!-- tag messi da js -->
                     </div>
                 </div>
+                
+                <!-- parte per la descrizione del post-->
+                <div class = "det-description-box">
+                    <p id="det-description"></p>
+                </div>
+
+                <!-- sezione commenti-->
+                <section class="comments-section">
+                    <h3>Comments</h3>
+                    <div class="comments-container" id="comments-list">
+                        <!-- popolato da js-->
+                    </div>
+
+                    <!-- aggiunta nuovo commento-->
+                    <div class="add-comment-form">
+                        <input type="text" id="comment-text" placeholder="Add a comment" maxlength="900">
+                        <button onclick="postComment()" class="btn-add">Post</button>
+                    </div>                        
+                </section>
 
                 <div style="margin-top: 2rem; display: flex; align-items: center; gap: 10px;">
                     <button id="det-like-btn" class="like-btn" style="font-size: 1.5rem;">❤️ <span>0</span></button>
