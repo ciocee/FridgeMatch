@@ -61,7 +61,7 @@ router.patch('/me', auth, async (req, res) => {
         const user = await User.findByIdAndUpdate(
             req.session.userId,
             update,
-            { new: true, select: '-password' }
+            { returnDocument: 'after', select: '-password' }
         );
 
         res.json(user);

@@ -46,7 +46,7 @@ router.put('/:id', auth, async (req, res) => {
         const updatedItem = await FridgeItem.findOneAndUpdate(
             { _id: req.params.id, user: req.session.userId },
             { $set: req.body }, 
-            { new: true } 
+            { returnDocument: 'after' }
         );
 
         if (!updatedItem) return res.status(404).send("Item not found");

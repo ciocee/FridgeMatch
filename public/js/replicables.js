@@ -19,7 +19,6 @@ async function loadReplicableRecipes() {
         if (!grid) return;
 
         if (data.length === 0) {
-                grid.innerHTML = `<p>No recipes available based on your fridge.</p>`;
             return; 
         }
 
