@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadRecipeDetails(id) {
     try {
-        // Distinguiamo tra ricetta del DB 
+        // Distinguiamo tra ricetta del DB (Community) e Spoonacular
         const isCommunityRecipe = id.length === 24;
         
         const endpoint = isCommunityRecipe 
@@ -64,10 +64,7 @@ async function loadRecipeDetails(id) {
             if (recipe.dairyFree)  createDietBadge("🥛 Dairy-Free");
             if (recipe.vegetarian) createDietBadge("🥚 Vegetarian");
             if (recipe.vegan)      createDietBadge("🌿 Vegan");
-
-            if (isCommunityRecipe && recipe.diets && Array.isArray(recipe.diets) && recipe.diets.length > 0) {
-            }
-
+            
             // --- 3. INGREDIENTI ---
             const ingredientsUl = document.getElementById('recipeIngredients');
             ingredientsUl.innerHTML = '';
@@ -83,14 +80,18 @@ async function loadRecipeDetails(id) {
                 ingredientsUl.innerHTML = '<li>Nessun ingrediente specificato.</li>';
             }
 
-            // --- 4. SUMMARY ---
-            const summaryEl = document.getElementById('recipeSummary');
-            if (recipe.summary) {
-                summaryEl.innerHTML = recipe.summary;
-            } else if (recipe.description) {
-                summaryEl.textContent = recipe.description;
+            // --- 4. MACROS ---
+            if (recipe.macros) {
+                document.getElementById('macroCalories').textContent = recipe.macros.calories || 'N/A';
+                document.getElementById('macroProtein').textContent = recipe.macros.protein || 'N/A';
+                document.getElementById('macroFat').textContent = recipe.macros.fat || 'N/A';
+                document.getElementById('macroCarbs').textContent = recipe.macros.carbs || 'N/A';
             } else {
-                summaryEl.textContent = "Nessun riepilogo disponibile per questa ricetta.";
+                // Se i macros non esistono (es. ricette community o vecchie ricette in cache)
+                document.getElementById('macroCalories').textContent = 'N/A';
+                document.getElementById('macroProtein').textContent = 'N/A';
+                document.getElementById('macroFat').textContent = 'N/A';
+                document.getElementById('macroCarbs').textContent = 'N/A';
             }
 
             // --- 5. ISTRUZIONI ---
