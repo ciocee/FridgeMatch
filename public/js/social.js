@@ -10,6 +10,11 @@ async function loadFeed() {
         const res = await fetch(`${API_URL}/feed`, { 
             credentials: 'include',
         });        
+        
+        if (!res.ok) {
+            throw new Error(`Errore dal server: ${res.status}`);
+        }
+        
         const data = await res.json();
 
         // sezione starred
@@ -25,27 +30,33 @@ async function loadFeed() {
                 starredContainer.appendChild(createRecipeArticle(recipe));
             });
         } else {
-            starredSection.classList.add('hidden');
-            divider.classList.add('hidden');
+            if(starredSection) starredSection.classList.add('hidden');
+            if(divider) divider.classList.add('hidden');
         }
 
         // sezione generale
         const mainFeedSection = document.getElementById('main-feed-section');
-        if (mainFeedSection) mainFeedSection.classList.remove('hidden'); // ← aggiunta
+        if (mainFeedSection) mainFeedSection.classList.remove('hidden'); 
         container.innerHTML = '';
         
-        if (data.otherRecipes.length === 0) {
+        const otherRecipes = data.otherRecipes || [];
+
+        if (otherRecipes.length === 0) {
             container.innerHTML = '<p class="loading-msg">No recipes yet. Be the first to share!</p>';
         } else {
-            data.otherRecipes.forEach(recipe => {
+            otherRecipes.forEach(recipe => {
                 container.appendChild(createRecipeArticle(recipe));
             });
         }
 
     } catch (err) {
         console.error("Feed error:", err);
+        container.innerHTML = `<p class="loading-msg" style="color:red;">Impossibile caricare il feed. Riprova più tardi.</p>`;
+        const mainFeedSection = document.getElementById('main-feed-section');
+        if (mainFeedSection) mainFeedSection.classList.remove('hidden'); 
     }
 }
+
 function createRecipeArticle(recipe) {
     const article = document.createElement('article');
     article.className = 'recipe-card';
@@ -132,11 +143,6 @@ async function executeSocialSearch() {
         const res = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}`, { credentials: 'include' });
         const results = await res.json();
 
-        // DEBUG UN ATTIMO
-        console.log('risultati ricette:', results.community.recipes);
-        console.log('risultati utenti:', results.community.users);
-        // DEBUG UN ATTIMO
-
         if (mainFeed) mainFeed.classList.add('hidden');
         if (resultsArea) resultsArea.classList.remove('hidden');
 
@@ -195,63 +201,6 @@ async function executeSocialSearch() {
     }
 }
 
-// gestione stella: se un creator è starred, chiede conferma prima di toglierla. sennò la mette
-let pendingUnstarBtn = null;
-
-async function toggleStar(userId, btn) {
-    const isCurrentlyStarred = btn.classList.contains('active');
-
-    if (isCurrentlyStarred) {
-        const username = btn.closest('.creator-card')
-            .querySelector('strong').textContent;
-        pendingUnstarId = userId;
-        pendingUnstarBtn = btn;
-        document.getElementById('unstarModalText').innerHTML =
-            `Remove <strong>${username}</strong> from your starred creators?`;
-        document.getElementById('unstarModalBackdrop').classList.add('open');
-        return; 
-    }
-
-    try {
-        const res = await fetch(`${API_BASE_URL}/api/social/star/${userId}`, {
-            method: 'POST',
-            credentials: 'include'
-        });
-        if (res.ok) {
-            const data = await res.json();
-            btn.classList.toggle('active', data.isStarred);
-            btn.textContent = data.isStarred ? '⭐ Starred' : '⭐ Star';
-        }
-    } catch (err) {
-        console.error('Star error:', err);
-    }
-}
-
-function closeUnstarModal(event) {
-    if (event && event.target !== document.getElementById('unstarModalBackdrop')) return;
-    document.getElementById('unstarModalBackdrop').classList.remove('open');
-    pendingUnstarId = '';
-    pendingUnstarBtn = null;
-}
-
-async function confirmUnstarSocial() {
-    try {
-        const res = await fetch(`${API_BASE_URL}/api/social/star/${pendingUnstarId}`, {
-            method: 'POST',
-            credentials: 'include'
-        });
-        if (res.ok) {
-            pendingUnstarBtn.classList.remove('active');
-            pendingUnstarBtn.textContent = '⭐ Star';
-        }
-    } catch (err) {
-        console.error('Unstar error:', err);
-    }
-    document.getElementById('unstarModalBackdrop').classList.remove('open');
-    pendingUnstarId = '';
-    pendingUnstarBtn = null;
-}
-
 // apertura modal upload ricetta
 function openRecipeModal() {
     document.getElementById('recipeModal').classList.add('open');
@@ -289,6 +238,7 @@ async function suggestFridgeIngredients() {
 
 function renderIngredientTags() {
     const container = document.getElementById('selected-ingredients-tags');
+    if (!container) return;
     container.innerHTML = selectedIngredients.map(ing => 
         `<span class="tag">${ing} <small onclick="removeTag('${ing}')" style="cursor:pointer">x</small></span>`
     ).join('');
@@ -330,8 +280,12 @@ function initUploadEvents() {
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    document.getElementById('image-preview').src = e.target.result;
-                    document.getElementById('image-preview-container').classList.remove('hidden');
+                    const preview = document.getElementById('image-preview');
+                    const previewContainer = document.getElementById('image-preview-container');
+                    if (preview && previewContainer) {
+                        preview.src = e.target.result;
+                        previewContainer.classList.remove('hidden');
+                    }
                 }
                 reader.readAsDataURL(file);
             }

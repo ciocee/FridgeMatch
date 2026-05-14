@@ -1,3 +1,4 @@
+window.API_BASE_URL = `http://${window.location.hostname}:3000`;
 const selectedIngredients = [];
 
 document.addEventListener('DOMContentLoaded', async() => {
@@ -61,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async() => {
             formData.append('ingredients', JSON.stringify(selectedIngredients));
 
             try {
-                const res = await fetch('http://127.0.0.1:3000/api/social/upload-recipe', {
+                const res = await fetch(`${window.API_BASE_URL}/api/social/upload-recipe`, {
                     method: 'POST',
                     body: formData,
                     credentials: 'include'
@@ -69,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async() => {
 
                 if (res.ok) {
                     alert("Recipe shared with the community!");
-                    location.href = "../social"; 
+                    location.href = "./../social"; 
                 }
             } catch (err) {
                 console.error("Errore invio:", err);

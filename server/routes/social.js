@@ -38,23 +38,29 @@ router.post('/upload-recipe', auth, upload.single('img'), async (req, res) => {
 
 
 // GET /api/social/feed - recupera tutte le ricette divise per priorità
+// GET /api/social/feed - recupera tutte le ricette divise per priorità
 router.get('/feed', auth, async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
-        const starredIds = user.starredCreators; 
+        
+        // Controllo di sicurezza: se l'utente non esiste nel db
+        if (!user) return res.status(404).send('User not found');
 
+        // Salvataggio: se starredCreators non esiste, usiamo un array vuoto di default
+        const starredIds = user.starredCreators || []; 
+
+        // Rimosso il controllo inutile su _id e accorpato il filtro su author
         const starredRecipes = await Recipe.find({ 
-            author: { $in: starredIds }, 
-            _id: { $ne: req.session.userId } 
+            author: { $in: starredIds, $ne: req.session.userId } 
         }).populate('author', 'username avatarEmoji').sort({ createdAt: -1 });
 
         const otherRecipes = await Recipe.find({ 
-            author: { $nin: [...starredIds, req.session.userId] },
-            _id: { $ne: req.session.userId } 
+            author: { $nin: [...starredIds, req.session.userId] }
         }).populate('author', 'username avatarEmoji').sort({ createdAt: -1 });       
 
         res.json({ starredRecipes, otherRecipes });
     } catch (err) {
+        console.error("GET /social/feed error:", err); // Aggiunto un log utile!
         res.status(500).send('Server error');
     }
 });
