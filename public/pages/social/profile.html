@@ -105,6 +105,11 @@
                         </div>
                     </div>
                 </div>
+
+                <button class="btn-delete-account" onclick="requestDeleteAccount()">
+                    Delete account
+                </button>
+
             </section>
 
             <!-- TABS -->
@@ -162,6 +167,23 @@
             <div class="modal-footer">
                 <button class="btn-cancel" onclick="closeUnstarModal()">Cancel</button>
                 <button class="btn-delete" onclick="confirmUnstar()">Remove</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="deleteAccountBackdrop">
+        <div class="modal modal-small">
+            <div class="modal-header">
+                <h2>Delete account</h2>
+                <button class="modal-close" onclick="closeDeleteAccountModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure? This will permanently delete your account, all your recipes and remove you from everyone's starred list.</p>
+                <p><strong>This action cannot be undone.</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeDeleteAccountModal()">Cancel</button>
+                <button class="btn-delete" onclick="confirmDeleteAccount()">Delete account</button>
             </div>
         </div>
     </div>

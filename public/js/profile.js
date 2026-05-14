@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') {
             closeEmojiPicker();
             closeUnstarModal();
+            closeDeleteAccountModal();
         }
     });
 });
@@ -79,6 +80,7 @@ function renderProfile({ user, recipes }, isMine, isStarred = false) {
     const avatarRing = document.getElementById('avatarDisplay');
     const recipesTabBtn = document.querySelector('.tab-btn'); 
     const headerAddBtn = document.querySelector('.tab-header .add-item-btn');
+    const deleteAccountBtn = document.querySelector(".btn-delete-account");
 
     if (!isMine) {
         if (!document.getElementById('profileStarBtn')) {
@@ -96,12 +98,15 @@ function renderProfile({ user, recipes }, isMine, isStarred = false) {
         if (avatarRing) avatarRing.style.pointerEvents = 'none';
         document.querySelector('.avatar-hint').style.display = 'none';
         if (recipesTabBtn) recipesTabBtn.textContent = `🍽️ ${user.username}'s Recipes`;
+        if (!deleteAccountBtn) deleteAccountBtn.classList.add("hidden");
+
     } else {
         if (editBioBtn) editBioBtn.classList.remove('hidden');
         addRecipeBtns.forEach(btn => btn.classList.remove('hidden'));
         if (avatarRing) avatarRing.style.pointerEvents = 'all';
         document.querySelector('.avatar-hint').style.display = 'block';
         if (recipesTabBtn) recipesTabBtn.textContent = "🍽️ My Recipes";
+        if (!deleteAccountBtn) deleteAccountBtn.classList.remove("hidden");
 
         if (recipes.length === 0) {
             if (headerAddBtn) headerAddBtn.classList.add('hidden');
@@ -374,9 +379,34 @@ async function saveUsername() {
     }
 }
 
-// forza il ricaricamento dei dati quando si torna indietro col tasto Back (Parte 4 slide 53)
 window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
         window.location.reload(); 
     }
 });
+
+// gestione eliminazione account
+function requestDeleteAccount() {
+    document.getElementById('deleteAccountBackdrop').classList.add('open');
+}
+
+function closeDeleteAccountModal() {
+    document.getElementById('deleteAccountBackdrop').classList.remove('open');
+}
+
+async function confirmDeleteAccount() {
+    try {
+        const res = await fetch(`${PROFILE_URL}/me`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        if (res.ok) {
+            sessionStorage.clear();
+            window.location.href = '../login/index.html';
+        } else {
+            showToast('Error deleting account', 'error');
+        }
+    } catch (e) {
+        showToast('Connection error', 'error');
+    }
+}
