@@ -7,38 +7,45 @@ async function loadFeed() {
     if (!container) return;
 
     try {
-        const res = await fetch(`${API_URL}/feed`, {credentials: 'include'});
-        const data = await res.json(); 
-        container.innerHTML = "";
+        const res = await fetch(`${API_URL}/feed`, { 
+            credentials: 'include',
+        });        
+        const data = await res.json();
 
-        // sezione ricette da starred creators
+        // sezione starred
+        const starredSection = document.getElementById('starred-feed-section');
+        const starredContainer = document.getElementById('starred-recipe-feed');
+        const divider = document.getElementById('feed-divider');
+
         if (data.starredRecipes && data.starredRecipes.length > 0) {
-            const title = document.createElement('h2');
-            title.textContent = "Posts from creators you starred";
-            title.className = "section-title";
-            container.appendChild(title);
-            
+            starredSection.classList.remove('hidden');
+            divider.classList.remove('hidden');
+            starredContainer.innerHTML = '';
             data.starredRecipes.forEach(recipe => {
+                starredContainer.appendChild(createRecipeArticle(recipe));
+            });
+        } else {
+            starredSection.classList.add('hidden');
+            divider.classList.add('hidden');
+        }
+
+        // sezione generale
+        const mainFeedSection = document.getElementById('main-feed-section');
+        if (mainFeedSection) mainFeedSection.classList.remove('hidden'); // ← aggiunta
+        container.innerHTML = '';
+        
+        if (data.otherRecipes.length === 0) {
+            container.innerHTML = '<p class="loading-msg">No recipes yet. Be the first to share!</p>';
+        } else {
+            data.otherRecipes.forEach(recipe => {
                 container.appendChild(createRecipeArticle(recipe));
             });
         }
-
-        // sezione ricette generali
-        const titleGen = document.createElement('h2');
-        titleGen.textContent = "Recent Recipes";
-        titleGen.className = "section-title";
-        titleGen.style.marginTop = "2rem";
-        container.appendChild(titleGen);
-
-        data.otherRecipes.forEach(recipe => {
-            container.appendChild(createRecipeArticle(recipe));
-        });        
 
     } catch (err) {
         console.error("Feed error:", err);
     }
 }
-
 function createRecipeArticle(recipe) {
     const article = document.createElement('article');
     article.className = 'recipe-card';
@@ -110,14 +117,25 @@ async function executeSocialSearch() {
     const mainFeed = document.getElementById('main-feed-section');
 
     if (query === "") { 
-        if(resultsArea) resultsArea.classList.add('hidden');
-        if(mainFeed) mainFeed.classList.remove('hidden');
+        resultsArea?.classList.add('hidden');
+        loadFeed();
         return;
     }
+    
+    // nasconde le sezioni del feed durante la ricerca
+    document.getElementById('starred-feed-section')?.classList.add('hidden');
+    document.getElementById('feed-divider')?.classList.add('hidden');
+    document.getElementById('main-feed-section')?.classList.add('hidden');
+    resultsArea?.classList.remove('hidden');
 
     try {
         const res = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}`, { credentials: 'include' });
         const results = await res.json();
+
+        // DEBUG UN ATTIMO
+        console.log('risultati ricette:', results.community.recipes);
+        console.log('risultati utenti:', results.community.users);
+        // DEBUG UN ATTIMO
 
         if (mainFeed) mainFeed.classList.add('hidden');
         if (resultsArea) resultsArea.classList.remove('hidden');

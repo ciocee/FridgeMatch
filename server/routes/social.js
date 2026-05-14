@@ -180,12 +180,15 @@ router.get('/search', auth, async (req, res) => {
             return userObj;            
         });
 
-        //ho commentato un attimo per non usare punti api. scommentare quando si vogliono cercare ricette community
-        
+        //ho commentato un attimo per non usare punti api. scommentare quando si vogliono cercare ricette community        
         const localRecipes = await Recipe.find({ title: { $regex: query, $options: 'i' } }).populate('author', 'username');
         const spoonRes = await fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${query}&number=5&apiKey=${apiKey}`);
         const spoonData = await spoonRes.json();
-        
+
+        // DEBUG UN ATTIMO
+        console.log('Query ricevuta:', query);
+        console.log('Ricette trovate:', localRecipes.length);
+        // DEBUG UN ATTIMO
 
         // commentare quando si vogliono cercare ricette community
         /*

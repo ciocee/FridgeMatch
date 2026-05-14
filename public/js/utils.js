@@ -197,7 +197,7 @@ function escapeHtml(str) {
     return d.innerHTML;
 }
 
-// Inizializzazione
+// inizializzazione
 document.addEventListener('DOMContentLoaded', () => {
     initSidebar();
     highlightCurrentPage();

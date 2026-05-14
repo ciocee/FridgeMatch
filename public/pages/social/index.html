@@ -59,10 +59,13 @@
 
             <header class="social-header">
                 <h1>Community feed</h1>
-                <button class="add-item-btn" onclick="location.href='./add-recipe.html'">+ Share your recipe</button>
+                <button class="add-item-btn" onclick="location.href='./add-recipe.html'">+ Share your recipe</button>                
             </header>
 
-            <!-- area risultati prodotti dalla ricerca -->
+<!-- UN ATTIMO -->            
+           <hr class="section-divider">
+            
+           <!-- area risultati prodotti dalla ricerca -->
             <div id="search-results-area" class="hidden">
                 
                 <!-- sezione utenti -->
@@ -79,12 +82,29 @@
                 <hr class="section-divider">
             </div>
             
-            <!-- feed principale -->
-            <section id="main-feed-section">
-                <div id="recipe-feed" class="recipe-feed-grid">
-                    <p class="loading-msg">Loading recipes from the community...</p>
+            <!-- sezione ricette da creatori starred -->
+            <section id="starred-feed-section" class="recipes-section hidden">
+                <div class="section-header">
+                    <h2>Posts from creators you starred</h2>
                 </div>
+                <div id="starred-recipe-feed" class="recipe-feed-grid"></div>
             </section>
+
+            <hr id="feed-divider" class="section-divider hidden">
+
+            <!-- sezione ricette generali -->
+            <section id="main-feed-section" class="recipes-section hidden">
+                <div class="section-header">
+                    <h2>Recent Recipes</h2>
+                </div>
+                <div id="recipe-feed" class="recipe-feed-grid"></div>
+            </section>
+
+<!-- UN ATTIMO -->            
+
+            
+            
+
         </main>
     </div>    
 
