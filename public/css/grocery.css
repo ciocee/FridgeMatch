@@ -18,8 +18,10 @@
 }
 
 .grocery-page-header h1 {
+    font-family: var(--font-display);
     font-size: 1.8rem;
-    font-weight: 700;
+    font-weight: 400;
+    letter-spacing: -0.3px;
     color: var(--primary-green);
 }
 
@@ -160,7 +162,7 @@
     display: grid;
     grid-template-columns: 40px 1fr 130px 100px 100px 48px;
     padding: 12px 20px;
-    background: #f8f9fa;
+    background: var(--gray-light);
     border-bottom: 1.5px solid var(--gray-light);
     font-size: 0.78rem;
     font-weight: 700;
@@ -187,7 +189,7 @@
 }
 
 .grocery-item:last-child { border-bottom: none; }
-.grocery-item:hover { background: #fafafa; }
+.grocery-item:hover { background: var(--gray-light); }
 .grocery-item.selected { background: #fff8ee; }
 
 /* checkbox acquisto — più grande e verde */
@@ -274,7 +276,7 @@
 .empty-state p {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #444;
+    color: var(--text-dark);
     margin-bottom: 4px;
 }
 
@@ -387,7 +389,7 @@
     justify-content: center;
 }
 
-.modal-close:hover { background: #e0e0e0; }
+.modal-close:hover { background: var(--gray-light); }
 
 .modal-body {
     padding: 1.25rem 1.75rem;
@@ -398,7 +400,7 @@
 
 .modal-body p {
     font-size: 0.95rem;
-    color: #555;
+    color: var(--text-soft);
     line-height: 1.5;
 }
 
@@ -429,7 +431,7 @@
     border: 1.5px solid var(--gray-light);
     border-radius: var(--input-radius);
     font-size: 0.93rem;
-    background: #fafafa;
+    background: var(--gray-light);
     outline: none;
     transition: border-color 0.2s, background 0.2s;
     font-family: inherit;
@@ -463,7 +465,7 @@
     padding: 10px 6px;
     border: 1.5px solid var(--gray-light);
     border-radius: 12px;
-    background: #fafafa;
+    background: var(--gray-light);
     cursor: pointer;
     transition: all 0.2s;
     font-family: inherit;

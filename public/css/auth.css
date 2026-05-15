@@ -299,3 +299,100 @@ body.auth-body {
 @media (max-width: 360px) {
     .magnet { display: none; }
 }
+
+/* ============================================================
+   DARK THEME — solo il frigo, NON lo sfondo (parquet rimane)
+   ============================================================ */
+
+/* Il body auth rimane INVARIATO in dark mode: lo sfondo parquet non cambia */
+[data-theme="dark"] body.auth-body {
+    background:
+        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 220, 150, 0.6) 0%, transparent 70%),
+        repeating-linear-gradient(
+            90deg,
+            #d6c0a8 0px, #d6c0a8 60px,
+            #c9b298 60px, #c9b298 62px,
+            #d6c0a8 62px, #d6c0a8 122px,
+            #c9b298 122px, #c9b298 124px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            #b89a78 0px, #b89a78 30px,
+            #a88862 30px, #a88862 32px
+        );
+    background-blend-mode: normal, multiply, normal;
+}
+
+/* Il brand/logo rimane con i colori originali */
+[data-theme="dark"] .auth-body .brand {
+    background: var(--honey-yellow);
+    color: var(--primary-green-dark);
+}
+
+/* Il FREEZER (parte superiore frigo) si scurisce */
+[data-theme="dark"] .freezer {
+    background: linear-gradient(180deg, #252535 0%, #1e1e2e 100%);
+    border-color: #3a3a50;
+}
+
+/* Il CORPO DEL FRIGO (fridge-body) si scurisce */
+[data-theme="dark"] .fridge-body {
+    background: linear-gradient(180deg, #1e1e2e 0%, #16213e 100%);
+    border-color: #3a3a50;
+    box-shadow: inset 0 8px 16px rgba(0,0,0,0.25), 0 18px 40px rgba(0,0,0,0.5);
+}
+
+[data-theme="dark"] .fridge-body::before {
+    background: radial-gradient(ellipse 100% 60% at 50% 0%, rgba(108, 232, 131, 0.06) 0%, transparent 60%);
+}
+
+/* Ripiano superiore frigo */
+[data-theme="dark"] .shelf-top {
+    border-bottom-color: #2a2a3e;
+}
+
+/* Etichette di testo dentro il frigo */
+[data-theme="dark"] .fridge-body .form-head h2 { color: var(--primary-green); }
+[data-theme="dark"] .fridge-body .form-head p  { color: var(--gray-medium); }
+
+/* Input dentro il frigo */
+[data-theme="dark"] .fridge-body .input-wrap input {
+    background: #252535;
+    border-color: #3a3a50;
+    color: var(--text-dark);
+}
+[data-theme="dark"] .fridge-body .input-wrap input::placeholder { color: #555568; }
+[data-theme="dark"] .fridge-body .input-wrap input:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 4px rgba(108, 232, 131, 0.15);
+}
+
+/* Guest access section dentro il frigo */
+[data-theme="dark"] .guest-access {
+    border-top-color: #2a2a3e;
+}
+[data-theme="dark"] .guest-access p { color: var(--gray-medium); }
+
+/* Footer link */
+[data-theme="dark"] .fridge-body .footer-link { color: var(--gray-medium); }
+
+/* Piedi del frigo */
+[data-theme="dark"] .fridge-feet span { background: #3a3a50; }
+
+/* Eye button */
+[data-theme="dark"] .eye-btn { color: var(--gray-medium); }
+[data-theme="dark"] .eye-btn:hover { color: var(--text-dark); }
+
+/* Calamite */
+[data-theme="dark"] .magnet.lime    { background: #1a2e20; }
+[data-theme="dark"] .magnet.smile   { background: #2e2818; }
+[data-theme="dark"] .magnet.note    { background: #252535; color: var(--text-dark); }
+
+/* Switch-bar nel freezer */
+[data-theme="dark"] .freezer .switch-bar {
+    background: #1e1e2e;
+    border-color: var(--primary-green);
+}
+[data-theme="dark"] .freezer .switch-bar .pill  { background: var(--primary-green); }
+[data-theme="dark"] .freezer .switch-bar .tab   { color: var(--primary-green); }
+[data-theme="dark"] .freezer .switch-bar .tab.active { color: #1e1e2e; }

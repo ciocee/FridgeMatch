@@ -7,9 +7,11 @@ margin-bottom: 2rem;
 }
 
 .social-header h1 {
+font-family: var(--font-display);
 font-size: 1.8rem;
+font-weight: 400;
+letter-spacing: -0.3px;
 color: var(--primary-green);
-font-weight: 700;
 }
 
 .add-item-btn {
@@ -272,7 +274,7 @@ overflow-y: auto;
 border: 1.5px solid var(--gray-light);
 border-radius: var(--input-radius);
 padding: 10px;
-background: #fafafa;
+background: var(--gray-light);
 }
 
 .checkbox-item {

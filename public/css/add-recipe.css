@@ -70,7 +70,7 @@
     border: 1.5px solid var(--gray-light);
     border-radius: var(--input-radius);
     padding: 1rem;
-    background: #fafafa;
+    background: var(--gray-light);
 }
 
 .checkbox-item {
@@ -89,4 +89,38 @@
     .preview-box {
         height: 350px;
     }
+}
+/* Fix hardcoded background */
+.fridge-checklist {
+    background: var(--gray-light);
+}
+
+/* ============================================================
+   DARK THEME — add-recipe page
+   ============================================================ */
+[data-theme="dark"] .preview-box {
+    background: var(--white);
+    border-color: #3a3a50;
+}
+[data-theme="dark"] .preview-box:hover {
+    background: #252535;
+    border-color: var(--primary-green);
+}
+[data-theme="dark"] .fridge-checklist {
+    background: #252535;
+    border-color: #3a3a50;
+}
+[data-theme="dark"] .checkbox-item {
+    border-bottom-color: rgba(255,255,255,0.05);
+    color: var(--text-dark);
+}
+[data-theme="dark"] .details-zone .form-group label {
+    color: var(--gray-medium);
+}
+[data-theme="dark"] .details-zone .form-group input,
+[data-theme="dark"] .details-zone .form-group select,
+[data-theme="dark"] .details-zone .form-group textarea {
+    background: #252535;
+    border-color: #3a3a50;
+    color: var(--text-dark);
 }
