@@ -324,6 +324,48 @@ body {
 [data-theme="dark"] .profile-tabs                { border-bottom-color: #2a2a3e; }
 [data-theme="dark"] .sidebar                     { border-right-color: #2a2a3e; box-shadow: 10px 0 30px rgba(0,0,0,0.4); }
 
+
+/* search bar */
+[data-theme="dark"] .search-wrapper {
+    background: #252535;
+    border-color: #3a3a50;
+}
+[data-theme="dark"] .search-wrapper input {
+    background: transparent;
+    color: var(--text-dark);
+}
+[data-theme="dark"] .search-wrapper input::placeholder {
+    color: #666680;
+}
+
+/* like button non premuto */
+[data-theme="dark"] .like-btn {
+    background: #252535;
+    border-color: #3a3a50;
+    color: var(--text-dark);
+}
+
+/* like button premuto */
+[data-theme="dark"] .like-btn.active {
+    background: #2e1a1a;
+    border-color: var(--danger-red);
+    color: var(--danger-red);
+}
+
+/* commenti */
+[data-theme="dark"] .comment-item {
+    background: #252535;
+}
+[data-theme="dark"] .add-comment-form {
+    background: #252535;
+}
+[data-theme="dark"] .add-comment-form input {
+    background: #1e1e2e;
+    color: var(--text-dark);
+}
+
+
+
 /* ============================================================
    TOGGLE STILE APPLE
    Uso: <button class="theme-toggle" onclick="toggleTheme()" 

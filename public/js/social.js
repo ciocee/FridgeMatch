@@ -128,6 +128,7 @@ async function executeSocialSearch() {
     const mainFeed = document.getElementById('main-feed-section');
 
     if (query === "") { 
+        document.getElementById('no-results-msg')?.remove();
         resultsArea?.classList.add('hidden');
         loadFeed();
         return;
@@ -137,6 +138,7 @@ async function executeSocialSearch() {
     document.getElementById('starred-feed-section')?.classList.add('hidden');
     document.getElementById('feed-divider')?.classList.add('hidden');
     document.getElementById('main-feed-section')?.classList.add('hidden');
+    document.querySelector('.social-header')?.classList.add('hidden');
     resultsArea?.classList.remove('hidden');
 
     try {
@@ -195,6 +197,22 @@ async function executeSocialSearch() {
             } else {
                 recipesSection.classList.add('hidden');
             }
+        }
+        document.querySelector('.social-header')?.classList.remove('hidden');
+
+        // gestione caso in cui la ricerca non produce risultati
+        const noUsers = !results.community.users || results.community.users.length === 0;
+        const noRecipes = !results.community.recipes || results.community.recipes.length === 0;
+
+        const existing = document.getElementById('no-results-msg');
+        if (existing) existing.remove();
+
+        if (noUsers && noRecipes) {
+            const msg = document.createElement('p');
+            msg.id = 'no-results-msg';
+            msg.style.cssText = 'padding:2rem; color:var(--gray-medium); text-align:center; font-size:1rem;';
+            msg.textContent = `No matches found for "${query}"`;
+            document.getElementById('search-results-area').appendChild(msg);
         }
     } catch (err) {
         console.error("Search error:", err);

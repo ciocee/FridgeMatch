@@ -70,6 +70,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('det-image').src = `${API_BASE_URL}${recipe.image}`;
         document.getElementById('det-like-btn').querySelector('span').textContent = recipe.likes.length;
 
+        // per rendere nome utente cliccabile
+        const authorEl = document.getElementById('det-author');
+        authorEl.textContent = `By @${recipe.author.username}`;
+        authorEl.style.cursor = 'pointer';
+        authorEl.onclick = () => {
+            window.location.href = `../profile/?id=${recipe.author._id}`;
+        };
+
         // ingredienti
         const ingContainer = document.getElementById('det-ingredients');
         if (recipe.ingredients && recipe.ingredients.length > 0) {

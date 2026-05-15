@@ -88,8 +88,7 @@ function renderProfile({ user, recipes }, isMine, isStarred = false) {
             starBtn.id = 'profileStarBtn';
             starBtn.className = `star-btn ${isStarred ? 'active' : ''}`;
             starBtn.textContent = isStarred ? '⭐ Starred' : '⭐ Star';
-            starBtn.onclick = () => toggleStar(user._id, starBtn);
-            
+            starBtn.onclick = () => toggleStar(user._id, starBtn);            
             document.getElementById('profileUsername').insertAdjacentElement('afterend', starBtn);
         }
         
@@ -98,7 +97,7 @@ function renderProfile({ user, recipes }, isMine, isStarred = false) {
         if (avatarRing) avatarRing.style.pointerEvents = 'none';
         document.querySelector('.avatar-hint').style.display = 'none';
         if (recipesTabBtn) recipesTabBtn.textContent = `🍽️ ${user.username}'s Recipes`;
-        if (!deleteAccountBtn) deleteAccountBtn.classList.add("hidden");
+        if (deleteAccountBtn) deleteAccountBtn.classList.add("hidden");
 
     } else {
         if (editBioBtn) editBioBtn.classList.remove('hidden');
