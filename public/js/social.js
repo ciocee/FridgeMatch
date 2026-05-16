@@ -186,7 +186,7 @@ async function executeSocialSearch() {
                     article.className = 'recipe-card';
                     const imageUrl = `${API_BASE_URL}${recipe.image}`;
                     article.innerHTML = `
-                        <img src="${imageUrl}" class="recipe-image" onclick="location.href='../social/detail/?id=${recipe._id}'">
+                        <img src="${imageUrl}" class="recipe-image" onclick="location.href='./detail/?id=${recipe._id}'">
                         <div class="recipe-content">
                         <h3>${recipe.title}</h3>
                         <p>By @${recipe.author ? recipe.author.username : 'Community'}</p>
@@ -219,6 +219,7 @@ async function executeSocialSearch() {
     }
 }
 
+/*
 // apertura modal upload ricetta
 function openRecipeModal() {
     document.getElementById('recipeModal').classList.add('open');
@@ -229,6 +230,7 @@ function openRecipeModal() {
 function closeRecipeModal() {
     document.getElementById('recipeModal').classList.remove('open');
 }
+    */
 
 // per suggerire gli ingredienti dal proprio frigo
 async function suggestFridgeIngredients() {
@@ -310,6 +312,7 @@ function initUploadEvents() {
         });
     }
 
+    /* va eliminato !!! 
     const uploadForm = document.getElementById('upload-recipe-form');
     if (uploadForm) {
         uploadForm.addEventListener('submit', async function(e) {
@@ -332,7 +335,7 @@ function initUploadEvents() {
                 }
             } catch (err) { console.error(err); }                        
         });
-    }
+    }*/
 }
 
 function handleCheckChange(checkbox) {

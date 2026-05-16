@@ -32,9 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('id');
+    const myId = sessionStorage.getItem('userId');
 
     if (userId) {
-        loadProfile(`${PROFILE_URL}/${userId}`, false); // false: profilo non mio
+        const isMine = userId === myId;
+        loadProfile(`${PROFILE_URL}/${userId}`, isMine); 
     } else {
         loadProfile(`${PROFILE_URL}/me`, true);
     }
@@ -188,7 +190,7 @@ function renderRecipes(recipes, isMine) {
                 <p>No recipes yet</p>
                 ${isMine ? `
                     <span>Share your first recipe with the community!</span><br><br>
-                    <button class="add-item-btn" onclick="location.href='./add-recipe'">+ Share your recipe</button>
+                    <button class="add-item-btn" onclick="location.href='/public/pages/social/add-recipe'">+ Share your recipe</button>
                 ` : '<span>This user has not shared any recipes yet.</span>'}
             </div>`;
         return;
@@ -199,8 +201,8 @@ function renderRecipes(recipes, isMine) {
         const card = document.createElement('div');
         card.className = 'profile-recipe-card';
         card.style.cursor = 'pointer';
-        card.onclick = () => location.href = `./detail/?id=${recipe._id}`;
-        const imgSrc = recipe.image ? `API_BASE_URL${recipe.image}` : '';
+        card.onclick = () => location.href = `/public/pages/social/detail/?id=${recipe._id}`;
+        const imgSrc = recipe.image ? `${API_BASE_URL}${recipe.image}` : '';
         const date   = new Date(recipe.createdAt).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
 
         card.innerHTML = `
@@ -241,7 +243,7 @@ function renderStarredCreators(creators, isMine) {
         card.style.cursor = 'pointer';
         card.addEventListener('click', (e) => {
             if (e.target.closest('.unstar-btn')) return;
-            window.location.href = `profile/?id=${creator._id}`;
+            window.location.href = `/public/pages/social/profile/?id=${creator._id}`;
         });
         card.innerHTML = `
             <button class="unstar-btn" title="Remove star"
@@ -357,7 +359,7 @@ async function saveUsername() {
     }
 
     try {
-        const res = await fetch(`${API_BASE}/auth/username`, {
+        const res = await fetch(`${API_BASE_URL}/auth/username`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -401,7 +403,7 @@ async function confirmDeleteAccount() {
         });
         if (res.ok) {
             sessionStorage.clear();
-            window.location.href = '../login/index.html';
+            window.location.href = '/public/pages/login/';
         } else {
             showToast('Error deleting account', 'error');
         }

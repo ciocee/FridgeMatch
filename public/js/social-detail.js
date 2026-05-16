@@ -138,7 +138,11 @@ function renderComments(comments) {
 
         div.innerHTML = `
             <div class="comment-main">
-                <strong>@${c.user.username || 'user'}</strong>
+                <strong class="comment-author" 
+                        style="cursor:pointer; color:var(--primary-green);"
+                        onclick="location.href='/public/pages/social/profile/?id=${c.user._id}'">
+                    @${c.user.username || 'user'}
+                </strong>
                 <p>${c.text}</p>
             </div>
             ${isMine ? `<button class="delete-comment-btn" onclick="deleteComment('${recipeId}', '${c._id}')">🗑️</button>` : ''}

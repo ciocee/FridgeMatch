@@ -31,7 +31,8 @@ router.get('/replicable', auth, async (req, res) => {
 
         // 3. SE NON TROVATA, CHIAMATA API
         const ingredientsParam = sortedIngredients.map(name => name.replace(/\s+/g, '+')).join(',+');
-        const spoonacularUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&number=4&apiKey=${apiKey}`;
+        const limit = req.query.limit || 4; // default: 4 ricette per la dashboard
+        const spoonacularUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&number=${limit}&apiKey=${apiKey}`;
         
         console.log("GLOBAL CACHE - Chiamata a Spoonacular...");
         const response = await fetch(spoonacularUrl);

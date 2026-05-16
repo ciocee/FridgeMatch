@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FridgeMatch: All Replicable Recipes</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    
+    <!-- Carica il tema subito per farlo funzionare all'avvio -->
+    <script src="../../js/theme.js"></script>
+</head>
+<body class="dashboard-body">
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="dashboard-container">
+        <!-- sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h1 class="brand">FridgeMatch</h1>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="../dashboard">Homepage</a></li>
+                        <li><a href="../fridge">Fridge</a></li>
+                        <li><a href="../groceries">Grocery list</a></li>
+                        <li><a href="../favourites">Your favourites</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="sidebar-section social">
+                <br>
+                <h3>Social</h3>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="../social/profile">Your profile</a></li>
+                        <li><a href="../social/add-recipe">Add recipe</a></li>
+                        <li><a href="../social">Community feed</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="sidebar-theme-row">
+                <span class="sidebar-theme-label"> Dark mode</span>
+                <button class="theme-toggle"
+                        role="switch"
+                        aria-checked="false"
+                        onclick="toggleTheme()"
+                        title="Toggle dark mode">
+                </button>
+            </div>
+
+            <div id="auth-button-container" style="margin-top: auto;">
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div style="margin-bottom: 2rem;">
+                <button onclick="window.history.back()" class="logout-btn" style="width: auto; padding: 10px 20px;">← Back</button>
+                <h1 style="color: var(--primary-green); margin-top: 1rem; font-family: var(--font-display);">Recipes you can cook now</h1>
+                <p style="color: var(--text-soft);">Based on your fridge ingredients</p>
+            </div>
+
+            <!-- griglia di ricette -->
+            <div id="full-grid" class="recipe-grid">
+                <!-- popolata da all-replicable.js -->
+            </div>
+        </main>
+    </div>
+
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/all-replicable.js"></script> 
+</body>
+</html>

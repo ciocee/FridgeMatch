@@ -63,11 +63,10 @@ function highlightCurrentPage() {
     const links = document.querySelectorAll('.nav-menu a');
     const currentPath = window.location.pathname;
     links.forEach(link => {
-        if (currentPath.includes(link.getAttribute('href'))) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
+        const href = link.getAttribute('href');
+        if (!href || href === '#') return;
+        const hrefPart = href.replace(/^\.\.\//, '').replace(/\/$/, '');    // prende ultima cartella dell'href
+        link.classList.toggle('active', currentPath.includes(hrefPart));
     });
 }
 
@@ -111,7 +110,7 @@ function handleLogout() {
             credentials: 'include'
         }).finally(() => {
             sessionStorage.clear();
-            window.location.href = "../login";
+            window.location.href = '/public/pages/login/';
         });
     }
 }
