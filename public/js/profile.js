@@ -230,7 +230,7 @@ function renderStarredCreators(creators, isMine) {
                 <p>No starred creators yet</p>
                 ${isMine ? `
                     <span>Visit the community and star your favourite chefs!</span><br><br>
-                    <a href="../social" class="add-item-btn" style="display:inline-block;text-decoration:none">Browse community</a>
+                    <a href="../../social" class="add-item-btn" style="display:inline-block;text-decoration:none">Browse community</a>
                 ` : ''} 
             </div>`;
         return;

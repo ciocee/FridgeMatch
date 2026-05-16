@@ -30,6 +30,9 @@ router.post('/upload-recipe', auth, upload.single('img'), async (req, res) => {
     });
     await newRecipe.save();
     res.status(201).json(newRecipe);
+
+    console.log('COMMUNITY - Ricetta caricata:', newRecipe); 
+
    } catch (err) {
         console.error('POST /social/upload-recipe:', err);
         res.status(500).send('Server error');
@@ -37,7 +40,6 @@ router.post('/upload-recipe', auth, upload.single('img'), async (req, res) => {
 });
 
 
-// GET /api/social/feed - recupera tutte le ricette divise per priorità
 // GET /api/social/feed - recupera tutte le ricette divise per priorità
 router.get('/feed', auth, async (req, res) => {
     try {
@@ -92,6 +94,9 @@ router.delete('/recipe/:id', auth, async (req, res) => {
         });
         if (!recipe) return res.status(404).send("Recipe not found or unauthorized");
         res.json({ msg: "Recipe deleted" });
+
+        console.log('COMMUNITY - Ricetta eliminata:', recipe); 
+
     } catch (err) {
         res.status(500).send("Error deleting recipe");
     }
@@ -113,6 +118,12 @@ router.post('/recipe/:id/comment', auth, async (req, res) => {
 
         const updatedRecipe = await Recipe.findById(req.params.id).populate('comments.user', "username avaratEmoji");        
         res.json(updatedRecipe.comments);
+
+        console.log('COMMUNITY - Commento aggiunto alla ricetta:', {
+            recipeId: req.params.id,
+            comment: newComment
+        });
+        
     } catch (err) { 
         console.error('POST /recipe/:id/comment', err);
         res.status(500).send("Error adding comment"); 
@@ -134,6 +145,12 @@ router.delete('/recipe/:id/comment/:commentId', auth, async (req, res) => {
         await recipe.save();
 
         res.json({ msg: "Comment deleted"});
+
+        console.log('COMMUNITY - Commento eliminato dalla ricetta:', {  
+        recipeId: req.params.id,
+        commentId: req.params.commentId
+        });
+
     } catch (err) {
         console.error('DELETE /recipe/:id/comment', err);
         res.status(500).send("Error deleting comment"); 
@@ -192,8 +209,8 @@ router.get('/search', auth, async (req, res) => {
         const spoonData = await spoonRes.json();
 
         // DEBUG UN ATTIMO
-        console.log('Query ricevuta:', query);
-        console.log('Ricette trovate:', localRecipes.length);
+        //console.log('Query ricevuta:', query);
+        //console.log('Ricette trovate:', localRecipes.length);
         // DEBUG UN ATTIMO
 
         // commentare quando si vogliono cercare ricette community
