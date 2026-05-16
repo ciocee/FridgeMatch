@@ -25,7 +25,7 @@ router.get('/replicable', auth, async (req, res) => {
         const cachedResults = await GlobalSearchCache.findOne({ ingredientsKey: ingredientsKey });
 
         if (cachedResults) {
-            console.log(`GLOBAL CACHE - Risultati trovati per: [${ingredientsKey}]`);
+            console.log(`INGREDIENTI CACHE - Risultati trovati per: [${ingredientsKey}]`);
             return res.status(200).json(cachedResults.results);
         }
 
@@ -34,7 +34,7 @@ router.get('/replicable', auth, async (req, res) => {
         const limit = req.query.limit || 4; // default: 4 ricette per la dashboard
         const spoonacularUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&number=${limit}&apiKey=${apiKey}`;
         
-        console.log("GLOBAL CACHE - Chiamata a Spoonacular...");
+        console.log("INGREDIENTI CACHE - Chiamata a Spoonacular...");
         const response = await fetch(spoonacularUrl);
 
         const quotaUsed = response.headers.get('x-api-quota-used');
@@ -54,7 +54,7 @@ router.get('/replicable', auth, async (req, res) => {
                 results: data
             });
             await newCache.save();
-            console.log(`GLOBAL CACHE - Nuova combinazione salvata: [${ingredientsKey}]`);
+            console.log(`INGREDIENTI CACHE - Nuova combinazione salvata: [${ingredientsKey}]`);
         } catch (saveError) {
             console.log("Nota: Cache già presente o errore di salvataggio concorrente.");
         }
@@ -142,7 +142,7 @@ router.get('/recipe/:id', auth, async (req, res) => {
         // 4. SALVA LA RICETTA NEL DATABASE MONGODB
         const newCachedRecipe = new RecipeCache(recipeDataToSave);
         await newCachedRecipe.save();
-        console.log(`DB CACHE - Nuova ricetta salvata nel db per ID: ${recipeId}`);
+        console.log(`RICETTE CACHE - Nuova ricetta salvata nel db per ID: ${recipeId}`);
 
         res.status(200).json(recipeDataToSave);
 
