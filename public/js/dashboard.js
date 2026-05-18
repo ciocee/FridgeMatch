@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         loadDashboardItems();
         loadReplicableRecipes();
+        loadFavouriteRecipes();
     }
 
 });
@@ -194,4 +195,58 @@ function showEmptyExpiring() {
 // funzione che porta alla sezione per l'aggiunta di items al frigo
 function goToAddItem() {
     window.location.href = "../fridge";
+}
+
+/* ─────────────────────────────────────────
+   SEZIONE PREFERITI IN DASHBOARD
+───────────────────────────────────────── */
+async function loadFavouriteRecipes() {
+    const grid = document.getElementById('favourites-grid');
+    if (!grid) return;
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/favourites`, { credentials: 'include' });
+        if (!res.ok) return;
+
+        const favs = await res.json();
+
+        if (favs.length === 0) {
+            grid.innerHTML = `
+                <article class="recipe-card">
+                    <p class="recipe-title" style="color:var(--gray-medium);font-size:0.9rem;">
+                        No favourites yet — add recipes with ❤️
+                    </p>
+                    <div class="recipe-img-placeholder"></div>
+                </article>`;
+            return;
+        }
+
+        grid.innerHTML = '';
+
+        // Mostra al massimo 4 preferiti nella dashboard
+        favs.slice(0, 4).forEach(fav => {
+            const article = document.createElement('article');
+            article.className = 'recipe-card';
+            article.style.cursor = 'pointer';
+            article.style.position = 'relative';
+
+            const imgHtml = fav.image
+                ? `<div class="recipe-img-wrapper"><img src="${fav.image}" alt="${fav.title}" class="recipe-img"></div>`
+                : `<div class="recipe-img-placeholder"></div>`;
+
+            article.innerHTML = `
+                <p class="recipe-title">${fav.title}</p>
+                ${imgHtml}
+            `;
+
+            article.addEventListener('click', () => {
+                window.location.href = `../replicable/?id=${fav.recipeId}`;
+            });
+
+            grid.appendChild(article);
+        });
+
+    } catch (err) {
+        console.error('Errore caricamento preferiti dashboard:', err);
+    }
 }

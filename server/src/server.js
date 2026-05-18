@@ -38,6 +38,7 @@ app.use("/api/grocery", require("../routes/grocery"));
 app.use("/api/profile",   require("../routes/profile"));
 app.use("/api/recipes", require("../routes/recipes"));
 app.use("/api/social", require("../routes/social"));
+app.use("/api/favourites", require("../routes/favourites"));
 
 //Server
 app.listen(process.env.PORT, () => {

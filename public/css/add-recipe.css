@@ -37,6 +37,19 @@
     object-fit: cover;
 }
 
+.details-zone .form-group textarea {
+    border-radius: var(--input-radius);
+    background: var(--white);
+    border: 1.5px solid var(--gray-light);
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--text-dark);
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
 .details-zone {
     display: flex;
     flex-direction: column;

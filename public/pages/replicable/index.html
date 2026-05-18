@@ -61,12 +61,21 @@
         <!-- contenuto principale -->
         <main class="main-content">
             
-            <!-- Pulsante per tornare indietro -->
-            <div style="margin-bottom: 20px;">
-                <button onclick="window.history.back()" style="padding: 8px 16px; background-color: var(--white); border: 1px solid var(--gray-light); border-radius: 8px; cursor: pointer; font-weight: bold; color: var(--gray-medium);">
+            <!-- Barra superiore: back + add to favourites -->
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
+                <button onclick="window.history.back()" style="padding:8px 16px;background-color:var(--white);border:1px solid var(--gray-light);border-radius:8px;cursor:pointer;font-weight:bold;color:var(--gray-medium);">
                     ← Back
                 </button>
+                <button id="favBtn"
+                        style="padding:10px 22px;background-color:#e53935;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.95rem;transition:opacity 0.2s;"
+                        onmouseover="this.style.opacity='0.82'"
+                        onmouseout="this.style.opacity='1'">
+                    🤍 Add to Favourites
+                </button>
             </div>
+            <style>
+                #favBtn.fav-btn-active { background-color: #888 !important; }
+            </style>
 
             <!-- Messaggio di caricamento -->
             <div id="loadingMsg" style="text-align: center; margin-top: 50px;">

@@ -553,3 +553,31 @@
     transform: scale(1.15); 
     display: block;
 }
+/* ── Cuore sulle recipe-card della dashboard ── */
+.card-heart-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(255,255,255,0.85);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease, background 0.15s ease;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+.card-heart-btn:hover {
+    transform: scale(1.15);
+    background: #fff;
+}
+.card-heart-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
