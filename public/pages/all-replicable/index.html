@@ -6,6 +6,7 @@
     <title>FridgeMatch: All Replicable Recipes</title>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/dashboard.css">
+    <link rel="stylesheet" href="../../css/favourites.css">
     
     <script src="../../js/theme.js"></script>
 </head>
@@ -61,11 +62,35 @@
                 <p style="color: var(--text-soft);">Based on your fridge ingredients</p>
             </div>
 
+            
+            <!-- toolbar filtri e ricerca -->
+            <div class="favourites-toolbar">
+                <div class="favourites-search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search recipes..." oninput="renderReplicableRecipes()">
+                </div>
+                <div class="filter-group">
+                    <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+                    <button class="filter-btn" onclick="setFilter('glutenFree', this)">🌾 Gluten-Free</button>
+                    <button class="filter-btn" onclick="setFilter('dairyFree', this)">🥛 Dairy-Free</button>
+                    <button class="filter-btn" onclick="setFilter('vegetarian', this)">🥚 Vegetarian</button>
+                    <button class="filter-btn" onclick="setFilter('vegan', this)">🌿 Vegan</button>
+                </div>
+            </div>
+
             <!-- griglia di ricette -->
             <div id="full-grid" class="recipe-grid">
                 <!-- popolata da all-replicable.js -->
             </div>
 
+            <!-- stato vuoto -->
+            <div id="emptyState" class="empty-state hidden">
+                <div class="empty-icon">🤍</div>
+                <p>No recipes match your filters</p>
+                <span>Try changing your search or filters.</span>
+            </div>
+
+            <!-- footer -->
             <footer class="site-footer">
                 <span class="footer-brand">FridgeMatch</span>
                 <ul class="footer-links">
@@ -79,7 +104,6 @@
         </main>
     </div>
 
-    <script src="../../js/utils.js"></script>
     <script src="../../js/all-replicable.js"></script> 
 </body>
 </html>

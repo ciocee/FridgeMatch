@@ -8,6 +8,7 @@ const auth = require('../middleware/authMiddleware');
 
 const apiKey = process.env.FOOD_API_KEY;
 
+// carica ricette per la dashboard usando la cache
 router.get('/replicable', auth, async (req, res) => {
     try {
         const items = await FridgeItem.find({ user: req.session.userId });
@@ -27,6 +28,7 @@ router.get('/replicable', auth, async (req, res) => {
         }
 
         const ingredientsParam = sortedIngredients.map(name => name.replace(/\s+/g, '+')).join(',+');
+        
         const limit = req.query.limit || 4; // default: 4 ricette per la dashboard
         const spoonacularUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&number=${limit}&apiKey=${apiKey}`;
         
@@ -55,6 +57,83 @@ router.get('/replicable', auth, async (req, res) => {
         }
         
         res.status(200).json(data);
+
+    } catch (error) {
+        console.error("Errore nel fetch delle ricette:", error);
+        res.status(500).json({ message: "Errore interno del server" });
+    }
+});
+
+// carica ricette replicable nella pagina dedicata usando punti api
+router.get('/replicable-extended', auth, async (req, res) => {
+    try {
+        const items = await FridgeItem.find({ user: req.session.userId });
+
+        if (!items || items.length === 0) {
+            return res.status(200).json([]); 
+        }
+
+        const sortedIngredients = [...new Set(items.map(i => i.name.toLowerCase().trim()))].sort();
+        const ingredientsKey = sortedIngredients.join(',');        
+
+        const ingredientsParam = sortedIngredients.map(name => name.replace(/\s+/g, '+')).join(',+');
+        
+        const limit = req.query.limit || 4;
+        const spoonacularUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&number=${limit}&apiKey=${apiKey}`;
+        
+        const response = await fetch(spoonacularUrl);
+
+        const quotaUsed = response.headers.get('x-api-quota-used');
+        const quotaLeft = response.headers.get('x-api-quota-left');
+        console.log(`API SPOONACULAR - Ricerca ricette per: [${ingredientsKey}] - Punti usati: ${quotaUsed} / Rimanenti: ${quotaLeft}`);
+        
+        if (!response.ok) {
+            return res.status(response.status).json({ message: "Errore di comunicazione con Spoonacular" });
+        }
+
+        let data = await response.json();
+
+        // Salva ogni ricetta nel DB con i dettagli
+        const enrichedData = await Promise.all(data.map(async (recipe) => {
+            try {
+                const detailRes = await fetch(`https://api.spoonacular.com/recipes/${recipe.id}/information?includeNutrition=true&apiKey=${apiKey}`);
+                if (!detailRes.ok) return recipe;
+                
+                const details = await detailRes.json();
+                
+                // Salva nel DB
+                await RecipeCache.findOneAndUpdate(
+                    { id: recipe.id },
+                    {
+                        id: details.id,
+                        title: details.title,
+                        image: details.image,
+                        readyInMinutes: details.readyInMinutes,
+                        servings: details.servings,
+                        healthScore: details.healthScore,
+                        glutenFree: details.glutenFree || false,
+                        dairyFree: details.dairyFree || false,
+                        vegetarian: details.vegetarian || false,
+                        vegan: details.vegan || false,
+                    },
+                    { upsert: true, new: true }
+                );
+
+                // Ritorna i dati arricchiti al frontend
+                return {
+                    ...recipe,
+                    glutenFree: details.glutenFree || false,
+                    dairyFree: details.dairyFree || false,
+                    vegetarian: details.vegetarian || false,
+                    vegan: details.vegan || false,
+                };
+            } catch (err) {
+                console.error(`Errore dettagli ricetta ${recipe.id}:`, err);
+                return recipe;
+            }
+        }));
+
+        res.status(200).json(enrichedData);
 
     } catch (error) {
         console.error("Errore nel fetch delle ricette:", error);

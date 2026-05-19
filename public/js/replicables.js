@@ -29,7 +29,7 @@ async function loadReplicableRecipes() {
             }
         } catch (e) { /* ignora */ }
 
-        data.forEach(recipe => {
+        data.slice(0, 4).forEach(recipe => {
             const isFav = favouriteIds.has(String(recipe.id));
 
             const article = document.createElement('article');
@@ -104,6 +104,8 @@ async function loadReplicableRecipes() {
             });
 
             grid.appendChild(article);
+            
+            
         });
 
     } catch (error) {

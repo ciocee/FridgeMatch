@@ -111,6 +111,7 @@ function renderFavourites() {
     }
 }
 
+// funzione per creare card ricetta
 function createRecipeCard(recipe) {
     const article = document.createElement('article');
     article.className = 'fav-card';
@@ -165,15 +166,6 @@ function escapeHtml(str) {
     return d.innerHTML;
 }
 
-/* ════════════════════════════════════════
-   FILTRI
-════════════════════════════════════════ */
-function setFilter(filter, btn) {
-    activeFilter = filter;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderFavourites();
-}
 
 /* ════════════════════════════════════════
    ELIMINAZIONE
@@ -202,6 +194,16 @@ async function confirmDelete() {
 function closeDeleteModal() {
     document.getElementById('deleteModalBackdrop').classList.remove('open');
     pendingDeleteId = null;
+}
+
+/* ════════════════════════════════════════
+   FILTER
+════════════════════════════════════════ */
+function setFilter(filter, btn) {
+    activeFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderFavourites();
 }
 
 /* ════════════════════════════════════════
