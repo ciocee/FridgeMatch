@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FridgeMatch: Recipe Details</title>
+    
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/dashboard.css">
     <link rel="stylesheet" href="../../css/favourites.css">
+    <link rel="stylesheet" href="../../css/grocery.css">
     
     <script src="../../js/theme.js"></script>
 </head>
 <body class="dashboard-body">
 
-    <!-- overlay sfondo scuro mobile -->
     <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
     <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
 
     <div class="dashboard-container">
 
-        <!-- sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-section">
                 <h1 class="brand">FridgeMatch</h1>
@@ -58,10 +58,8 @@
             </div>
         </aside>
 
-        <!-- contenuto principale -->
         <main class="main-content">
             
-            <!-- Barra superiore: back + add to favourites -->
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
                 <button onclick="window.history.back()" class="logout-btn" style="width: auto; padding: 10px 20px;">← Back</button>
                 <button id="favBtn"
@@ -75,21 +73,17 @@
                 #favBtn.fav-btn-active { background-color: #888 !important; }
             </style>
 
-            <!-- Messaggio di caricamento -->
             <div id="loadingMsg" style="text-align: center; margin-top: 50px;">
                 <h2 style="color: var(--primary-green);">Loading recipe details... 🍳</h2>
             </div>
 
-            <!-- Contenitore della Ricetta (nascosto di default) -->
             <div id="recipeContent" style="display: none; background: var(--white); padding: 30px; border-radius: var(--border-radius); box-shadow: var(--card-shadow);">
                 
                 <h1 id="recipeTitle" style="color: var(--primary-green); margin-bottom: 25px; font-size: 2rem;"></h1>
                 
                 <div style="display: flex; gap: 30px; flex-wrap: wrap; margin-bottom: 30px;">
-                    <!-- Immagine Ricetta -->
                     <img id="recipeImage" src="" alt="Recipe Image" style="width: 100%; max-width: 400px; border-radius: 12px; object-fit: cover;">
                     
-                    <!-- Info Rapide -->
                     <div style="font-size: 1.1rem; line-height: 2; display: flex; flex-direction: column; justify-content: center;">
                         <p>⏱ <strong>Ready in:</strong> <span id="recipeTime"></span> minutes</p>
                         <p>🍽 <strong>Servings:</strong> <span id="recipeServings"></span></p>
@@ -100,15 +94,12 @@
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr; gap: 30px;">
-                    <!-- Ingredienti -->
                     <div>
                         <h3 style="border-bottom: 2px solid var(--gray-light); padding-bottom: 10px; margin-bottom: 15px; color: var(--text-dark);">Ingredients</h3>
                         <ul id="recipeIngredients" style="margin-left: 20px; line-height: 1.8; color: var(--text-dark);">
-                            <!-- Inseriti tramite JS -->
-                        </ul>
+                            </ul>
                     </div>
 
-                    <!-- Macros (Sostituisce il Summary) -->
                     <div>
                         <h3 style="border-bottom: 2px solid var(--gray-light); padding-bottom: 10px; margin-bottom: 15px; color: var(--text-dark);">Macros</h3>
                         <div class="macros-container">
@@ -127,17 +118,14 @@
                         </div>
                     </div>
 
-                    <!-- Istruzioni -->
                     <div>
                         <h3 style="border-bottom: 2px solid var(--gray-light); padding-bottom: 10px; margin-bottom: 15px; color: var(--text-dark);">Instructions</h3>
                         <ol id="recipeSteps" style="margin-left: 20px; line-height: 1.8; color: var(--text-dark);">
-                            <!-- Inseriti tramite JS -->
-                        </ol>
+                            </ol>
                     </div>
                 </div>
             </div>
 
-            <!-- footer del sito -->
             <footer class="site-footer">
                 <span class="footer-brand">FridgeMatch</span>
                 <ul class="footer-links">
@@ -152,7 +140,55 @@
         </main>
     </div>
 
-    <!-- Script della pagina -->
+    <div class="modal-backdrop" id="quickAddBackdrop" onclick="if(event.target === this) abortQuickAdd()">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>🛒 Add missing item</h2>
+                <button type="button" class="modal-close" onclick="abortQuickAdd()">✕</button>
+            </div>
+            
+            <form id="quickAddForm">
+                <div class="modal-body">
+                    <p style="color: var(--gray-medium); margin-bottom: 10px; font-size: 0.95rem;">
+                        Review and categorize this ingredient before adding it to your list.
+                    </p>
+
+                    <div class="form-group">
+                        <label>Ingredient Name</label>
+                        <input type="text" id="quickAddName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category</label>
+                        <div class="category-grid" id="quickAddCategoryGrid"></div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" id="quickAddQty" value="1" min="0.1" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Unit</label>
+                            <select id="quickAddUnit">
+                                <option value="units">units</option>
+                                <option value="g">grams (g)</option>
+                                <option value="kg">kilograms (kg)</option>
+                                <option value="ml">milliliters (ml)</option>
+                                <option value="l">liters (l)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" id="quickAddSkipBtn">Skip</button>
+                    <button type="submit" class="btn-add">Save to List</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../../js/utils.js"></script>
     <script src="../../js/recipe.js"></script>
 </body>
