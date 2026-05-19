@@ -248,3 +248,33 @@ async function loadFavouriteRecipes() {
         console.error('Errore caricamento preferiti dashboard:', err);
     }
 }
+
+/* ─────────────────────────────────────────
+   SEZIONE RICERCA DASHBOARD -> REDIRECT
+───────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.querySelector('.search-btn');
+
+    if (searchInput && searchBtn) {
+        const goToExplore = () => {
+            const query = searchInput.value.trim();
+            if (query) {
+                // REDIRECT ALLA NUOVA PAGINA EXPLORE
+                window.location.href = `../explore/?q=${encodeURIComponent(query)}`;
+            }
+        };
+
+        searchBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            goToExplore();
+        });
+        
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                goToExplore();
+            }
+        });
+    }
+});

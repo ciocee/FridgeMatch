@@ -70,38 +70,6 @@ function highlightCurrentPage() {
     });
 }
 
-// gestisce ricerca
-function handleSearch(inputElementId) {
-    const input = document.getElementById(inputElementId);
-    if (!input) return;
-
-    input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') { 
-            const query = input.value.trim();
-            if (query) {
-                window.location.href = `../social/community/?search=${encodeURIComponent(query)}`;
-            }
-        }
-    });
-}
-
-document.addEventListener('DOMContentLoaded', initSidebar);
-
-// funzione per attivare la ricerca quando si preme invio
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('search-input');
-    if (searchInput) {
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const query = searchInput.value.trim();
-                if (query) {
-                    window.location.href = `../social/community/?q=${encodeURIComponent(query)}`;
-                }
-            }
-        });
-    }
-});
-
 // funzione logout
 function handleLogout() {
     if (confirm("Are you sure you want to logout?")) {
