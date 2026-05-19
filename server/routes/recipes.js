@@ -35,9 +35,10 @@ router.get('/replicable', auth, async (req, res) => {
         console.log("INGREDIENTI CACHE - Chiamata a Spoonacular...");
         const response = await fetch(spoonacularUrl);
 
+        const quotaRequest = response.headers.get('x-api-quota-request');
         const quotaUsed = response.headers.get('x-api-quota-used');
         const quotaLeft = response.headers.get('x-api-quota-left');
-        console.log(`API SPOONACULAR - Ricerca ricette per: [${ingredientsKey}] - Punti usati: ${quotaUsed} / Rimanenti: ${quotaLeft}`);
+        console.log(`API SPOONACULAR - Ricerca ricette per: [${ingredientsKey}] - Costo: ${quotaRequest} - Punti usati: ${quotaUsed} / Rimanenti: ${quotaLeft}`);
         
         if (!response.ok) {
             return res.status(response.status).json({ message: "Errore di comunicazione con Spoonacular" });
@@ -64,7 +65,7 @@ router.get('/replicable', auth, async (req, res) => {
     }
 });
 
-// carica ricette replicable nella pagina dedicata usando punti api
+// carica ricette replicable nella pagina dedicata usando la Cache e complexSearch
 router.get('/replicable-extended', auth, async (req, res) => {
     try {
         const items = await FridgeItem.find({ user: req.session.userId });
@@ -74,69 +75,69 @@ router.get('/replicable-extended', auth, async (req, res) => {
         }
 
         const sortedIngredients = [...new Set(items.map(i => i.name.toLowerCase().trim()))].sort();
-        const ingredientsKey = sortedIngredients.join(',');        
-
         const ingredientsParam = sortedIngredients.map(name => name.replace(/\s+/g, '+')).join(',+');
         
-        const limit = req.query.limit || 4;
-        const spoonacularUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&number=${limit}&apiKey=${apiKey}`;
+        const limit = req.query.limit || 20;
+        const cacheKey = `extended_${sortedIngredients.join(',')}_limit_${limit}`;
+
+        // 1. CONTROLLO CACHE
+        const cachedResults = await GlobalSearchCache.findOne({ ingredientsKey: cacheKey });
+        if (cachedResults) {
+            console.log(`CACHE (Extended) - Risultati trovati per: [${cacheKey}]`);
+            return res.status(200).json(cachedResults.results);
+        }
+
+        // 2. LA CHIAMATA "MAGICA" AL COMPLEX SEARCH
+        // Usiamo includeIngredients, ordiniamo per max-used-ingredients e aggiungiamo addRecipeInformation e fillIngredients
+        const spoonacularUrl = `https://api.spoonacular.com/recipes/complexSearch?includeIngredients=${ingredientsParam}&sort=max-used-ingredients&fillIngredients=true&addRecipeInformation=true&number=${limit}&apiKey=${apiKey}`;
         
         const response = await fetch(spoonacularUrl);
 
+        const quotaRequest = response.headers.get('x-api-quota-request');
         const quotaUsed = response.headers.get('x-api-quota-used');
         const quotaLeft = response.headers.get('x-api-quota-left');
-        console.log(`API SPOONACULAR - Ricerca ricette per: [${ingredientsKey}] - Punti usati: ${quotaUsed} / Rimanenti: ${quotaLeft}`);
+        console.log(`API SPOONACULAR - Ricerca Extended (complexSearch) - Costo: ${quotaRequest} - Punti usati: ${quotaUsed} / Rimanenti: ${quotaLeft}`);
         
         if (!response.ok) {
             return res.status(response.status).json({ message: "Errore di comunicazione con Spoonacular" });
         }
 
-        let data = await response.json();
+        const rawData = await response.json();
+        const results = rawData.results || [];
 
-        // Salva ogni ricetta nel DB con i dettagli
-        const enrichedData = await Promise.all(data.map(async (recipe) => {
-            try {
-                const detailRes = await fetch(`https://api.spoonacular.com/recipes/${recipe.id}/information?includeNutrition=true&apiKey=${apiKey}`);
-                if (!detailRes.ok) return recipe;
-                
-                const details = await detailRes.json();
-                
-                // Salva nel DB
-                await RecipeCache.findOneAndUpdate(
-                    { id: recipe.id },
-                    {
-                        id: details.id,
-                        title: details.title,
-                        image: details.image,
-                        readyInMinutes: details.readyInMinutes,
-                        servings: details.servings,
-                        healthScore: details.healthScore,
-                        glutenFree: details.glutenFree || false,
-                        dairyFree: details.dairyFree || false,
-                        vegetarian: details.vegetarian || false,
-                        vegan: details.vegan || false,
-                    },
-                    { upsert: true, new: true }
-                );
-
-                // Ritorna i dati arricchiti al frontend
-                return {
-                    ...recipe,
-                    glutenFree: details.glutenFree || false,
-                    dairyFree: details.dairyFree || false,
-                    vegetarian: details.vegetarian || false,
-                    vegan: details.vegan || false,
-                };
-            } catch (err) {
-                console.error(`Errore dettagli ricetta ${recipe.id}:`, err);
-                return recipe;
-            }
+        // 3. FORMATTIAMO I DATI PER IL TUO FRONTEND
+        // Il tuo frontend si aspetta un array piatto, quindi lo estraiamo da rawData.results
+        const enrichedData = results.map(recipe => ({
+            id: recipe.id,
+            title: recipe.title,
+            image: recipe.image,
+            usedIngredientCount: recipe.usedIngredientCount || 0,
+            missedIngredientCount: recipe.missedIngredientCount || 0,
+            // Ecco le tue info sulle diete, arrivate gratis!
+            glutenFree: recipe.glutenFree || false,
+            dairyFree: recipe.dairyFree || false,
+            vegetarian: recipe.vegetarian || false,
+            vegan: recipe.vegan || false,
+            healthScore: recipe.healthScore || 0,
+            readyInMinutes: recipe.readyInMinutes || 0
         }));
 
+        // 4. SALVATAGGIO IN CACHE
+        try {
+            const newCache = new GlobalSearchCache({
+                ingredientsKey: cacheKey,
+                results: enrichedData
+            });
+            await newCache.save();
+        } catch (saveError) {
+            console.log("Nota: Cache già presente o errore di salvataggio.");
+        }
+
+        // 5. INVIO AL FRONTEND
         res.status(200).json(enrichedData);
 
     } catch (error) {
-        console.error("Errore nel fetch delle ricette:", error);
+        console.error("Errore nel fetch delle ricette extended:", error);
         res.status(500).json({ message: "Errore interno del server" });
     }
 });
@@ -157,9 +158,10 @@ router.get('/recipe/:id', auth, async (req, res) => {
 
         const response = await fetch(spoonacularUrl);
         
+        const quotaRequest = response.headers.get('x-api-quota-request');
         const quotaUsed = response.headers.get('x-api-quota-used');
         const quotaLeft = response.headers.get('x-api-quota-left');
-        console.log(`API SPOONACULAR - Punti usati: ${quotaUsed} / Rimanenti: ${quotaLeft}`);
+        console.log(`API SPOONACULAR - Costo: ${quotaRequest} - Punti usati: ${quotaUsed} / Rimanenti: ${quotaLeft}`);
 
         if (!response.ok) {
             return res.status(response.status).json({ message: "Errore API Spoonacular" });
