@@ -134,6 +134,46 @@ async function toggleStar(userId, btn) {
 }
 
 
+// funzione per alert personalizzati ---------------------------------
+function showConfirm(message, onConfirm, onCancel) {
+    let backdrop = document.getElementById('confirmModalBackdrop');
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = 'confirmModalBackdrop';
+        backdrop.className = 'modal-backdrop';
+        backdrop.innerHTML = `
+            <div class="modal modal-small">
+                <div class="modal-body">
+                    <p id="confirmModalText"></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-cancel" id="confirmModalCancel">Cancel</button>
+                    <button class="btn-add" id="confirmModalOk">OK</button>
+                </div>
+            </div>`;
+        document.body.appendChild(backdrop);
+    }
+    document.getElementById('confirmModalText').textContent = message;
+    backdrop.classList.add('open');
+
+    document.getElementById('confirmModalOk').onclick = () => {
+        backdrop.classList.remove('open');
+        if (onConfirm) onConfirm();
+    };    
+
+    document.getElementById('confirmModalCancel').onclick = () => {
+        backdrop.classList.remove('open');
+        if (onCancel) onCancel();
+    };    
+    
+}
+
+function showAlert(message, type = '') {
+    showToast(message, type);
+}
+// ------------------------------------------------------------------
+
+
 function showToast(message, type) {
     const toast = document.getElementById('toast');
     if (!toast) return;

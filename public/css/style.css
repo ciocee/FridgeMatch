@@ -324,6 +324,19 @@ body {
 [data-theme="dark"] .profile-tabs                { border-bottom-color: #2a2a3e; }
 [data-theme="dark"] .sidebar                     { border-right-color: #2a2a3e; box-shadow: 10px 0 30px rgba(0,0,0,0.4); }
 
+[data-theme="dark"] .filter-btn {
+    background: #252535;
+    border-color: #3a3a50;
+    color: var(--text-dark);
+}
+
+[data-theme="dark"] .filter-btn:hover,
+[data-theme="dark"] .filter-btn.active {
+    background: var(--primary-green);
+    border-color: var(--primary-green);
+    color: var(--white);
+}
+
 
 /* search bar */
 [data-theme="dark"] .search-wrapper {

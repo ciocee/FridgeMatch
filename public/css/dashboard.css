@@ -640,3 +640,45 @@
 [data-theme="dark"] .site-footer {
     border-top-color: #2a2a3e;
 }
+
+/* per rendere preview del frigo ed expiring list scrollabili */
+#fridge-list,
+#expiring-list {
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray-light) transparent;
+}
+
+#fridge-list::-webkit-scrollbar,
+#expiring-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+#fridge-list::-webkit-scrollbar-track,
+#expiring-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#fridge-list::-webkit-scrollbar-thumb,
+#expiring-list::-webkit-scrollbar-thumb {
+    background: var(--gray-light);
+    border-radius: 3px;
+}
+
+#fridge-list::-webkit-scrollbar-thumb:hover,
+#expiring-list::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-medium);
+}
+
+/* Dark mode */
+[data-theme="dark"] #fridge-list,
+[data-theme="dark"] #expiring-list {
+    scrollbar-color: #3a3a50 transparent;
+}
+
+[data-theme="dark"] #fridge-list::-webkit-scrollbar-thumb,
+[data-theme="dark"] #expiring-list::-webkit-scrollbar-thumb {
+    background: #3a3a50;
+}

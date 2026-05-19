@@ -24,7 +24,7 @@ let selectedCategory = '';
 
 const API_URL = `${API_BASE_URL}/api/fridge`;
 
-/* ---- CARICAMENTO DAL SERVER (Parte 1: GET) ---- */
+/* ---- CARICAMENTO DAL SERVER  ---- */
 async function loadItems() {
     try {
         const response = await fetch(API_URL, {
@@ -48,7 +48,7 @@ async function loadItems() {
     }
 }
 
-/* ---- CALCOLO STATO SCADENZA (Parte 3: Date) ---- */
+/* ---- CALCOLO STATO SCADENZA ---- */
 function getExpiryStatus(expiryDateStr) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -79,7 +79,7 @@ function formatDate(dateStr) {
     return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
-/* ---- RENDER (Parte 4: DOM Manipulation) ---- */
+/* ---- RENDER  ---- */
 function renderFridge() {
     const list = document.getElementById('fridgeList');
     const emptyState = document.getElementById('emptyState');
@@ -170,7 +170,7 @@ function escapeHtml(str) {
     return d.innerHTML;
 }
 
-/* ---- AGGIUNTA E MODIFICA (Parte 1: POST/PUT) ---- */
+/* ---- AGGIUNTA E MODIFICA ---- */
 
 // Apre il modal per aggiungere (resetta i campi)
 function openAddModal() {
@@ -254,7 +254,7 @@ async function updateItem(id) {
 
     try {
         const response = await fetch(`${API_URL}/${id}`, {
-            method: 'PUT', // Parte 1 slide 8
+            method: 'PUT', 
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify(updatedData)

@@ -113,7 +113,7 @@ async function deleteRecipeDetail(id) {
     });
     if (res.ok) {
         alert("Deleted!");
-        window.location.href = "./profile"; 
+        window.location.href = "/public/pages/social/profile/"; 
     }
 };
 

@@ -76,11 +76,9 @@ async function loadDashboardItems() {
         });
  
         if (response.status === 401) {
-            // MODIFICA QUI: Invece di reindirizzare al login, impostiamo l'utente come Guest
             sessionStorage.setItem('userMode', 'guest');
             sessionStorage.setItem('username', 'Guest User');
             
-            // Ricarichiamo la pagina in modo che parta in automatico con il banner e la UI da guest
             window.location.reload(); 
             return;
         }

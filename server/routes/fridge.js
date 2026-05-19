@@ -40,7 +40,7 @@ router.delete('/', auth, async (req, res) => {
  
 module.exports = router;
 
-// PUT: Modifica un elemento esistente (Parte 1 slide 8)
+// PUT: Modifica un elemento esistente 
 router.put('/:id', auth, async (req, res) => {
     try {
         const updatedItem = await FridgeItem.findOneAndUpdate(

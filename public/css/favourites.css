@@ -52,7 +52,6 @@
 .favourites-search-wrap input::placeholder { color: var(--gray-medium); }
 
 .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
-
 .filter-btn {
     padding: 8px 14px;
     border: 1.5px solid var(--gray-light);
@@ -65,7 +64,6 @@
     font-family: inherit;
     color: var(--gray-medium);
 }
-
 .filter-btn:hover,
 .filter-btn.active {
     background: var(--primary-green);
