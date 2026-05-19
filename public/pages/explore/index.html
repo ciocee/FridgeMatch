@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FridgeMatch: Explore Results</title>
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+    
+    <script src="../../js/theme.js"></script>
+</head>
+<body class="dashboard-body">
+
+    <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h1 class="brand">FridgeMatch</h1>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="../dashboard">Homepage</a></li>
+                        <li><a href="../fridge">Fridge</a></li>
+                        <li><a href="../groceries">Grocery list</a></li>
+                        <li><a href="../favourites">Your favourites</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="sidebar-section social">
+                <br>
+                <h3>Social</h3>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="../social/profile">Your profile</a></li>
+                        <li><a href="../social/add-recipe">Add recipe</a></li>
+                        <li><a href="../social">Community feed</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="sidebar-theme-row">
+                <span class="sidebar-theme-label"> Dark mode</span>
+                <button class="theme-toggle"
+                        role="switch"
+                        aria-checked="false"
+                        onclick="toggleTheme()"
+                        title="Toggle dark mode">
+                </button>
+            </div>
+
+            <div id="auth-button-container" style="margin-top: auto;">
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            
+            <div style="margin-bottom: 1rem;">
+                <button onclick="window.location.href='../dashboard'" class="logout-btn" style="width: auto; padding: 10px 20px;">← Back to Dashboard</button>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+                
+                <div>
+                    <h1 style="color: var(--primary-green); margin: 0; font-family: var(--font-display);">Explore Results</h1>
+                    <p id="search-subtitle" style="color: var(--text-soft); font-size: 1.1rem; margin: 0; margin-top: 0.5rem;">Searching...</p>
+                </div>
+
+                <header class="search-bar" style="padding: 0; background: transparent; box-shadow: none; width: 100%; max-width: 450px; margin: 0;">
+                    <div class="search-wrapper" style="margin: 0; width: 100%;">
+                        <input type="text" placeholder="Search another recipe..." id="explore-search-input">
+                        <button type="button" class="search-btn" id="explore-search-btn">Search</button>
+                    </div>\
+                </header>
+
+            </div>
+
+            <div id="explore-grid" class="recipe-grid">
+                </div>
+
+            <footer class="site-footer">
+                <span class="footer-brand">FridgeMatch</span>
+                <ul class="footer-links">
+                    <li><a href="../dashboard">Home</a></li>
+                    <li><a href="../fridge">Fridge</a></li>
+                    <li><a href="../favourites">Favourites</a></li>
+                    <li><a href="../social">Community</a></li>
+                </ul>
+                <span class="footer-copy">© 2026 FridgeMatch — eat smart 🥦</span>
+            </footer>
+            
+        </main>
+    </div>
+
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/explore.js"></script> 
+</body>
+</html>
