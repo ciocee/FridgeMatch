@@ -8,7 +8,6 @@ const auth = require('../middleware/authMiddleware');
 
 const apiKey = process.env.FOOD_API_KEY;
 
-// --- ROTTA REPLICABLE: Con Global Search Cache ---
 router.get('/replicable', auth, async (req, res) => {
     try {
         const items = await FridgeItem.find({ user: req.session.userId });
@@ -17,11 +16,9 @@ router.get('/replicable', auth, async (req, res) => {
             return res.status(200).json([]); 
         }
 
-        // 1. CREAZIONE CHIAVE NORMALIZZATA
         const sortedIngredients = [...new Set(items.map(i => i.name.toLowerCase().trim()))].sort();
         const ingredientsKey = sortedIngredients.join(',');
 
-        // 2. CONTROLLO CACHE GLOBALE
         const cachedResults = await GlobalSearchCache.findOne({ ingredientsKey: ingredientsKey });
 
         if (cachedResults) {
@@ -29,7 +26,6 @@ router.get('/replicable', auth, async (req, res) => {
             return res.status(200).json(cachedResults.results);
         }
 
-        // 3. SE NON TROVATA, CHIAMATA API
         const ingredientsParam = sortedIngredients.map(name => name.replace(/\s+/g, '+')).join(',+');
         const limit = req.query.limit || 4; // default: 4 ricette per la dashboard
         const spoonacularUrl = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&number=${limit}&apiKey=${apiKey}`;
@@ -47,7 +43,6 @@ router.get('/replicable', auth, async (req, res) => {
 
         const data = await response.json();
 
-        // 4. SALVATAGGIO NELLA CACHE GLOBALE
         try {
             const newCache = new GlobalSearchCache({
                 ingredientsKey: ingredientsKey,
@@ -67,12 +62,10 @@ router.get('/replicable', auth, async (req, res) => {
     }
 });
 
-// --- ROTTA RECIPE/:ID ---
 router.get('/recipe/:id', auth, async (req, res) => {
     try {
         const recipeId = Number(req.params.id);
         
-        // 1. CERCA LA RICETTA NEL DATABASE MONGODB
         const cachedRecipe = await RecipeCache.findOne({ id: recipeId });
 
         if (cachedRecipe) {
@@ -80,7 +73,6 @@ router.get('/recipe/:id', auth, async (req, res) => {
             return res.status(200).json(cachedRecipe);
         }
 
-        // 2. SE NON ESISTE, CHIAMA L'API DI SPOONACULAR
         const spoonacularUrl = `https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=true&apiKey=${apiKey}`;
         console.log(`API SPOONACULAR - Ricerca dettagli per ID: ${recipeId} (Non presente in Cache)`);
 
@@ -139,7 +131,6 @@ router.get('/recipe/:id', auth, async (req, res) => {
             })) : []
         };
 
-        // 4. SALVA LA RICETTA NEL DATABASE MONGODB
         const newCachedRecipe = new RecipeCache(recipeDataToSave);
         await newCachedRecipe.save();
         console.log(`RICETTE CACHE - Nuova ricetta salvata nel db per ID: ${recipeId}`);
