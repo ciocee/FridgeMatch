@@ -2,8 +2,24 @@ window.API_BASE_URL = `http://${window.location.hostname}:3000`;
 const API_SINGLE_RECIPE = `${API_BASE_URL}/api/recipes/recipe`;
 const API_FAV_URL       = `${API_BASE_URL}/api/favourites`;
 
-// Tiene traccia della ricetta corrente per il bottone preferiti
+const GROCERY_CATEGORIES = [
+    { id: 'meat',       label: 'Meat',       emoji: '🥩' },
+    { id: 'fish',       label: 'Fish',       emoji: '🐟' },
+    { id: 'dairy',      label: 'Dairy',      emoji: '🧀' },
+    { id: 'eggs',       label: 'Eggs',       emoji: '🥚' },
+    { id: 'vegetables', label: 'Vegetables', emoji: '🥦' },
+    { id: 'fruit',      label: 'Fruit',      emoji: '🍎' },
+    { id: 'cereals',    label: 'Cereals',    emoji: '🌾' },
+    { id: 'legumes',    label: 'Legumes',    emoji: '🫘' },
+    { id: 'bread',      label: 'Bread',      emoji: '🍞' },
+    { id: 'sauces',     label: 'Sauces',     emoji: '🫙' },
+    { id: 'drinks',     label: 'Drinks',     emoji: '🥤' },
+    { id: 'other',      label: 'Other',      emoji: '📦' },
+];
+
 let currentRecipeData = null;
+let ingredientQueue = [];
+let activeQuickCategory = '';
 
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -15,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     loadRecipeDetails(recipeId);
+    setupQuickAddModalEvents();
 });
 
 async function loadRecipeDetails(id) {
@@ -37,22 +54,23 @@ async function loadRecipeDetails(id) {
             document.getElementById('loadingMsg').style.display = 'none';
             document.getElementById('recipeContent').style.display = 'block';
 
-            // --- 1. INFO BASE ---
             document.getElementById('recipeTitle').textContent = recipe.title;
 
             const imgElement = document.getElementById('recipeImage');
-            imgElement.src = isCommunityRecipe
-                ? `${API_BASE_URL}${recipe.image}`
-                : recipe.image;
+            if (recipe.image && recipe.image.startsWith('data:image')) {
+                imgElement.src = recipe.image;
+            } else {
+                imgElement.src = isCommunityRecipe 
+                    ? `${API_BASE_URL}${recipe.image}` 
+                    : recipe.image;
+            }
 
             document.getElementById('recipeTime').textContent    = recipe.readyInMinutes || '--';
             document.getElementById('recipeServings').textContent = recipe.servings || '--';
             document.getElementById('recipeHealth').textContent  = recipe.healthScore || '--';
 
-            // --- 2. BOTTONE ADD TO FAVOURITES ---
             await setupFavouriteButton(id, recipe, isCommunityRecipe);
 
-            // --- 3. DIETE (Badge) ---
             const dietaryContainer = document.getElementById('recipeDietary');
             dietaryContainer.innerHTML = '';
 
@@ -70,22 +88,95 @@ async function loadRecipeDetails(id) {
             if (recipe.vegetarian) createDietBadge("🥚 Vegetarian");
             if (recipe.vegan)      createDietBadge("🌿 Vegan");
 
-            // --- 4. INGREDIENTI ---
             const ingredientsUl = document.getElementById('recipeIngredients');
-            ingredientsUl.innerHTML = '';
+            const ingredientsDiv = ingredientsUl.parentElement;
+            const ingredientsH3 = ingredientsDiv.querySelector('h3');
+
+            const headingWrapper = document.createElement('div');
+            headingWrapper.style.cssText = 'display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gray-light); padding-bottom: 10px; margin-bottom: 15px;';
+            ingredientsH3.style.cssText = 'margin: 0; padding: 0; border: none; color: var(--text-dark);';
+            ingredientsDiv.insertBefore(headingWrapper, ingredientsH3);
+            headingWrapper.appendChild(ingredientsH3);
+
             const list = isCommunityRecipe ? recipe.ingredients : recipe.extendedIngredients;
+            const missingIngredients = []; 
 
             if (list && list.length > 0) {
-                list.forEach(ing => {
-                    const li = document.createElement('li');
-                    li.textContent = isCommunityRecipe ? ing : ing.original;
-                    ingredientsUl.appendChild(li);
-                });
+                try {
+                    ingredientsUl.innerHTML = '<li style="list-style:none;">Checking your fridge... ❄️</li>';
+
+                    const fridgeRes = await fetch(`${API_BASE_URL}/api/fridge`, { credentials: 'include' });
+                    const fridgeItems = fridgeRes.ok ? await fridgeRes.json() : [];
+                    const fridgeNames = fridgeItems.map(item => item.name.toLowerCase().trim());
+
+                    ingredientsUl.innerHTML = ''; 
+
+                    list.forEach(ing => {
+                        const li = document.createElement('li');
+                        li.style.display = 'flex';
+                        li.style.justifyContent = 'space-between';
+                        li.style.alignItems = 'center';
+                        li.style.marginBottom = '12px';
+                        li.style.paddingBottom = '4px';
+
+                        const ingName = isCommunityRecipe ? ing : ing.name;
+                        const ingOriginal = isCommunityRecipe ? ing : ing.original;
+
+                        const textSpan = document.createElement('span');
+                        textSpan.textContent = ingOriginal;
+                        li.appendChild(textSpan);
+
+                        const isPresent = fridgeNames.some(fName =>
+                            ingName.toLowerCase().includes(fName) || fName.includes(ingName.toLowerCase())
+                        );
+
+                        const statusBadge = document.createElement('span');
+                        statusBadge.style.cssText = 'font-size: 0.8rem; font-weight: bold; padding: 4px 10px; border-radius: 20px; transition: all 0.3s ease;';
+                        // Salviamo il nome esatto nell'attributo dataset per trovarlo dopo
+                        statusBadge.dataset.ingredient = ingName; 
+
+                        if (isPresent) {
+                            statusBadge.textContent = '❄️ In Fridge';
+                            statusBadge.style.color = 'var(--primary-green)';
+                            statusBadge.style.background = '#e6f4ea';
+                        } else {
+                            statusBadge.textContent = '❌ Missing';
+                            statusBadge.style.color = '#d97706'; 
+                            statusBadge.style.background = '#fffbeb'; 
+                            missingIngredients.push(ingName); 
+                        }
+                        li.appendChild(statusBadge);
+                        ingredientsUl.appendChild(li);
+                    });
+
+                    if (missingIngredients.length > 0) {
+                        const globalAddBtn = document.createElement('button');
+                        globalAddBtn.id = 'globalAddMissingBtn'; // ID per ritrovarlo
+                        globalAddBtn.style.cssText = 'padding: 6px 14px; font-size: 1rem; background: var(--primary-green); color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; transition: background 0.2s, transform 0.1s;';
+                        globalAddBtn.textContent = `🛒 Add ${missingIngredients.length} missing to Grocery`;
+
+                        globalAddBtn.onmouseover = () => { globalAddBtn.style.background = '#1a773d'; }; 
+                        globalAddBtn.onmouseout = () => { globalAddBtn.style.background = 'var(--primary-green)'; };
+
+                        globalAddBtn.onclick = () => {
+                            // Legge di nuovo i missing basandosi sui badge attuali
+                            ingredientQueue = Array.from(document.querySelectorAll('#recipeIngredients span[data-ingredient]'))
+                                                .filter(b => b.textContent.includes('Missing'))
+                                                .map(b => b.dataset.ingredient);
+                            
+                            globalAddBtn.style.display = 'none';
+                            processNextIngredient();
+                        };
+                        headingWrapper.appendChild(globalAddBtn);
+                    }
+
+                } catch (err) {
+                    ingredientsUl.innerHTML = '<li>Error checking ingredients.</li>';
+                }
             } else {
                 ingredientsUl.innerHTML = '<li>No ingredients specified.</li>';
             }
 
-            // --- 5. MACROS ---
             if (recipe.macros) {
                 document.getElementById('macroCalories').textContent = recipe.macros.calories || 'N/A';
                 document.getElementById('macroProtein').textContent  = recipe.macros.protein  || 'N/A';
@@ -98,7 +189,6 @@ async function loadRecipeDetails(id) {
                 document.getElementById('macroCarbs').textContent    = 'N/A';
             }
 
-            // --- 6. ISTRUZIONI ---
             const stepsUl = document.getElementById('recipeSteps');
             stepsUl.innerHTML = '';
 
@@ -135,19 +225,14 @@ async function loadRecipeDetails(id) {
             document.getElementById('loadingMsg').textContent = "Error: Recipe not found.";
         }
     } catch (error) {
-        console.error("Errore nel caricamento:", error);
         document.getElementById('loadingMsg').textContent = "Connection error.";
     }
 }
 
-/* ─────────────────────────────────────────
-   GESTIONE BOTTONE ADD TO FAVOURITES
-───────────────────────────────────────── */
 async function setupFavouriteButton(recipeId, recipe, isCommunityRecipe) {
     const btn = document.getElementById('favBtn');
     if (!btn) return;
 
-    // Controlla se è già nei preferiti
     let isFav = false;
     try {
         const checkRes = await fetch(`${API_FAV_URL}/check/${recipeId}`, { credentials: 'include' });
@@ -155,30 +240,24 @@ async function setupFavouriteButton(recipeId, recipe, isCommunityRecipe) {
             const data = await checkRes.json();
             isFav = data.isFavourite;
         }
-    } catch (e) { /* ignora errori di rete */ }
+    } catch (e) {}
 
     updateFavBtn(btn, isFav);
 
     btn.addEventListener('click', async () => {
         btn.disabled = true;
-
         const currentlyFav = btn.dataset.fav === 'true';
 
         if (currentlyFav) {
-            // Rimuovi dai preferiti
             try {
                 const res = await fetch(`${API_FAV_URL}/${recipeId}`, {
                     method: 'DELETE',
                     credentials: 'include'
                 });
                 if (res.ok) updateFavBtn(btn, false);
-            } catch (e) { console.error(e); }
+            } catch (e) {}
         } else {
-            // Aggiungi ai preferiti con snapshot dati
-            const imageUrl = isCommunityRecipe
-                ? `${API_BASE_URL}${recipe.image}`
-                : recipe.image;
-
+            const imageUrl = isCommunityRecipe ? `${API_BASE_URL}${recipe.image}` : recipe.image;
             const snapshot = {
                 title:          recipe.title,
                 image:          imageUrl,
@@ -199,9 +278,8 @@ async function setupFavouriteButton(recipeId, recipe, isCommunityRecipe) {
                     body: JSON.stringify(snapshot)
                 });
                 if (res.ok || res.status === 409) updateFavBtn(btn, true);
-            } catch (e) { console.error(e); }
+            } catch (e) {}
         }
-
         btn.disabled = false;
     });
 }
@@ -214,5 +292,137 @@ function updateFavBtn(btn, isFav) {
     } else {
         btn.textContent = '🤍 Add to Favourites';
         btn.classList.remove('fav-btn-active');
+    }
+}
+
+/* ─────────────────────────────────────────
+   GESTIONE MODAL "QUICK ADD" GROCERY (LA CODA)
+───────────────────────────────────────── */
+function buildQuickCategoryGrid() {
+    const grid = document.getElementById('quickAddCategoryGrid');
+    if (!grid || grid.children.length > 0) return; 
+
+    GROCERY_CATEGORIES.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'cat-btn';
+        btn.dataset.id = cat.id;
+        btn.innerHTML = `<span style="font-size:1.2rem">${cat.emoji}</span><span>${cat.label}</span>`;
+        btn.onclick = () => {
+            activeQuickCategory = cat.id;
+            document.querySelectorAll('#quickAddCategoryGrid .cat-btn').forEach(b => {
+                b.classList.toggle('selected', b.dataset.id === cat.id);
+            });
+        };
+        grid.appendChild(btn);
+    });
+}
+
+// Funzione richiamata anche dalla X o dallo sfondo scuro
+function abortQuickAdd() {
+    document.getElementById('quickAddBackdrop').classList.remove('open');
+    ingredientQueue = []; // Svuota la coda
+    
+    // Controlla quanti missing sono rimasti e aggiorna il bottone
+    updateGlobalAddButton();
+}
+window.abortQuickAdd = abortQuickAdd; // Rende la funzione accessibile nell'HTML
+
+function updateGlobalAddButton() {
+    const btn = document.getElementById('globalAddMissingBtn');
+    if (btn) {
+        let stillMissing = 0;
+        document.querySelectorAll('#recipeIngredients span[data-ingredient]').forEach(b => {
+            if (b.textContent.includes('Missing')) stillMissing++;
+        });
+        
+        if (stillMissing > 0) {
+            btn.style.display = 'block';
+            btn.textContent = `🛒 Add ${stillMissing} missing to Grocery`;
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+}
+
+function processNextIngredient() {
+    if (ingredientQueue.length === 0) {
+        document.getElementById('quickAddBackdrop').classList.remove('open');
+        updateGlobalAddButton();
+        return;
+    }
+
+    const nextIngredient = ingredientQueue.shift(); 
+    
+    buildQuickCategoryGrid();
+    document.getElementById('quickAddName').value = nextIngredient;
+    document.getElementById('quickAddQty').value = 1;
+    document.getElementById('quickAddUnit').value = 'units'; 
+    
+    activeQuickCategory = '';
+    document.querySelectorAll('#quickAddCategoryGrid .cat-btn').forEach(b => b.classList.remove('selected'));
+
+    document.getElementById('quickAddBackdrop').classList.add('open');
+}
+
+function setupQuickAddModalEvents() {
+    const quickAddForm = document.getElementById('quickAddForm');
+    const skipBtn = document.getElementById('quickAddSkipBtn');
+
+    if(quickAddForm) {
+        quickAddForm.onsubmit = async (e) => {
+            e.preventDefault();
+            
+            if (!activeQuickCategory) {
+                alert("Please select a category!");
+                return;
+            }
+
+            const currentIngredientName = document.getElementById('quickAddName').value.trim();
+
+            const payload = {
+                name: currentIngredientName,
+                category: activeQuickCategory,
+                qty: parseFloat(document.getElementById('quickAddQty').value),
+                unit: document.getElementById('quickAddUnit').value
+            };
+
+            const submitBtn = quickAddForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Saving...";
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/grocery`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                });
+                
+                if(res.ok) {
+                    // Magia: aggiorna il badge in diretta!
+                    document.querySelectorAll('#recipeIngredients span[data-ingredient]').forEach(badge => {
+                        if (badge.dataset.ingredient === currentIngredientName) {
+                            badge.textContent = '🛒 In List';
+                            badge.style.color = '#0369a1'; // Azzurro scuro
+                            badge.style.background = '#e0f2fe'; // Azzurro chiaro
+                        }
+                    });
+
+                    processNextIngredient(); 
+                } else {
+                    alert("Error saving item. Please try again.");
+                }
+            } catch (err) {
+                console.error("Errore salvataggio:", err);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Save to List";
+            }
+        };
+    }
+
+    if(skipBtn) {
+        skipBtn.onclick = () => processNextIngredient();
     }
 }
